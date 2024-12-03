@@ -28,6 +28,7 @@ import { SupportPage } from "./components/pages/SupportPage";
 import { AdminToppingTablePage } from "./components/pages/AdminToppingTablePage";
 import { AdminProductCategoriesTablePage } from "./components/pages/AdminProductCategoriesTablePage";
 import { AdminRefundTablePage } from "./components/pages/AdminRefundTablePage.tsx";
+import { AddressPage } from "./components/pages/AddressPage.tsx";
 
 export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
   createBrowserRouter([
@@ -93,6 +94,14 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
       element: (
         <SecuredRoute currentRole={currentRole} role={["CUSTOMER", "VIP"]}>
           <AccountInformationPage />
+        </SecuredRoute>
+      ),
+    },
+    {
+      path: "/so-dia-chi",
+      element: (
+        <SecuredRoute currentRole={currentRole} role={["CUSTOMER", "VIP"]}>
+          <AddressPage />
         </SecuredRoute>
       ),
     },
