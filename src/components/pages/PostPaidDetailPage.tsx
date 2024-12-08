@@ -31,7 +31,7 @@ export const PostPaidDetailPage = () => {
             page: 0,
             sort: ["createdAt,desc"],
             pageSize: 10,
-            orderStatus: status,
+            status,
             orderGroup: orderGroup,
           },
         })
@@ -144,7 +144,7 @@ export const PostPaidDetailPage = () => {
                             page: page - 1,
                             sort: ["createdAt,desc"],
                             pageSize: 10,
-                            orderStatus: status,
+                            status,
                             orderGroup: orderGroup,
                           },
                         })

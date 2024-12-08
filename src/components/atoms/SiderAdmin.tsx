@@ -6,7 +6,8 @@ import {
   ShoppingCartOutlined,
   ShoppingOutlined,
   TableOutlined,
-  TeamOutlined
+  TeamOutlined,
+  SnippetsOutlined
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import Sider, { SiderTheme } from "antd/es/layout/Sider";
@@ -38,7 +39,11 @@ export const SiderAdmin = ({ theme }: { theme: SiderTheme }) => {
             ? ["/admin/product"]
             : location.pathname.includes("/admin/order")
               ? ["/admin/order"]
-                : []
+              : location.pathname.includes("/admin/order")
+                ? ["/admin/refund"]
+                : location.pathname.includes("/admin/order")
+                  ? ["/admin/postpaid"]
+                  : []
         }
       />
     </Sider>
@@ -70,6 +75,11 @@ const items: ItemType<MenuItemType>[] = [
         key: "/admin/orders-refund-table",
         icon: <RetweetOutlined />,
         label: <Link to="/admin/orders-refund-table">Lịch sử hoàn tiền</Link>,
+      },
+      {
+        key: "/admin/orders-postpaid-table",
+        icon: <SnippetsOutlined />,
+        label: <Link to="/admin/orders-postpaid-table">Phiếu nợ</Link>,
       },
     ],
   },

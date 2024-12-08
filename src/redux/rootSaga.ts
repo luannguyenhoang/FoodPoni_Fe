@@ -17,6 +17,7 @@ import { invoiceSagas } from "./modules/invoice.ts";
 import { statisticSagas } from "./modules/statistic.ts";
 import { orderSessionSagas } from "./modules/orderSession.ts";
 import { userSagas } from "./modules/user.ts";
+import { postpaidSagas } from "./modules/postpaid.ts";
 
 export default function* rootSaga() {
   yield all([
@@ -30,6 +31,7 @@ export default function* rootSaga() {
     ...productSagas,
     ...productDetailSagas,
     ...productCategorySagas,
+    ...postpaidSagas,
     ...cartGroupSagas,
     ...orderSagas,
     ...orderItemSagas,

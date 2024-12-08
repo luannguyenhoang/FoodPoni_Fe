@@ -38,13 +38,13 @@ export const getOrderByCustomer = (oid: string): Promise<Order> => {
 };
 
 export const getOrderByRetailer = (oid: string): Promise<Order> => {
-    return apiWithToken()
-        .get(generateQueryString(`/retailer/orders/${oid}`), {
-            headers: {
-                Authorization: "Bearer " + accessToken,
-            },
-        })
-        .then((res: AxiosResponse<Order>) => res.data);
+  return apiWithToken()
+    .get(generateQueryString(`/retailer/orders/${oid}`), {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+    .then((res: AxiosResponse<Order>) => res.data);
 };
 
 export const getOrdersPageByStatus = (
@@ -164,7 +164,7 @@ export const updateStatus = (
   return apiWithToken()
     .patch(
       generateQueryString(`/retailer/orders/${oid}`, {
-        orderStatus,
+        status: orderStatus,
       }),
       {},
       {

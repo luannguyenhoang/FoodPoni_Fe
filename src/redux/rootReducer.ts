@@ -11,6 +11,7 @@ import orderItemReducer from "@/redux/modules/orderItem.ts";
 import productReducer from "@/redux/modules/product.ts";
 import productDetailReducer from "@/redux/modules/productDetail.ts";
 import productCategoryReducer from "@/redux/modules/productCategory.ts";
+import postpaidReducer from "@/redux/modules/postpaid.ts";
 import rateReducer from "@/redux/modules/rate.ts";
 import toppingReducer from "@/redux/modules/topping.ts";
 import invoiceReducer from "@/redux/modules/invoice.ts";
@@ -37,6 +38,7 @@ export const rootReducer = combineReducers({
   product: productReducer,
   productDetail: productDetailReducer,
   productCategory: productCategoryReducer,
+  postpaid: postpaidReducer,
   rate: rateReducer,
   topping: toppingReducer,
 });

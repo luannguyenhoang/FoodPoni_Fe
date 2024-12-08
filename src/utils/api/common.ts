@@ -1,8 +1,8 @@
 export type QueryParams = {
   page?: number | null;
   pageSize?: number | null;
-  status?: boolean | null;
-  orderStatus?:
+  status?:
+    | boolean
     | string
     | "APPROVED"
     | "REJECTED"
@@ -17,6 +17,7 @@ export type QueryParams = {
   startDate?: string | null;
   endDate?: string | null;
   year?: string | null;
+  paymentStatus?: string | null;
 };
 
 export default function generateQueryString(
@@ -27,7 +28,6 @@ export default function generateQueryString(
     page,
     pageSize,
     status,
-    orderStatus,
     sort,
     read,
     slug,
@@ -35,7 +35,8 @@ export default function generateQueryString(
     orderGroup,
     startDate,
     endDate,
-    year
+    year,
+    paymentStatus,
   } = params ?? ({} as QueryParams);
   let queryString = "";
 
@@ -43,7 +44,6 @@ export default function generateQueryString(
     page ||
     pageSize ||
     status ||
-    orderStatus ||
     sort ||
     read ||
     slug ||
@@ -51,7 +51,8 @@ export default function generateQueryString(
     orderGroup ||
     startDate ||
     endDate ||
-    year
+    year ||
+    paymentStatus
   ) {
     queryString += "?";
 
@@ -71,13 +72,6 @@ export default function generateQueryString(
         queryString += "&";
       }
       queryString += `status=${status}`;
-    }
-
-    if (orderStatus) {
-      if (queryString.length > 1) {
-        queryString += "&";
-      }
-      queryString += `orderStatus=${orderStatus}`;
     }
 
     if (sort) {
@@ -126,6 +120,12 @@ export default function generateQueryString(
         queryString += "&";
       }
       queryString += `year=${year}`;
+    }
+    if (paymentStatus) {
+      if (queryString.length > 1) {
+        queryString += "&";
+      }
+      queryString += `paymentStatus=${paymentStatus}`;
     }
   }
 

@@ -91,7 +91,7 @@ export const AdminRefundTablePage = () => {
           page: 0,
           pageSize: 10,
           sort: ["created_at,desc"],
-          orderStatus: status,
+          status,
         },
       })
     );
@@ -170,7 +170,6 @@ export const AdminRefundTablePage = () => {
                 page: pagination.current ? pagination.current - 1 : 0,
                 pageSize: pagination.pageSize,
                 sort,
-                orderStatus: status,
                 status:
                   filters && filters["status"]
                     ? (filters["status"][0] as boolean)

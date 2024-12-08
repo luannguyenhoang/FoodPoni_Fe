@@ -159,7 +159,12 @@ export const AdminOrderTablePage = () => {
           ),
           name: (
             <div className="overflow-hidden">
-              {it.payment.method === "POSTPAID" && <SalesLabel content="Nợ" />}
+              {it.payment.method === "POSTPAID" && (
+                <SalesLabel color="red-500" content="Nợ" />
+              )}
+              {it.payment.method === "VNPAY" && (
+                <SalesLabel content="VNPAY" />
+              )}
               <AvatarInfo
                 fullName={it.shippingAddress.fullName}
                 avatar={it.user && it.user.avatar}
@@ -271,10 +276,14 @@ export const AdminOrderTablePage = () => {
                       </Popconfirm>
                     </>
                   )}
-                  
+
                   {["APPROVED", "DELIVERING"].includes(it.status) && (
                     <>
-                      <span className="mr-4 italic">{it.status === "DELIVERING" ? "Đang giao hàng" : "Đang chế biến"}</span>
+                      <span className="mr-4 italic">
+                        {it.status === "DELIVERING"
+                          ? "Đang giao hàng"
+                          : "Đang chế biến"}
+                      </span>
                       {it.status === "APPROVED" && (
                         <Popconfirm
                           title="Bạn chắc chắn sẽ giao đơn hàng này?"

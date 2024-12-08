@@ -25,7 +25,7 @@ export const OrderGroupPage = () => {
           page: 0,
           pageSize: 10,
           sort: ["createdAt,desc"],
-          orderStatus: status,
+          status,
           orderGroup: true,
         },
       })
@@ -120,7 +120,7 @@ export const OrderGroupPage = () => {
                           page: page - 1,
                           pageSize: 10,
                           sort: ["createdAt,desc"],
-                          orderStatus: status,
+                          status,
                           orderGroup: true,
                         },
                       })

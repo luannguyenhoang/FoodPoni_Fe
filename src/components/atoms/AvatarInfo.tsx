@@ -11,7 +11,7 @@ export const AvatarInfo = ({
   roomId,
   deleteCartGroup,
 }: {
-  fullName: string;
+  fullName?: string;
   avatar?: string | null;
   info: string;
   padding?: string;

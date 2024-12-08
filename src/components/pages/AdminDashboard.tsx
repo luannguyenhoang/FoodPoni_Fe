@@ -88,7 +88,7 @@ export const AdminDashboardPage = () => {
     dispatch(
       fetchSalesTotalOrderAction({
         queryParams: {
-          orderStatus: "COMPLETED",
+          status: "COMPLETED",
         },
       })
     );
@@ -120,7 +120,7 @@ export const AdminDashboardPage = () => {
                           queryParams: {
                             startDate,
                             endDate,
-                            orderStatus: "COMPLETED",
+                            status: "COMPLETED",
                           },
                         })
                       );
