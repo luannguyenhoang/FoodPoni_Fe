@@ -2,11 +2,12 @@ import {
   DashboardOutlined,
   FileOutlined,
   FundProjectionScreenOutlined,
+  RetweetOutlined,
   ShopOutlined,
   ShoppingCartOutlined,
   ShoppingOutlined,
   TableOutlined,
-  RetweetOutlined,
+  TeamOutlined
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import Sider, { SiderTheme } from "antd/es/layout/Sider";
@@ -40,7 +41,9 @@ export const SiderAdmin = ({ theme }: { theme: SiderTheme }) => {
               ? ["/admin/order"]
               : location.pathname.includes("/admin/order")
                 ? ["/admin/refund"]
-                : []
+                : location.pathname.includes("/admin/user")
+                  ? ["/admin/user"]
+                  : []
         }
       />
     </Sider>
@@ -104,4 +107,10 @@ const items: ItemType<MenuItemType>[] = [
       },
     ],
   },
+  {
+    key: "/admin/user",
+    icon: <TeamOutlined />,
+    label: <Link to="/admin/users-table">Danh sách khách hàng</Link>,
+  },
+
 ];

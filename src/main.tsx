@@ -29,6 +29,7 @@ import { AdminToppingTablePage } from "./components/pages/AdminToppingTablePage"
 import { AdminProductCategoriesTablePage } from "./components/pages/AdminProductCategoriesTablePage";
 import { AdminRefundTablePage } from "./components/pages/AdminRefundTablePage.tsx";
 import { AddressPage } from "./components/pages/AddressPage.tsx";
+import { AdminUserTablePage } from "./components/pages/AdminUserTablePage.tsx";
 
 export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
   createBrowserRouter([
@@ -105,6 +106,7 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
         </SecuredRoute>
       ),
     },
+
     {
       path: "/don-hang-nhom",
       element: (
@@ -195,6 +197,15 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
             </SecuredRoute>
           ),
         },
+        {
+          path: "users-table",
+          element: (
+            <SecuredRoute currentRole={currentRole} role={["RETAILER"]}>
+              <AdminUserTablePage />
+            </SecuredRoute>
+          ),
+        },
+
         {
           path: "products-table",
           element: (
