@@ -1,4 +1,3 @@
-import { SalesLabel } from "@/components/atoms/SalesLabel.tsx";
 import {
   fetchRefundByRetailerAction,
   refundConfirmationAction,
@@ -7,13 +6,11 @@ import {
 import { RootState } from "@/redux/store";
 import { currencyFormat } from "@/utils/common";
 import {
+  BankOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
-  CopyOutlined,
-  DashOutlined,
   DownloadOutlined,
   FrownOutlined,
-  LineOutlined,
   SendOutlined,
   SyncOutlined,
   TransactionOutlined,
@@ -21,7 +18,6 @@ import {
 import {
   Badge,
   Col,
-  Dropdown,
   Flex,
   Popconfirm,
   Segmented,
@@ -37,6 +33,7 @@ import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
+import { InvoiceModal } from "../organisms/InvoiceModal";
 import { AdminLayout } from "../templates/AdminLayout";
 import "./AdminOrderTablePage.scss";
 
@@ -73,7 +70,7 @@ const TableToolbar = ({
         icon={<DownloadOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Download
+        Tải xuống
       </Button>
     </Col>
   </Flex>
@@ -188,7 +185,7 @@ export const AdminRefundTablePage = () => {
           current: page.number + 1,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading}
@@ -202,26 +199,17 @@ export const AdminRefundTablePage = () => {
           ...it,
           key: it.id,
           no: page.number * page.size + index + 1,
-          code: it.id.toUpperCase().substring(0, 6),
-          name: (
-            <AvatarInfo
-              fullName={it.shippingAddress.fullName}
-              avatar={it.user && it.user.avatar}
-              info={`${it.user ? it.user.username : ""}`}
-            />
+          code: (
+            <Tooltip title="Xem hóa đơn">
+              <span>{`#${it.id.toUpperCase().substring(0, 7)}`}</span>{" "}
+              <InvoiceModal id={it.id} />
+            </Tooltip>
           ),
-          totalAmount: (
-            <div className="font-medium">
-              <div>{currencyFormat(it.totalAmount + it.shippingFee)}</div>
-              <div className="text-xs text-gray-500">
-                Tổng tiền: {currencyFormat(it.totalAmount)}
-              </div>
-              <div className="text-xs text-gray-500">
-                Phí giao hàng: {currencyFormat(it.shippingFee)}
-              </div>
-            </div>
+          method: (
+            <Tag icon={<BankOutlined />} color="blue">
+              {it.payment.method}
+            </Tag>
           ),
-          createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
           ferund: (
             <>
               {["CANCELLED", "COMPLETED", "REJECTED", "FAILED"].includes(
@@ -273,7 +261,7 @@ export const AdminRefundTablePage = () => {
                 <div className="flex justify-center gap-2">
                   {it.payment?.status === "REFUNDING" && (
                     <Popconfirm
-                      title="Bạn chắc chắn xác nhận hoàn tiền cho đơn hàng này?"
+                      title="Bạn chắc chắn xác nhận đã hoàn tiền cho đơn hàng này?"
                       onConfirm={() =>
                         dispatch(
                           refundConfirmationAction({
@@ -288,7 +276,7 @@ export const AdminRefundTablePage = () => {
                         icon={<CheckCircleOutlined />}
                         loading={it.isUpdateStatusLoading}
                       >
-                        Xác nhận hoàn tiền
+                        Xác nhận đã hoàn tiền
                       </Button>
                     </Popconfirm>
                   )}
@@ -414,47 +402,41 @@ export const AdminRefundTablePage = () => {
               </Tooltip>
             </>
           ),
-          actions: (
-            <div className="overflow-hidden">
-              {it.postPaidOrderId && <SalesLabel content="Nợ" />}
-              <Dropdown
-                trigger={["click"]}
-                placement="bottomLeft"
-                arrow={{ pointAtCenter: true }}
-                menu={{
-                  items: tableRowActions,
-                }}
-              >
-                <div className="text-center">
-                  <DashOutlined />
-                </div>
-              </Dropdown>
+          name: (
+            <AvatarInfo
+              fullName={it.shippingAddress.fullName}
+              avatar={it.user && it.user.avatar}
+              info={`${it.user ? it.user.username : ""}`}
+            />
+          ),
+          totalAmount: (
+            <div className="font-medium">
+              <div>{currencyFormat(it.totalAmount + it.shippingFee)}</div>
+              <div className="text-xs text-gray-500">
+                Tổng tiền: {currencyFormat(it.totalAmount)}
+              </div>
+              <div className="text-xs text-gray-500">
+                Phí giao hàng: {currencyFormat(it.shippingFee)}
+              </div>
             </div>
           ),
+          createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );
 };
 
-const tableRowActions = [
-  {
-    key: "1",
-    icon: <CopyOutlined />,
-    label: "Copy ID",
-  },
-  {
-    key: "2",
-    icon: <LineOutlined />,
-    label: "Copy Data Row",
-  },
-];
-
 const getColumns = () => {
   return [
     {
-      title: "No.",
+      title: "STT",
       dataIndex: "no",
     },
     {
@@ -463,12 +445,13 @@ const getColumns = () => {
       showSorterTooltip: { target: "full-header" },
       sorter: true,
     },
+    { title: "Phương thức thanh toán", dataIndex: "method" },
     {
       title: "Trạng thái",
       dataIndex: "ferund",
     },
     {
-      title: "__________Khách hàng",
+      title: "Khách hàng",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
@@ -484,10 +467,6 @@ const getColumns = () => {
       dataIndex: "createdAt",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
-    },
-    {
-      title: "Actions",
-      dataIndex: "actions",
     },
   ] as TableColumnsType;
 };

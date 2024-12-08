@@ -70,14 +70,14 @@ const TableToolbar = ({
         icon={<DownloadOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Download
+        Tải xuống
       </Button>
       <Button
         type="default"
         icon={<ImportOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Import
+        Nhập
       </Button>
 
       <ToppingModalCreate />
@@ -142,7 +142,7 @@ export const AdminToppingTablePage = () => {
           current: page.number + 1,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading}
@@ -159,7 +159,9 @@ export const AdminToppingTablePage = () => {
           name: it.name,
           price: formatCurrency(it.price),
           createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
-          updatedAt: format(new Date(it.updatedAt), "HH:mm:ss - dd/MM/yyyy"),
+          updatedAt:
+            it.updatedAt &&
+            format(new Date(it.updatedAt), "HH:mm:ss - dd/MM/yyyy"),
           actions: (
             <Dropdown
               trigger={["click"]}
@@ -217,6 +219,11 @@ export const AdminToppingTablePage = () => {
           ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );

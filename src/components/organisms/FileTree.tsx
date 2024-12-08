@@ -12,11 +12,11 @@ export const FileTree = () => {
     <Col flex="200px">
       <Button
         loading={isUploadLoading}
-        className="bg-primary text-white w-full "
+        className="bg-primary text-white w-full mb-4"
         icon={<UploadOutlined />}
         onClick={() => dispatch(setShowModalFileUpload(true))}
       >
-        Upload
+        Tải ảnh lên
       </Button>
       <Menu
         theme="light"

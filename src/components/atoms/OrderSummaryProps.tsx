@@ -46,7 +46,7 @@ export const OrderSummary = ({
         }}
       >
         {isAllItemsInCart
-          ? "Tất cả sản phẩm đã có trong giỏ hàng"
+          ? "Tất cả món ăn đã có trong giỏ hàng"
           : "Mua lại đơn hàng"}
       </Button>
       <div className="flex justify-end items-center gap-8">

@@ -109,7 +109,7 @@ export const ManagementLayout = ({ children }: { children: ReactNode }) => {
                       : []),
 
                     getItem(
-                      "Sản phẩm yêu thích",
+                      "Món ăn yêu thích",
                       "/san-pham-yeu-thich",
                       <LikeOutlined />
                     ),

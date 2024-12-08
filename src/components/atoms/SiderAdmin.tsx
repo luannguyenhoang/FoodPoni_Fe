@@ -1,7 +1,6 @@
 import {
   DashboardOutlined,
   FileOutlined,
-  FundProjectionScreenOutlined,
   RetweetOutlined,
   ShopOutlined,
   ShoppingCartOutlined,
@@ -39,11 +38,7 @@ export const SiderAdmin = ({ theme }: { theme: SiderTheme }) => {
             ? ["/admin/product"]
             : location.pathname.includes("/admin/order")
               ? ["/admin/order"]
-              : location.pathname.includes("/admin/order")
-                ? ["/admin/refund"]
-                : location.pathname.includes("/admin/user")
-                  ? ["/admin/user"]
-                  : []
+                : []
         }
       />
     </Sider>
@@ -54,61 +49,56 @@ const items: ItemType<MenuItemType>[] = [
   {
     key: "/admin/dashboard",
     icon: <DashboardOutlined />,
-    label: <Link to="/admin/dashboard">Dashboard</Link>,
+    label: <Link to="/admin/dashboard">Tổng quan</Link>,
   },
   {
     key: "/admin/file-management",
     icon: <FileOutlined />,
-    label: <Link to="/admin/file-management">File Management</Link>,
+    label: <Link to="/admin/file-management">Quản lý hình ảnh</Link>,
   },
   {
     key: "/admin/order",
     icon: <ShoppingCartOutlined />,
-    label: "Order Management",
+    label: "Quản lý đơn hàng",
     children: [
-      {
-        key: "/admin/orders-realtime",
-        icon: <FundProjectionScreenOutlined />,
-        label: <Link to="/admin/orders-realtime">Orders Realtime</Link>,
-      },
       {
         key: "/admin/orders-table",
         icon: <ShoppingOutlined />,
-        label: <Link to="/admin/orders-table">Orders</Link>,
+        label: <Link to="/admin/orders-table">Tất cả đơn hàng</Link>,
       },
       {
-        key: "/admin/refund",
+        key: "/admin/orders-refund-table",
         icon: <RetweetOutlined />,
-        label: <Link to="/admin/refund">Refund</Link>,
+        label: <Link to="/admin/orders-refund-table">Lịch sử hoàn tiền</Link>,
       },
     ],
   },
   {
     key: "/admin/product",
     icon: <ShopOutlined />,
-    label: "Product Management",
+    label: "Quản lý món ăn",
     children: [
       {
         key: "/admin/products-table",
         icon: <TableOutlined />,
-        label: <Link to="/admin/products-table">Products</Link>,
+        label: <Link to="/admin/products-table">Tất cả món ăn</Link>,
       },
       {
         key: "/admin/product-categories-table",
         icon: <TableOutlined />,
         label: (
-          <Link to="/admin/product-categories-table">Product Categories</Link>
+          <Link to="/admin/product-categories-table">Danh mục món ăn</Link>
         ),
       },
       {
         key: "/admin/product-toppings-table",
         icon: <TableOutlined />,
-        label: <Link to="/admin/toppings-table">Toppings</Link>,
+        label: <Link to="/admin/product-toppings-table">Tất cả Topping</Link>,
       },
     ],
   },
   {
-    key: "/admin/user",
+    key: "/admin/users-table",
     icon: <TeamOutlined />,
     label: <Link to="/admin/users-table">Danh sách khách hàng</Link>,
   },

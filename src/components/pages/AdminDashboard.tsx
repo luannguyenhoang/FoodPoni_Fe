@@ -235,7 +235,7 @@ export const AdminDashboardPage = () => {
           </Card>
         </Col>
         <Col md={24} lg={24} xl={12} xxl={12}>
-          <Card title="Sản phẩm phổ biến" style={cardStyles}>
+          <Card title="Món ăn phổ biến" style={cardStyles}>
             <Table
               pagination={false}
               columns={PRODUCTS_COLUMNS()}
@@ -260,7 +260,7 @@ export const AdminDashboardPage = () => {
           </Card>
         </Col>
         <Col md={24} lg={24} xl={12} xxl={12}>
-          <Card title="Sản phẩm chi tiết bán chạy nhất">
+          <Card title="Món ăn chi tiết bán chạy nhất">
             <Table
               pagination={false}
               loading={isProductsDetialerLoading}
@@ -548,7 +548,7 @@ const PRODUCTS_COLUMNS = () => {
       dataIndex: "no",
     },
     {
-      title: "Tên sản phẩm",
+      title: "Tên món ăn",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
     },
@@ -585,7 +585,7 @@ const SELLER_COLUMNS = () => {
       dataIndex: "no",
     },
     {
-      title: "Tên sản phẩm chi tiết",
+      title: "Tên món ăn chi tiết",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
     },

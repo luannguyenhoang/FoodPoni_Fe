@@ -1,23 +1,26 @@
-import { useParams } from "react-router-dom";
 import { fetchProductAction } from "@/redux/modules/product";
+import {
+  deleteProductDetailAction,
+  fetchProductDetailAction,
+  updateProductDetailStatusAction,
+} from "@/redux/modules/productDetail";
 import { RootState } from "@/redux/store";
 import { currencyFormat } from "@/utils/common";
 import {
-  CheckCircleOutlined,
   CloseCircleOutlined,
   CopyOutlined,
   DashOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeInvisibleOutlined,
   EyeOutlined,
-  ImportOutlined,
-  DeleteOutlined,
-  RollbackOutlined,
+  ImportOutlined
 } from "@ant-design/icons";
 import {
   Badge,
   Button,
   Col,
+  Divider,
   Dropdown,
   Flex,
   Popconfirm,
@@ -25,21 +28,16 @@ import {
   Table,
   TableColumnsType,
   Tag,
-  Divider,
   theme,
 } from "antd";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AdminLayout } from "../templates/AdminLayout";
-import { ProductDetailModalEdit } from "../organisms/ProductDetailModalEdit";
-import { ProductDetailModalCreate } from "../organisms/ProductDetailModalCreate";
+import { useParams } from "react-router-dom";
 import { AvatarsInfo } from "../atoms/AvatarsInfo";
-import {
-  deleteProductDetailAction,
-  fetchProductDetailAction,
-  updateProductDetailStatusAction,
-} from "@/redux/modules/productDetail";
-import { format } from "date-fns";
+import { ProductDetailModalCreate } from "../organisms/ProductDetailModalCreate";
+import { ProductDetailModalEdit } from "../organisms/ProductDetailModalEdit";
+import { AdminLayout } from "../templates/AdminLayout";
 const { useToken } = theme;
 
 const TableToolbar = ({
@@ -81,7 +79,7 @@ const TableToolbar = ({
         </Popconfirm>
       ) : (
         <h2 className="text-lg nunito text-primary">
-          <span className="text-black">Sản phẩm:</span> {productName}
+          <span className="text-black">Món ăn:</span> {productName}
         </h2>
       )}
     </Col>
@@ -91,14 +89,14 @@ const TableToolbar = ({
         icon={<DownloadOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Download
+        Tải xuống
       </Button>
       <Button
         type="default"
         icon={<ImportOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Import
+        Nhập
       </Button>
 
       <ProductDetailModalCreate />
@@ -184,7 +182,7 @@ export const AdminProductDetailTablePage = () => {
           pageSize: page.size,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading || isUpdateLoading}
@@ -239,7 +237,7 @@ export const AdminProductDetailTablePage = () => {
                   <div style={{ padding: 8 }}>
                     <Popconfirm
                       title={
-                        it.status ? "Bạn có muốn xóa?" : "Bạn muỗn khôi phục?"
+                        it.status ? "Bạn có muốn ẩn?" : "Bạn có muốn hiển thị?"
                       }
                       onConfirm={() =>
                         dispatch(
@@ -257,11 +255,11 @@ export const AdminProductDetailTablePage = () => {
                       >
                         {it.status ? (
                           <>
-                            <DeleteOutlined /> Delete
+                            <EyeOutlined /> Ẩn
                           </>
                         ) : (
                           <>
-                            <RollbackOutlined /> Restore
+                            <EyeInvisibleOutlined /> Hiển thị
                           </>
                         )}
                       </Button>
@@ -277,6 +275,11 @@ export const AdminProductDetailTablePage = () => {
           ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );
@@ -303,11 +306,11 @@ const tableRowActions = [
 const getColumns = () => {
   return [
     {
-      title: "No.",
+      title: "STT",
       dataIndex: "no",
     },
     {
-      title: "Tên sản phẩm chi tiết",
+      title: "Tên món ăn chi tiết",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
       sorter: {
@@ -332,7 +335,7 @@ const getColumns = () => {
       },
     },
     {
-      title: "Rate Count",
+      title: "Lượt đánh giá",
       dataIndex: "rateCount",
       showSorterTooltip: { target: "full-header" },
       sorter: {
@@ -352,21 +355,21 @@ const getColumns = () => {
       dataIndex: "status",
       filters: [
         {
-          text: "Active",
+          text: "Hiển thị",
           value: true,
         },
         {
-          text: "Inactive",
+          text: "Ẩn",
           value: false,
         },
       ],
       filterMultiple: false,
       render: (status: boolean) => (
         <Tag
-          icon={status ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
+          icon={status ? <EyeOutlined /> : <EyeInvisibleOutlined />}
           color={status ? "success" : "error"}
         >
-          {status ? "Active" : "Inactive"}
+          {status ? "Hiển thị" : "Ẩn"}
         </Tag>
       ),
     },

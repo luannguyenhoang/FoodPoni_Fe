@@ -7,7 +7,7 @@ export const ProductDetailModalCreate = () => {
   const [isOpen, setOpen] = useState(false);
   return (
     <Popover
-      title="Thêm sản phẩm chi tiết "
+      title="Thêm món ăn chi tiết "
       open={isOpen}
       content={
         <div className="w-[600px]">
@@ -23,7 +23,7 @@ export const ProductDetailModalCreate = () => {
         style={{ marginRight: "10px" }}
         onClick={() => setOpen(!isOpen)}
       >
-        {isOpen ? "Đóng" : "Thêm sản phẩm chi tiết "}
+        {isOpen ? "Đóng" : "Thêm món ăn chi tiết "}
       </Button>
     </Popover>
   );

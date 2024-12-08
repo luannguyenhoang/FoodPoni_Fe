@@ -96,7 +96,7 @@ export default function ProductCart() {
               disabled={isExisted || currentUser?.role === "RETAILER"}
             >
               {isExisted
-                ? "Sản phẩm đã có trong giỏ hàng"
+                ? "Món ăn đã có trong giỏ hàng"
                 : "Thêm vào giỏ hàng"}
             </Button>
             {cartGroupsJoined.length > 0 && (
@@ -132,7 +132,7 @@ export default function ProductCart() {
           </Flex>
         ) : (
           <Flex vertical gap="small" className="w-full">
-            <Button disabled={true}>Sản phẩm này đã hết</Button>
+            <Button disabled={true}>Món ăn này đã hết</Button>
           </Flex>
         )}
       </Card>

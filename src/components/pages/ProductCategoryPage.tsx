@@ -36,14 +36,14 @@ export const ProductCategoryPage = () => {
     <SidebarLayout sidebarContents={[<ProductCategory />]}>
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">
-          Sản phẩm trong danh mục
+          Món ăn trong danh mục
         </h1>
         {page.content.length === 0 ? (
           <EmptyNotice
             w="72"
             h="60"
             src="/no-product.png"
-            message="Không có sản phẩm nào"
+            message="Không có món ăn nào"
           />
         ) : (
           <div>

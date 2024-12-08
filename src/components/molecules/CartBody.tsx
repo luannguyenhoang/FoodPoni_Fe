@@ -194,7 +194,7 @@ export const CartBody = ({
         </TransitionGroup>
       ) : (
         <Card className="my-2">
-          <div className="text-center font-bold">Chưa có sản phẩm nào!</div>
+          <div className="text-center font-bold">Chưa có món ăn nào!</div>
         </Card>
       )}
     </>

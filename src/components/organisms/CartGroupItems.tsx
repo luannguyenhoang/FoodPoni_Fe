@@ -50,7 +50,7 @@ export const CartGroupItems = ({
                       <AvatarInfo
                         fullName={ci.user.username}
                         avatar={ci.user.avatar}
-                        info={`${ci.items.length} sản phẩm`}
+                        info={`${ci.items.length} món ăn`}
                         padding={"py-1"}
                       />
                       {it.user.id === currentUserId &&

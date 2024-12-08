@@ -26,6 +26,9 @@ export const AvatarInfo = ({
         className="w-10 h-10 rounded-full object-cover"
         src={getThumbnail(avatar)}
         alt=""
+        onError={(e) => {
+          e.currentTarget.src = getThumbnail("");
+        }}
       />
       {isVisibleCapital && (
         <span className="absolute text-xl text-primary -bottom-2 right-0">

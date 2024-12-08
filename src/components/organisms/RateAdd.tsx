@@ -16,7 +16,7 @@ const RateAdd = () => {
 
   return (
     <Modal
-      title="Đánh giá sản phẩm"
+      title="Đánh giá món ăn"
       open={showModalAddRate}
       footer={null}
       onCancel={() => {

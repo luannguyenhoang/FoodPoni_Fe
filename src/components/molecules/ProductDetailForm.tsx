@@ -103,7 +103,7 @@ export const ProductDetailForm = ({
       <div className="w-full">
         <Form.Item
           name="name"
-          label="Tên sản phẩm chi tiết"
+          label="Tên món ăn chi tiết"
           rules={[{ required: true }]}
         >
           <Input />

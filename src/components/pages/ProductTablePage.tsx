@@ -4,16 +4,16 @@ import {
 } from "@/redux/modules/product";
 import { RootState } from "@/redux/store";
 import {
-  CheckCircleOutlined,
   CloseCircleOutlined,
   CopyOutlined,
   DashOutlined,
   DeleteOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeInvisibleOutlined,
   EyeOutlined,
   ImportOutlined,
-  RollbackOutlined,
+  RollbackOutlined
 } from "@ant-design/icons";
 import {
   Badge,
@@ -69,14 +69,14 @@ const TableToolbar = ({
         icon={<DownloadOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Download
+        Tải xuống
       </Button>
       <Button
         type="default"
         icon={<ImportOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Import
+        Nhập
       </Button>
 
       <ProductModalCreate />
@@ -143,7 +143,7 @@ export const ProductTablePage = () => {
           current: page.number + 1,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading}
@@ -169,11 +169,11 @@ export const ProductTablePage = () => {
           status: (
             <Tag
               icon={
-                it.status ? <CheckCircleOutlined /> : <CloseCircleOutlined />
+                it.status ? <EyeOutlined /> : <EyeInvisibleOutlined />
               }
               color={it.status ? "success" : "error"}
             >
-              {it.status ? "Active" : "Inactive"}
+              {it.status ? "Hiển thị" : "Ẩn"}
             </Tag>
           ),
           actions: (
@@ -266,7 +266,7 @@ const tableRowActions = [
 const getColumns = () => {
   return [
     {
-      title: "No.",
+      title: "STT",
       dataIndex: "no",
     },
     {
@@ -282,11 +282,11 @@ const getColumns = () => {
       dataIndex: "categories",
       filters: [
         {
-          text: "Active",
+          text: "Hiển thị",
           value: true,
         },
         {
-          text: "Inactive",
+          text: "Ẩn",
           value: false,
         },
       ],
@@ -304,11 +304,11 @@ const getColumns = () => {
       dataIndex: "status",
       filters: [
         {
-          text: "Active",
+          text: "Hiển thị",
           value: true,
         },
         {
-          text: "Inactive",
+          text: "Ẩn",
           value: false,
         },
       ],

@@ -67,10 +67,7 @@ const OrderCard = ({
                 <span>{`${index}. Đơn hàng #${order.id?.substring(0, 7).toUpperCase()} `}</span>
                 <span className="text-primary font-bold">/</span>
                 <span>
-                  {format(
-                    new Date(order.createdAt ?? ""),
-                    "dd-MM-yyyy - HH:mm"
-                  )}
+                  {order.createdAt && format(new Date(order.createdAt), "HH:mm:ss - dd/MM/yyyy")}
                 </span>
               </div>
             }

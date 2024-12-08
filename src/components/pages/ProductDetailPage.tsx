@@ -87,7 +87,7 @@ export const ProductDetailPage = () => {
               </h3>
             </Card>
             {productDetails.length > 1 && (
-              <Card size="small" title="Loại sản phẩm" className="static">
+              <Card size="small" title="Loại món ăn" className="static">
                 <Radio.Group defaultValue={productDetails[0].name || "default"}>
                   {(productDetails || []).map((productDetail) => (
                     <Radio.Button

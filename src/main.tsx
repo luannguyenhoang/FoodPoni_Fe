@@ -8,7 +8,7 @@ import { App, SecuredRoute } from "./components/App";
 import { AccountInformationPage } from "./components/pages/AccountInformationPage";
 import { CheckoutPage } from "./components/pages/CheckoutPage";
 import { AdminDashboardPage } from "./components/pages/AdminDashboard.tsx";
-import { FileManagementPage } from "./components/pages/FileManagementPage";
+import { AdminFileManagementPage } from "./components/pages/AdminFileManagementPage.tsx";
 import { HomePage } from "./components/pages/HomePage";
 import { LoginPage } from "./components/pages/LoginPage";
 import { OrderDetailPage } from "./components/pages/OrderDetailPage";
@@ -169,7 +169,7 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
           path: "file-management",
           element: (
             <SecuredRoute currentRole={currentRole} role={["RETAILER"]}>
-              <FileManagementPage />
+              <AdminFileManagementPage />
             </SecuredRoute>
           ),
         },
@@ -190,7 +190,7 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
           ),
         },
         {
-          path: "refund",
+          path: "orders-refund-table",
           element: (
             <SecuredRoute currentRole={currentRole} role={["RETAILER"]}>
               <AdminRefundTablePage />
@@ -231,7 +231,7 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
           ),
         },
         {
-          path: "toppings-table",
+          path: "product-toppings-table",
           element: (
             <SecuredRoute currentRole={currentRole} role={["RETAILER"]}>
               <AdminToppingTablePage />

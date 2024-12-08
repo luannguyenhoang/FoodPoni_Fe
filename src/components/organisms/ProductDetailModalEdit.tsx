@@ -25,15 +25,15 @@ export const ProductDetailModalEdit = ({
       <div onClick={() => setOpen(!isOpen)}>
         {isOpen ? (
           <>
-            <CloseOutlined /> "Close"
+            <CloseOutlined /> "Đóng"
           </>
         ) : (
           "Cập nhật"
         )}{" "}
-        sản phẩm chi tiết
+        món ăn chi tiết
       </div>
       <Modal
-        title="Cập nhật sản phẩm chi tiết"
+        title="Cập nhật món ăn chi tiết"
         open={isOpen}
         onCancel={() => setOpen(false)}
         width={700}

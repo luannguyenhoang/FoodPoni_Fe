@@ -2,8 +2,8 @@ import { ScrollPane } from "@/components/atoms/ScrollPane.tsx";
 import { fetchOrderByRetailerAction } from "@/redux/modules/order";
 import { fetchOrderItemsByOrderIdAction } from "@/redux/modules/orderItem";
 import { RootState } from "@/redux/store";
-import { FilePdfOutlined } from "@ant-design/icons";
-import { Modal, Spin, Table, Tooltip } from "antd";
+import { EyeOutlined, FilePdfOutlined } from "@ant-design/icons";
+import { Button, Modal, Spin, Table, Tooltip } from "antd";
 import { format } from "date-fns";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -18,7 +18,9 @@ export const InvoiceModal = ({ id }: { id: string }) => {
 
   return (
     <>
-      <span
+      <Button
+        size="small"
+        icon={<EyeOutlined />}
         onClick={() => {
           setIsModalOpen(true);
           dispatch(fetchOrderByRetailerAction({ orderId: id }));
@@ -27,8 +29,7 @@ export const InvoiceModal = ({ id }: { id: string }) => {
           );
         }}
       >
-        Xem hóa đơn
-      </span>
+      </Button>
       <Modal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -76,6 +77,7 @@ const InvoiceContent = () => {
                 Tạo lúc:{" "}
                 <span className="font-semibold">
                   {selectedOrder &&
+                    selectedOrder.createdAt &&
                     format(
                       new Date(selectedOrder.createdAt),
                       "HH:mm:ss - dd/MM/yyyy"

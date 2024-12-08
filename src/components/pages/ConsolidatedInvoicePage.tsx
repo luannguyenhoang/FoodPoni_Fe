@@ -37,7 +37,7 @@ const TableToolbar = () => (
         icon={<DownloadOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Download
+        Tải xuống
       </Button>
     </Col>
   </Flex>
@@ -97,7 +97,7 @@ export const ConsolidatedInvoicePage = () => {
           current: page.number + 1,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading}
@@ -180,6 +180,11 @@ export const ConsolidatedInvoicePage = () => {
           ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </ManagementLayout>
   );
@@ -188,7 +193,7 @@ export const ConsolidatedInvoicePage = () => {
 const getColumns = () => {
   return [
     {
-      title: "No.",
+      title: "STT",
       dataIndex: "no",
     },
     {

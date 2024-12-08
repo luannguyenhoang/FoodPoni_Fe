@@ -85,7 +85,7 @@ export const AdminProductCategoriesTablePage = () => {
   const { token } = useToken();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { page, isFetchLoading, isUpdateLoading } = useSelector(
-    (state: RootState) => state.productCategory,
+    (state: RootState) => state.productCategory
   );
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export const AdminProductCategoriesTablePage = () => {
           pageSize: 10,
           sort: ["createdAt,desc"],
         },
-      }),
+      })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,7 +114,7 @@ export const AdminProductCategoriesTablePage = () => {
             sorter && Object.keys(sorter).length > 0
               ? (Array.isArray(sorter) ? sorter : [sorter]).map(
                   (it) =>
-                    `${it.field},${it.order === "ascend" ? "asc" : "desc"}`,
+                    `${it.field},${it.order === "ascend" ? "asc" : "desc"}`
                 )
               : ["createdAt,desc"]; // Default sort by createdAt desc
 
@@ -129,7 +129,7 @@ export const AdminProductCategoriesTablePage = () => {
                     ? (filters["status"][0] as boolean)
                     : undefined,
               },
-            }),
+            })
           );
         }}
         pagination={{
@@ -138,7 +138,7 @@ export const AdminProductCategoriesTablePage = () => {
           current: page.number + 1,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading}
@@ -160,11 +160,7 @@ export const AdminProductCategoriesTablePage = () => {
             />
           ) : (
             <div className="text-primary">
-              <AvatarInfo
-                fullName={it.name}
-                avatar={it.thumbnail}
-                info={""}
-              />
+              <AvatarInfo fullName={it.name} avatar={it.thumbnail} info={""} />
             </div>
           ),
           slug: `/${it.slug}`,
@@ -217,7 +213,7 @@ export const AdminProductCategoriesTablePage = () => {
                         loading={isUpdateLoading}
                         icon={<DeleteOutlined />}
                       >
-                        Delete
+                        Xóa
                       </Button>
                     </Popconfirm>
                   </div>
@@ -231,6 +227,11 @@ export const AdminProductCategoriesTablePage = () => {
           ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );
@@ -256,7 +257,7 @@ const getColumns = () => {
       dataIndex: "no",
     },
     {
-      title: "__________Tên danh mục",
+      title: "Tên danh mục",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
       sorter: {

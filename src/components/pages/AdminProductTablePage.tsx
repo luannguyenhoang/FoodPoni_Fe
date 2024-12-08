@@ -4,16 +4,14 @@ import {
 } from "@/redux/modules/product";
 import { RootState } from "@/redux/store";
 import {
-  CheckCircleOutlined,
   CloseCircleOutlined,
   CopyOutlined,
   DashOutlined,
-  DeleteOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeInvisibleOutlined,
   EyeOutlined,
   ImportOutlined,
-  RollbackOutlined,
 } from "@ant-design/icons";
 import {
   Badge,
@@ -28,6 +26,7 @@ import {
   Tag,
   theme,
 } from "antd";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -70,14 +69,14 @@ const TableToolbar = ({
         icon={<DownloadOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Download
+        Tải xuống
       </Button>
       <Button
         type="default"
         icon={<ImportOutlined />}
         style={{ marginRight: "10px" }}
       >
-        Import
+        Nhập
       </Button>
 
       <ProductModalCreate />
@@ -146,7 +145,7 @@ export const AdminProductTablePage = () => {
           current: page.number + 1,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `Tổng ${total} mục`,
           size: "default",
         }}
         loading={isFetchLoading}
@@ -170,21 +169,19 @@ export const AdminProductTablePage = () => {
             </Link>
           ),
           categories: [""].join(", "),
-          createdAt: it.createdAt.toLocaleString(),
+          createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
           status: (
             <Tag
-              icon={
-                it.status ? <CheckCircleOutlined /> : <CloseCircleOutlined />
-              }
+              icon={it.status ? <EyeOutlined /> : <EyeInvisibleOutlined />}
               color={it.status ? "success" : "error"}
             >
-              {it.status ? "Active" : "Inactive"}
+              {it.status ? "Hiển thị" : "Ẩn"}
             </Tag>
           ),
           actions: (
             <Dropdown
               trigger={["click"]}
-              placement="bottomCenter"
+              placement="bottomRight"
               arrow={{ pointAtCenter: true }}
               menu={{
                 items: tableRowActions.map((item) => {
@@ -233,11 +230,11 @@ export const AdminProductTablePage = () => {
                         className="w-full justify-start"
                         type={it.status ? "primary" : "default"}
                         icon={
-                          it.status ? <DeleteOutlined /> : <RollbackOutlined />
+                          it.status ? <EyeInvisibleOutlined /> : <EyeOutlined />
                         }
                         loading={isUpdateLoading}
                       >
-                        {it.status ? <>Delete</> : <>Restore</>}
+                        {it.status ? <>Ẩn</> : <>Hiển thị</>}
                       </Button>
                     </Popconfirm>
                   </div>
@@ -251,6 +248,11 @@ export const AdminProductTablePage = () => {
           ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );
@@ -260,7 +262,7 @@ const tableRowActions = [
   {
     key: "1",
     icon: <EditOutlined />,
-    label: "Edit",
+    label: "Chỉnh sửa",
   },
   {
     key: "2",
@@ -275,63 +277,49 @@ const tableRowActions = [
   {
     key: "4",
     icon: <EyeOutlined />,
-    label: "View Details",
+    label: "Xem món ăn chi tiết",
   },
 ];
 
 const getColumns = () => {
   return [
     {
-      title: "No.",
+      title: "STT",
       dataIndex: "no",
     },
     {
-      title: "__________Name",
+      title: "Tên món ăn",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 2,
-      },
+      sorter: true,
     },
     {
-      title: "Categories",
+      title: "Danh mục món ăn",
       dataIndex: "categories",
-      filters: [
-        {
-          text: "Active",
-          value: true,
-        },
-        {
-          text: "Inactive",
-          value: false,
-        },
-      ],
     },
     {
-      title: "Created Date",
+      title: "Thời gian tạo",
       dataIndex: "createdAt",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 1,
-      },
+      sorter: true,
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       filters: [
         {
-          text: "Active",
+          text: "Hiển thị",
           value: true,
         },
         {
-          text: "Inactive",
+          text: "Ẩn",
           value: false,
         },
       ],
       filterMultiple: false,
     },
     {
-      title: "Actions",
+      title: "Hành động",
       dataIndex: "actions",
     },
   ] as TableColumnsType;
