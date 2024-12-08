@@ -264,12 +264,13 @@ export type User = {
   readonly id: string;
   readonly avatar: string;
   readonly email: string;
-  readonly birthday: string;
+  readonly birthday: Date;
   readonly gender: boolean;
   readonly username: string;
   readonly role: "VIP" | "RETAILER" | "CUSTOMER";
   readonly status: boolean;
   readonly address: Address;
+  readonly createdAt: Date;
 };
 
 export type UserRemember = {

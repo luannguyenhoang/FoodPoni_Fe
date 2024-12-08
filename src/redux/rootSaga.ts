@@ -16,6 +16,7 @@ import { productDetailSagas } from "./modules/productDetail.ts";
 import { invoiceSagas } from "./modules/invoice.ts";
 import { statisticSagas } from "./modules/statistic.ts";
 import { orderSessionSagas } from "./modules/orderSession.ts";
+import { userSagas } from "./modules/user.ts";
 
 export default function* rootSaga() {
   yield all([
@@ -23,6 +24,7 @@ export default function* rootSaga() {
     ...cartSagas,
     ...cartSessionSagas,
     ...fileUploadsSagas,
+    ...userSagas,
     ...invoiceSagas,
     ...notificationSagas,
     ...productSagas,
