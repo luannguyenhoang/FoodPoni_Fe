@@ -41,22 +41,24 @@ export default function HeaderMain() {
           <SearchKeyword />
         </div>
         <div className="order-2 hidden md:block text-end">
-          {currentUser ? (
-            <div className="flex items-center justify-end gap-4 order-2 md:order-3">
-              {currentUser.role !== "RETAILER" && <Cart />}{" "}
-              <NotificationDropdown />
-              <UserDropdown />
-            </div>
-          ) : (
-            <Button
-              type="primary"
-              onClick={() => navigate("/login")}
-              icon={<UserOutlined />}
-              size="large"
-            >
-              <span className="">Đăng nhập</span>
-            </Button>
-          )}
+          <div className="flex items-center justify-end gap-4 order-2 md:order-3">
+            {(!currentUser || (currentUser && currentUser.role !== "RETAILER")) && <Cart currentUser={currentUser} />}
+            {currentUser ? (
+              <>
+                <NotificationDropdown />
+                <UserDropdown />
+              </>
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => navigate("/login")}
+                icon={<UserOutlined />}
+                size="large"
+              >
+                <span className="">Đăng nhập</span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

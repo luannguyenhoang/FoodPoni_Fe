@@ -3,7 +3,6 @@ import {
   updateProductStatusAction,
 } from "@/redux/modules/product";
 import { RootState } from "@/redux/store";
-import { getThumbnail } from "@/utils/common";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -31,11 +30,11 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { AvatarInfo } from "../atoms/AvatarInfo";
 import { ProductModalCreate } from "../organisms/ProductModalCreate";
 import { ProductModalEdit } from "../organisms/ProductModalEdit";
 import { AdminLayout } from "../templates/AdminLayout";
-import { Link, useNavigate } from "react-router-dom";
 const { useToken } = theme;
 
 const TableToolbar = ({
@@ -165,7 +164,7 @@ export const AdminProductTablePage = () => {
             <Link to={`/admin/product-details/${it.id}`}>
               <AvatarInfo
                 fullName={it.name}
-                avatar={getThumbnail(it.thumbnail)}
+                avatar={it.thumbnail}
                 info={`/${it.slug}`}
               />
             </Link>

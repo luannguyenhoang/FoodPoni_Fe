@@ -1,6 +1,7 @@
 import { shippingAddressSagas } from "@/redux/modules/address.ts";
 import { authSagas } from "@/redux/modules/auth.ts";
 import { cartSagas } from "@/redux/modules/cart.ts";
+import { cartSessionSagas } from "@/redux/modules/cartSession.ts";
 import { cartGroupSagas } from "@/redux/modules/cartGroup.ts";
 import { notificationSagas } from "@/redux/modules/notification.ts";
 import { productSagas } from "@/redux/modules/product.ts";
@@ -14,11 +15,13 @@ import { orderItemSagas } from "./modules/orderItem.ts";
 import { productDetailSagas } from "./modules/productDetail.ts";
 import { invoiceSagas } from "./modules/invoice.ts";
 import { statisticSagas } from "./modules/statistic.ts";
+import { orderSessionSagas } from "./modules/orderSession.ts";
 
 export default function* rootSaga() {
   yield all([
     ...authSagas,
     ...cartSagas,
+    ...cartSessionSagas,
     ...fileUploadsSagas,
     ...invoiceSagas,
     ...notificationSagas,
@@ -28,6 +31,7 @@ export default function* rootSaga() {
     ...cartGroupSagas,
     ...orderSagas,
     ...orderItemSagas,
+    ...orderSessionSagas,
     ...shippingAddressSagas,
     ...statisticSagas,
     ...toppingSagas,

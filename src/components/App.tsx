@@ -72,7 +72,7 @@ export const SecuredRoute = ({
   currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null;
   role: ("RETAILER" | "CUSTOMER" | "VIP")[];
 }) => {
-  if (currentRole && role.includes(currentRole)) return <>{children}</>;
+  if (!currentRole || (currentRole && role.includes(currentRole))) return <>{children}</>;
   return (
     <Result
       status="404"

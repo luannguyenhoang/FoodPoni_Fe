@@ -5,7 +5,7 @@ import {
   updateOrderStatusAction,
 } from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
-import { currencyFormat, getThumbnail } from "@/utils/common";
+import { currencyFormat } from "@/utils/common";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -206,8 +206,8 @@ export const AdminRefundTablePage = () => {
           name: (
             <AvatarInfo
               fullName={it.shippingAddress.fullName}
-              avatar={getThumbnail(it.user.avatar)}
-              info={`${it.user.username}`}
+              avatar={it.user && it.user.avatar}
+              info={`${it.user ? it.user.username : ""}`}
             />
           ),
           totalAmount: (

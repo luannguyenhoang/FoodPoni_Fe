@@ -51,7 +51,7 @@ export const getAvatar = (user: User) => {
   return "/public/no-avatar.png";
 };
 
-export const getThumbnail = (thumbnail: string | null | undefined) => {
+export const getThumbnail = (thumbnail?: string | null) => {
   if (thumbnail) {
     return thumbnail.startsWith("http") || thumbnail.startsWith("https")
       ? thumbnail

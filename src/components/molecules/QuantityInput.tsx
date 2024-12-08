@@ -7,12 +7,15 @@ import {
   updateQuantityInputAction,
 } from "@/redux/modules/cart.ts";
 import { updateCartItemQuantityAction } from "@/redux/modules/cartGroup.ts";
+import { updateQuantityButtonCartSessionAction } from "@/redux/modules/cartSession";
 
 export function QuantityInput({
   enableCartGroup,
+  currentUserId,
   item,
 }: {
   enableCartGroup?: boolean;
+  currentUserId?: string | null;
   item: CartState["page"]["content"][number];
 }) {
   const dispatch = useDispatch();
@@ -26,15 +29,20 @@ export function QuantityInput({
         disabled={item.quantity <= 1}
         onClick={() => {
           dispatch(
-            !enableCartGroup
-              ? updateQuantityButtonAction({
+            currentUserId
+              ? !enableCartGroup
+                ? updateQuantityButtonAction({
+                    type: "DECREASE",
+                    id: item.id,
+                  })
+                : updateCartItemQuantityAction({
+                    id: item.id,
+                    quantity: item.quantity - 1,
+                  })
+              : updateQuantityButtonCartSessionAction({
                   type: "DECREASE",
                   id: item.id,
                 })
-              : updateCartItemQuantityAction({
-                  id: item.id,
-                  quantity: item.quantity - 1,
-                }),
           );
         }}
       />
@@ -56,7 +64,7 @@ export function QuantityInput({
                 : updateCartItemQuantityAction({
                     id: item.id,
                     quantity: inputValue,
-                  }),
+                  })
             );
           }
         }}
@@ -69,15 +77,20 @@ export function QuantityInput({
         disabled={item.quantity >= 100}
         onClick={() =>
           dispatch(
-            !enableCartGroup
-              ? updateQuantityButtonAction({
+            currentUserId
+              ? !enableCartGroup
+                ? updateQuantityButtonAction({
+                    type: "INCREASE",
+                    id: item.id,
+                  })
+                : updateCartItemQuantityAction({
+                    id: item.id,
+                    quantity: item.quantity + 1,
+                  })
+              : updateQuantityButtonCartSessionAction({
                   type: "INCREASE",
                   id: item.id,
                 })
-              : updateCartItemQuantityAction({
-                  id: item.id,
-                  quantity: item.quantity + 1,
-                }),
           )
         }
       />

@@ -3,7 +3,6 @@ import {
   updateProductStatusAction,
 } from "@/redux/modules/product";
 import { RootState } from "@/redux/store";
-import { getThumbnail } from "@/utils/common";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -161,7 +160,7 @@ export const ProductTablePage = () => {
           name: (
             <AvatarInfo
               fullName={it.name}
-              avatar={getThumbnail(it.thumbnail)}
+              avatar={it.thumbnail}
               info={`/${it.slug}`}
             />
           ),

@@ -1,16 +1,16 @@
+import { ScrollPane } from "@/components/atoms/ScrollPane.tsx";
 import { fetchOrderByRetailerAction } from "@/redux/modules/order";
 import { fetchOrderItemsByOrderIdAction } from "@/redux/modules/orderItem";
 import { RootState } from "@/redux/store";
-import { getThumbnail } from "@/utils/common";
 import { FilePdfOutlined } from "@ant-design/icons";
 import { Modal, Spin, Table, Tooltip } from "antd";
+import { format } from "date-fns";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
-import { format } from "date-fns";
-import { ScrollPane } from "@/components/atoms/ScrollPane.tsx";
+import { currencyFormat } from "@/utils/common";
 
 export const InvoiceModal = ({ id }: { id: string }) => {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export const InvoiceModal = ({ id }: { id: string }) => {
           setIsModalOpen(true);
           dispatch(fetchOrderByRetailerAction({ orderId: id }));
           dispatch(
-            fetchOrderItemsByOrderIdAction({ oid: id, queryParams: {} }),
+            fetchOrderItemsByOrderIdAction({ oid: id, queryParams: {} })
           );
         }}
       >
@@ -44,10 +44,10 @@ export const InvoiceModal = ({ id }: { id: string }) => {
 const InvoiceContent = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const { isFetchLoading: isFetchOrderLoading, selectedOrder } = useSelector(
-    (state: RootState) => state.order,
+    (state: RootState) => state.order
   );
   const { isFetchLoading: isFetchOrderItemLoading, page } = useSelector(
-    (state: RootState) => state.orderItem,
+    (state: RootState) => state.orderItem
   );
 
   return (
@@ -67,7 +67,7 @@ const InvoiceContent = () => {
               <div>
                 <div className="text-2xl font-bold">Hóa đơn</div>
                 <p className="text-gray-600">
-                  Hóa đơn #{selectedOrder?.id.substring(0, 7)}
+                  Hóa đơn #{selectedOrder?.id.substring(0, 7).toUpperCase()}
                 </p>
               </div>
             </div>
@@ -78,7 +78,7 @@ const InvoiceContent = () => {
                   {selectedOrder &&
                     format(
                       new Date(selectedOrder.createdAt),
-                      "HH:mm:ss - dd/MM/yyyy",
+                      "HH:mm:ss - dd/MM/yyyy"
                     )}
                 </span>
               </p>
@@ -89,7 +89,7 @@ const InvoiceContent = () => {
                     selectedOrder.status === "COMPLETED" &&
                     format(
                       new Date(selectedOrder.updatedAt),
-                      "HH:mm:ss - dd/MM/yyyy",
+                      "HH:mm:ss - dd/MM/yyyy"
                     )}
                 </span>
               </p>
@@ -150,17 +150,17 @@ const InvoiceContent = () => {
                     it.productDetail.name
                   }
                   info={it.toppings.map((topping) => topping.name).join(", ")}
-                  avatar={getThumbnail(it.productDetail.images[0])}
+                  avatar={it.productDetail.images[0]}
                 />
               ),
-              price: it.price.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }),
-              total: (it.price * it.quantity).toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }),
+              price: currencyFormat(
+                it.price + it.toppings.reduce((sum, tp) => sum + tp.price, 0)
+              ),
+              total: currencyFormat(
+                (it.price +
+                  it.toppings.reduce((sum, tp) => sum + tp.price, 0)) *
+                  it.quantity
+              ),
             }))}
             pagination={false}
           />
@@ -178,9 +178,9 @@ const InvoiceContent = () => {
                         const width = pdf.internal.pageSize.getWidth();
                         pdf.addImage(imgData, "PNG", 0, 0, width, 0);
                         pdf.save(
-                          `HD-${selectedOrder.id.substring(0, 7).toUpperCase()}.pdf`,
+                          `HD-${selectedOrder.id.substring(0, 7).toUpperCase()}.pdf`
                         );
-                      },
+                      }
                     );
                   }
                 }}

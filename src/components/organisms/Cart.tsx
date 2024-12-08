@@ -8,31 +8,42 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import EmptyNotice from "../atoms/EmptyNotice.tsx";
+import { CurrentUser } from "@/type/types.ts";
+import { deleteCartSessionAction } from "@/redux/modules/cartSession.ts";
 
-export default function Cart() {
+export default function Cart({
+  currentUser,
+}: {
+  currentUser?: CurrentUser | null;
+}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState<boolean>(false);
   const { page, isFetchLoading } = useSelector(
-    (state: RootState) => state.cart,
+    (state: RootState) => state.cart
   );
+  const { cartSessions } = useSelector((state: RootState) => state.cartSession);
   const [pending, setPending] = useState<boolean>(false);
 
-  useEffect(() => {
-    dispatch(
-      fetchCartsAction({
-        queryParams: {
-          status: true,
-          sort: ["createdAt,desc"],
-        },
-      }),
-    );
-  }, [dispatch]);
+  if (currentUser) {
+    useEffect(() => {
+      dispatch(
+        fetchCartsAction({
+          queryParams: {
+            status: true,
+            sort: ["createdAt,desc"],
+          },
+        })
+      );
+    }, [dispatch]);
+  }
+
+  const carts = currentUser ? page.content : cartSessions;
 
   return (
     <div>
       <a onClick={() => setOpen(true)} className="cursor-pointer">
-        <Badge count={page.totalElements}>
+        <Badge count={carts.length}>
           <Avatar
             className="p-2"
             shape="square"
@@ -42,7 +53,7 @@ export default function Cart() {
         </Badge>
       </a>
       <Drawer title="Giỏ hàng" onClose={() => setOpen(false)} open={open}>
-        {page.content.length === 0 ? (
+        {carts.length === 0 ? (
           <EmptyNotice
             w="60"
             h="60"
@@ -54,7 +65,7 @@ export default function Cart() {
             <List
               className="demo-loadmore-list"
               itemLayout="horizontal"
-              dataSource={page.content}
+              dataSource={carts}
               loading={isFetchLoading}
               renderItem={(it) => (
                 <List.Item>
@@ -71,11 +82,14 @@ export default function Cart() {
                           <Popconfirm
                             title="Bạn có chắc chắn muốn xóa không?"
                             onConfirm={() =>
-                              dispatch(deleteCartRequest({ id: it.id }))
+                              currentUser
+                                ? dispatch(deleteCartRequest({ id: it.id }))
+                                : dispatch(
+                                    deleteCartSessionAction({ id: it.id })
+                                  )
                             }
                             okText="Đồng ý"
                             cancelText="Hủy"
-                            okButtonProps={{ loading: it.isDeleteLoading }}
                           >
                             <CloseOutlined className="p-0" />
                           </Popconfirm>
@@ -117,10 +131,13 @@ export default function Cart() {
                       {currencyFormat(
                         (it.productDetail.price +
                           it.toppings.reduce((sum, tp) => sum + tp.price, 0)) *
-                          it.quantity,
+                          it.quantity
                       )}
                     </div>
-                    <QuantityInput item={it} />
+                    <QuantityInput
+                      item={it}
+                      currentUserId={currentUser && currentUser.id}
+                    />
                   </div>
                 </List.Item>
               )}
@@ -131,14 +148,14 @@ export default function Cart() {
                 <div>Tổng tiền</div>
                 <div>
                   {currencyFormat(
-                    page.content.reduce(
+                    carts.reduce(
                       (total, it) =>
                         total +
                         (it.productDetail.price +
                           it.toppings.reduce((sum, tp) => sum + tp.price, 0)) *
                           it.quantity,
-                      0,
-                    ),
+                      0
+                    )
                   )}
                 </div>
               </div>

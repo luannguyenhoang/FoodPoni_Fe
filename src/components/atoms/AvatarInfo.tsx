@@ -12,7 +12,7 @@ export const AvatarInfo = ({
   deleteCartGroup,
 }: {
   fullName: string;
-  avatar: string;
+  avatar?: string | null;
   info: string;
   padding?: string;
   isVisibleCapital?: boolean;

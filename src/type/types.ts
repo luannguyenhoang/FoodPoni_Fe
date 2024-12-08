@@ -81,7 +81,7 @@ export type Order = {
   readonly id: string;
   readonly postPaidOrderId: string;
   readonly totalAmount: number;
-  readonly user: User;
+  readonly user?: User | null;
   readonly shippingAddress: ShippingAddress;
   readonly status: OrderStatus;
   readonly note: string;

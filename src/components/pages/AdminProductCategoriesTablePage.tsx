@@ -3,7 +3,6 @@ import {
   fetchProductCategoriesAction,
 } from "@/redux/modules/productCategory";
 import { RootState } from "@/redux/store";
-import { getThumbnail } from "@/utils/common";
 import {
   CloseCircleOutlined,
   CopyOutlined,
@@ -156,14 +155,14 @@ export const AdminProductCategoriesTablePage = () => {
           name: it.parentProductCategory ? (
             <AvatarInfo
               fullName={"-".repeat(it.level) + it.name}
-              avatar={getThumbnail(it.thumbnail)}
+              avatar={it.thumbnail}
               info={""}
             />
           ) : (
             <div className="text-primary">
               <AvatarInfo
                 fullName={it.name}
-                avatar={getThumbnail(it.thumbnail)}
+                avatar={it.thumbnail}
                 info={""}
               />
             </div>

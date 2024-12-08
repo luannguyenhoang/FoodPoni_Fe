@@ -1,17 +1,22 @@
 import { CartItems } from "@/components/organisms/CartItems.tsx";
 import {
   calculateShippingFeeAction,
-  fetchAddressesAction,
+  fetchAddressesAction
 } from "@/redux/modules/address.ts";
 import { fetchCartsAction } from "@/redux/modules/cart.ts";
 import { createOrderAction } from "@/redux/modules/order.ts";
 import { RootState } from "@/redux/store.ts";
 import { calculateTotalAmount, currencyFormat } from "@/utils/common.ts";
-import { Card, Divider, Spin } from "antd";
+import {
+  Card,
+  Divider,
+  Spin
+} from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { OrderForm, OrderRequest } from "../molecules/OrderForm";
+import { OrderSessionForm } from "../molecules/OrderSessionForm";
 import { DefaultLayout } from "../templates/DefaultLayout";
 
 const useDispatchProp = () => {
@@ -53,15 +58,16 @@ export const CheckoutPage = () => {
   const { shippingFee, isCalculateShippingFeeLoading } = useSelector(
     (state: RootState) => state.address
   );
+  const { cartSessions } = useSelector((state: RootState) => state.cartSession);
   const { currentUser } = useSelector((state: RootState) => state.auth);
 
   const { fetchCarts, fetchAddresses, calculateShippingFee } =
     useDispatchProp();
 
   useEffect(() => {
-    fetchCarts();
-    fetchAddresses();
     if (currentUser) {
+      fetchCarts();
+      fetchAddresses();
       calculateShippingFee(currentUser.addressId);
     }
 
@@ -73,13 +79,17 @@ export const CheckoutPage = () => {
       <div style={{ color: "black", textAlign: "left" }}>
         <p className="text-2xl mb-2">GIỎ HÀNG</p>
         <div className="flex gap-4">
-          <CartItems />
+          <CartItems currentUser={currentUser} />
           <div className="w-[400px]">
             <Card style={{ marginBottom: "16px" }}>
               <div className="flex justify-between">
                 <div className="text-gray-500">Tạm tính</div>
                 <span style={{ float: "right" }}>
-                  {currencyFormat(calculateTotalAmount(page.content))}
+                  {currencyFormat(
+                    calculateTotalAmount(
+                      currentUser ? page.content : cartSessions
+                    )
+                  )}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -102,7 +112,9 @@ export const CheckoutPage = () => {
                 <div className="grid">
                   <div className="text-2xl text-red-500 text-right float-right">
                     {currencyFormat(
-                      calculateTotalAmount(page.content) + shippingFee
+                      calculateTotalAmount(
+                        currentUser ? page.content : cartSessions
+                      ) + shippingFee
                     )}
                   </div>
                   <div className="right-0 text-gray-400">
@@ -131,6 +143,11 @@ export const CheckoutPage = () => {
                   )
                 }
               />
+            )}
+            {!currentUser && (
+              <Card title="Nhập thông tin nhận hàng" size="small">
+                <OrderSessionForm />
+              </Card>
             )}
           </div>
         </div>

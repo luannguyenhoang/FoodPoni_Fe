@@ -8,6 +8,7 @@ import { Button, Card, Dropdown, Flex } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AvatarInfo } from "../atoms/AvatarInfo.tsx";
+import { createCartSessionAction } from "@/redux/modules/cartSession.ts";
 
 export default function ProductCart() {
   const navigate = useNavigate();
@@ -18,9 +19,8 @@ export default function ProductCart() {
   const { page, isCreateLoading } = useSelector(
     (state: RootState) => state.cart
   );
-  const { cartGroupsJoined: cartGroupsJoined, addingToCartItemLoading } = useSelector(
-    (state: RootState) => state.cartGroup
-  );
+  const { cartGroupsJoined: cartGroupsJoined, addingToCartItemLoading } =
+    useSelector((state: RootState) => state.cartGroup);
   const { currentUser } = useSelector((state: RootState) => state.auth);
 
   const isExisted: boolean = page.content.some(
@@ -70,7 +70,11 @@ export default function ProductCart() {
               block
               onClick={() => {
                 if (!isExisted) {
-                  dispatch(createCartAction({ navigate }));
+                  dispatch(
+                    currentUser
+                      ? createCartAction({ navigate })
+                      : createCartSessionAction({ navigate })
+                  );
                 } else {
                   navigate("/checkout");
                 }
@@ -81,7 +85,13 @@ export default function ProductCart() {
             </Button>
             <Button
               block
-              onClick={() => dispatch(createCartAction({ navigate: null }))}
+              onClick={() =>
+                dispatch(
+                  currentUser
+                    ? createCartAction({ navigate: null })
+                    : createCartSessionAction({ navigate: null })
+                )
+              }
               loading={isCreateLoading}
               disabled={isExisted || currentUser?.role === "RETAILER"}
             >

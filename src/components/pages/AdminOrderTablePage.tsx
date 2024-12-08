@@ -1,10 +1,10 @@
-import "antd-button-color/dist/css/style.css";
+import { SalesLabel } from "@/components/atoms/SalesLabel.tsx";
 import {
   fetchOrdersByRetailerAction,
   updateOrderStatusAction,
 } from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
-import { currencyFormat, getThumbnail, ORDER_STATUSES } from "@/utils/common";
+import { currencyFormat, ORDER_STATUSES } from "@/utils/common";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -28,15 +28,15 @@ import {
   Tag,
   Tooltip,
 } from "antd";
+import Button from "antd-button-color";
+import "antd-button-color/dist/css/style.css";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
+import { InvoiceModal } from "../organisms/InvoiceModal";
 import { AdminLayout } from "../templates/AdminLayout";
 import "./AdminOrderTablePage.scss";
-import { SalesLabel } from "@/components/atoms/SalesLabel.tsx";
-import Button from "antd-button-color";
-import { InvoiceModal } from "../organisms/InvoiceModal";
 
 const TableToolbar = ({
   isFetchLoading,
@@ -149,12 +149,12 @@ export const AdminOrderTablePage = () => {
           ...it,
           key: it.id,
           no: page.number * page.size + index + 1,
-          code: it.id.toUpperCase().substring(0, 6),
+          code: `#${it.id.toUpperCase().substring(0, 7)}`,
           name: (
             <AvatarInfo
               fullName={it.shippingAddress.fullName}
-              avatar={getThumbnail(it.user.avatar)}
-              info={`${it.user.username}`}
+              avatar={it.user && it.user.avatar}
+              info={`${it.shippingAddress.phoneNumber}`}
             />
           ),
           totalAmount: (

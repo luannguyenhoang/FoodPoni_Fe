@@ -16,6 +16,11 @@ import {
   updateCartItemNoteAction,
 } from "@/redux/modules/cartGroup.ts";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import {
+  deleteCartSessionAction,
+  updateCheckedCartSessionAction,
+  updateNoteCartSessionAction,
+} from "@/redux/modules/cartSession";
 
 export const CartBody = ({
   isFetchLoading,
@@ -26,7 +31,7 @@ export const CartBody = ({
   isFetchLoading: boolean;
   carts: Array<CartState["page"]["content"][number]>;
   enableCartGroup: boolean;
-  currentUserId?: string;
+  currentUserId?: string | null;
 }) => {
   const dispatch = useDispatch();
   return (
@@ -48,10 +53,15 @@ export const CartBody = ({
                           className="pl-2"
                           onClick={() =>
                             dispatch(
-                              updateCheckedAction({
-                                id: it.id,
-                                checked: !it.checked,
-                              })
+                              currentUserId
+                                ? updateCheckedAction({
+                                    id: it.id,
+                                    checked: !it.checked,
+                                  })
+                                : updateCheckedCartSessionAction({
+                                    id: it.id,
+                                    checked: !it.checked,
+                                  })
                             )
                           }
                           checked={it.checked}
@@ -103,6 +113,7 @@ export const CartBody = ({
                         <QuantityInput
                           item={it}
                           enableCartGroup={enableCartGroup}
+                          currentUserId={currentUserId}
                         />
                       ) : (
                         <span>{it.quantity}</span>
@@ -122,19 +133,22 @@ export const CartBody = ({
                         <TextArea
                           defaultValue={it.note}
                           onChange={(e) =>
-                            enableCartGroup
-                              ? dispatch(
-                                  updateCartItemNoteAction({
+                            dispatch(
+                              currentUserId
+                                ? enableCartGroup
+                                  ? updateCartItemNoteAction({
+                                      id: it.id,
+                                      note: e.target.value,
+                                    })
+                                  : updateNoteAction({
+                                      id: it.id,
+                                      note: e.target.value,
+                                    })
+                                : updateNoteCartSessionAction({
                                     id: it.id,
                                     note: e.target.value,
                                   })
-                                )
-                              : dispatch(
-                                  updateNoteAction({
-                                    id: it.id,
-                                    note: e.target.value,
-                                  })
-                                )
+                            )
                           }
                           placeholder="Ghi chú"
                           className="h-[35px]"
@@ -156,9 +170,11 @@ export const CartBody = ({
                         title="Bạn có chắc chắn muốn xóa không?"
                         onConfirm={() =>
                           dispatch(
-                            !enableCartGroup
-                              ? deleteCartRequest({ id: it.id })
-                              : deleteCartItemAction({ id: it.id })
+                            currentUserId
+                              ? !enableCartGroup
+                                ? deleteCartRequest({ id: it.id })
+                                : deleteCartItemAction({ id: it.id })
+                              : deleteCartSessionAction({ id: it.id })
                           )
                         }
                         okText="Đồng ý"

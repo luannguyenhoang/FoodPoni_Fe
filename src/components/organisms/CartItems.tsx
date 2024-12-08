@@ -6,8 +6,17 @@ import { RootState } from "@/redux/store.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { CartBody } from "../molecules/CartBody.tsx";
 import { CartHeader } from "../molecules/CartHeader.tsx";
+import { CurrentUser } from "@/type/types.ts";
+import {
+  deleteAllCartSessionsAction,
+  updateAllCheckedCartSessionAction,
+} from "@/redux/modules/cartSession.ts";
 
-export const CartItems = () => {
+export const CartItems = ({
+  currentUser,
+}: {
+  currentUser?: CurrentUser | null;
+}) => {
   const dispatch = useDispatch();
 
   const {
@@ -18,22 +27,39 @@ export const CartItems = () => {
     isCheckAllLoading,
   } = useSelector((state: RootState) => state.cart);
 
+  const { cartSessions } = useSelector((state: RootState) => state.cartSession);
+
   return (
     <div className="w-full">
       <CartHeader
         enableCartGroup={false}
-        enableDeleteAll={page.content.length > 0}
+        enableDeleteAll={
+          (currentUser ? page.content.length : cartSessions.length) > 0
+        }
         isAllChecked={isAllChecked}
         isDeleteAllLoading={isDeleteAllLoading}
         isCheckAllLoading={isCheckAllLoading}
-        isDisableCheckbox={page.content.length < 1}
-        updateAllCheckedRequest={() => dispatch(updateAllCheckedRequest())}
-        deleteAllCartRequest={() => dispatch(deleteAllCartRequest())}
+        isDisableCheckbox={
+          (currentUser ? page.content.length : cartSessions.length) < 1
+        }
+        updateAllCheckedRequest={() =>
+          dispatch(
+            currentUser
+              ? updateAllCheckedRequest()
+              : updateAllCheckedCartSessionAction()
+          )
+        }
+        deleteAllCartRequest={() =>
+          dispatch(
+            currentUser ? deleteAllCartRequest() : deleteAllCartSessionsAction()
+          )
+        }
       />
       <CartBody
         isFetchLoading={isFetchLoading}
         enableCartGroup={false}
-        carts={page.content}
+        carts={currentUser ? page.content : cartSessions}
+        currentUserId={currentUser && currentUser.id}
       />
     </div>
   );

@@ -17,7 +17,7 @@ import {
   StatisticSales,
   StatisticStatus,
 } from "@/type/types";
-import { currencyFormat, getThumbnail } from "@/utils/common";
+import { currencyFormat } from "@/utils/common";
 import { Area, Pie } from "@ant-design/charts";
 import { green, lime, orange, red, yellow } from "@ant-design/colors";
 import { QuestionOutlined } from "@ant-design/icons";
@@ -247,7 +247,7 @@ export const AdminDashboardPage = () => {
                   <Link to={`/admin/product-details/${it.id}`}>
                     <AvatarInfo
                       fullName={it.name}
-                      avatar={getThumbnail(it.thumbnail)}
+                      avatar={it.thumbnail}
                       info={`/${it.slug}`}
                     />
                   </Link>
@@ -297,14 +297,14 @@ export const AdminDashboardPage = () => {
                 name: it.parentProductCategory ? (
                   <AvatarInfo
                     fullName={"-".repeat(it.level) + it.name}
-                    avatar={getThumbnail(it.thumbnail)}
+                    avatar={it.thumbnail}
                     info={""}
                   />
                 ) : (
                   <div className="text-primary">
                     <AvatarInfo
                       fullName={it.name}
-                      avatar={getThumbnail(it.thumbnail)}
+                      avatar={it.thumbnail}
                       info={""}
                     />
                   </div>
@@ -447,8 +447,8 @@ export const CustomerOrder = () => {
           name: (
             <AvatarInfo
               fullName={it.shippingAddress.fullName}
-              avatar={getThumbnail(it.user.avatar)}
-              info={`${it.user.username}`}
+              avatar={it.user && it.user.avatar}
+              info={`${it.user ? it.user.username : ""}`}
             />
           ),
           time: dayjs(it.createdAt).fromNow(),
