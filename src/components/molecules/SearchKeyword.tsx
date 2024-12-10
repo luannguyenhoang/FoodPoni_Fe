@@ -9,7 +9,7 @@ const SearchKeyword = () => {
   };
 
   return (
-    <Space.Compact className="w-full hidden md:flex">
+    <Space.Compact className="w-full md:flex">
       <Input size="large" placeholder="Bạn tìm gì hôm nay?" />
       <Button size="large" type="primary" onClick={() => search("")}>
         Tìm kiếm

@@ -12,7 +12,7 @@ export default function HeaderMain() {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] px-2 mx-auto items-center py-2 gap-4 max-w-screen-xl">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] px-2 mx-auto items-center py-2  max-w-screen-xl">
       <div className="flex items-center justify-between md:justify-start">
         <div
           onClick={() => navigate("/")}
@@ -25,16 +25,23 @@ export default function HeaderMain() {
           />
           <div className="md:block">FoodPoni</div>
         </div>
-
-        <Button
-          className="block sm:hidden"
-          type="primary"
-          onClick={() => navigate("/login")}
-          icon={<UserOutlined />}
-          size="large"
-        >
-          <span className=" md:inline">Đăng nhập</span>
-        </Button>
+        {!currentUser ? (
+          <Button
+            className="block sm:hidden"
+            type="primary"
+            onClick={() => navigate("/login")}
+            icon={<UserOutlined />}
+            size="large"
+          >
+            <span className=" md:inline">Đăng nhập</span>
+          </Button>
+        ) : (
+          <div className="flex items-center justify-end gap-4 order-2  lg:hidden">
+            <Cart currentUser={currentUser} />
+            <NotificationDropdown />
+            <UserDropdown />
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] items-center gap-4">
         <div className="order-1 md:order-2 mt-4 md:mt-0">
@@ -42,7 +49,10 @@ export default function HeaderMain() {
         </div>
         <div className="order-2 hidden md:block text-end">
           <div className="flex items-center justify-end gap-4 order-2 md:order-3">
-            {(!currentUser || (currentUser && currentUser.role !== "RETAILER")) && <Cart currentUser={currentUser} />}
+            {(!currentUser ||
+              (currentUser && currentUser.role !== "RETAILER")) && (
+                <Cart currentUser={currentUser} />
+              )}
             {currentUser ? (
               <>
                 <NotificationDropdown />
