@@ -68,7 +68,11 @@ export const CheckoutPage = () => {
     if (currentUser) {
       fetchCarts();
       fetchAddresses();
-      calculateShippingFee(currentUser.addressId);
+      
+      if (currentUser.addressId)
+      {
+        calculateShippingFee(currentUser.addressId);
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
