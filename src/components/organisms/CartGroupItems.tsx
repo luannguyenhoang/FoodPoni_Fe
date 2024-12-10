@@ -89,8 +89,8 @@ export const CartGroupItems = ({
                     currentUserId={currentUserId}
                   />
                 </Card>
-                <div>
-                  {currencyFormat(calculateTotalAmount(ci.items, true))}
+                <div className="text-right mt-2">
+                  Tổng: <span className="text-lg">{currencyFormat(calculateTotalAmount(ci.items, true))}</span>
                 </div>
                 <Divider />
               </div>

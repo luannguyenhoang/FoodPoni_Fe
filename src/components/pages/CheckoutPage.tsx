@@ -1,17 +1,13 @@
 import { CartItems } from "@/components/organisms/CartItems.tsx";
 import {
   calculateShippingFeeAction,
-  fetchAddressesAction
+  fetchAddressesAction,
 } from "@/redux/modules/address.ts";
 import { fetchCartsAction } from "@/redux/modules/cart.ts";
 import { createOrderAction } from "@/redux/modules/order.ts";
 import { RootState } from "@/redux/store.ts";
 import { calculateTotalAmount, currencyFormat } from "@/utils/common.ts";
-import {
-  Card,
-  Divider,
-  Spin
-} from "antd";
+import { Card, Divider, Spin } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -68,24 +64,24 @@ export const CheckoutPage = () => {
     if (currentUser) {
       fetchCarts();
       fetchAddresses();
-      
-      if (currentUser.addressId)
-      {
+
+      if (currentUser.addressId) {
         calculateShippingFee(currentUser.addressId);
       }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <DefaultLayout>
-      <div style={{ color: "black", textAlign: "left" }}>
-        <p className="text-2xl mb-2">GIỎ HÀNG</p>
-        <div className="flex gap-4">
-          <CartItems currentUser={currentUser} />
-          <div className="w-[400px]">
-            <Card style={{ marginBottom: "16px" }}>
+      <div className="p-4 md:p-6 text-black">
+        <p className="text-xl md:text-2xl mb-2">GIỎ HÀNG</p>
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="w-full lg:flex-1">
+            <CartItems currentUser={currentUser} />
+          </div>
+          <div className="w-full lg:w-[400px]">
+            <Card className="mb-4">
               <div className="flex justify-between">
                 <div className="text-gray-500">Tạm tính</div>
                 <span style={{ float: "right" }}>
@@ -101,8 +97,10 @@ export const CheckoutPage = () => {
                 <span className="float-right">
                   {isCalculateShippingFeeLoading ? (
                     <Spin />
-                  ) : (
+                  ) : currentUser?.addressId ? (
                     currencyFormat(shippingFee)
+                  ) : (
+                    currencyFormat(0)
                   )}
                 </span>
               </div>
@@ -118,7 +116,7 @@ export const CheckoutPage = () => {
                     {currencyFormat(
                       calculateTotalAmount(
                         currentUser ? page.content : cartSessions
-                      ) + shippingFee
+                      ) + (currentUser?.addressId ? shippingFee : 0)
                     )}
                   </div>
                   <div className="right-0 text-gray-400">
@@ -127,29 +125,30 @@ export const CheckoutPage = () => {
                 </div>
               </div>
             </Card>
+
             {currentUser && page.content.length > 0 && (
-              <OrderForm
-                currentUserRole={currentUser.role}
-                currentUserAddressId={currentUser.addressId}
-                isCreateLoading={isCreateLoading}
-                enableOnSubmit={
-                  page.content.filter((it) => it.checked).length > 0
-                }
-                calculateShippingFee={(addressId: string) =>
-                  calculateShippingFee(addressId)
-                }
-                onSubmit={(values: OrderRequest) =>
-                  dispatch(
-                    createOrderAction({
-                      values,
-                      navigate,
-                    })
-                  )
-                }
-              />
+              <div className="w-full">
+                <OrderForm
+                  currentUserRole={currentUser.role}
+                  currentUserAddressId={currentUser.addressId}
+                  isCreateLoading={isCreateLoading}
+                  enableOnSubmit={
+                    page.content.filter((it) => it.checked).length > 0
+                  }
+                  calculateShippingFee={calculateShippingFee}
+                  onSubmit={(values: OrderRequest) =>
+                    dispatch(createOrderAction({ values, navigate }))
+                  }
+                />
+              </div>
             )}
+
             {!currentUser && (
-              <Card title="Nhập thông tin nhận hàng" size="small">
+              <Card
+                title="Nhập thông tin nhận hàng"
+                size="small"
+                className="w-full"
+              >
                 <OrderSessionForm />
               </Card>
             )}

@@ -25,7 +25,7 @@ export function CartGroup() {
       <Button
         loading={fetchingCartGroupsLoading}
         onClick={() => dispatch(updateVisible({ isVisible: true }))}
-        className="fixed bottom-10 right-10 text-[18px] inline-flex h-12 animate-shimmer items-center justify-center rounded-full border border-white bg-[linear-gradient(110deg,#F36F24,45%,#ff9f5a,55%,#F36F24)] bg-[length:200%_100%] px-8 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-orange-50"
+        className="fixed bottom-10 right-6 text-[18px] inline-flex h-12 animate-shimmer items-center justify-center rounded-full border border-white bg-[linear-gradient(110deg,#F36F24,45%,#ff9f5a,55%,#F36F24)] bg-[length:200%_100%] px-8 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-orange-50"
       >
         <span className="text-[35px]">✨</span>Tạo đơn hàng nhóm
       </Button>

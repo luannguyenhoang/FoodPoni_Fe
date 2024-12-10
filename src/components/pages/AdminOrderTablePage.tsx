@@ -151,7 +151,7 @@ export const AdminOrderTablePage = () => {
           ...it,
           key: it.id,
           no: page.number * page.size + index + 1,
-          code: (
+          id: (
             <Tooltip title="Xem hóa đơn">
               <span>{`#${it.id.toUpperCase().substring(0, 7)}`}</span>{" "}
               <InvoiceModal id={it.id} />
@@ -206,7 +206,7 @@ export const AdminOrderTablePage = () => {
                     }
                   >
                     {it.status === "COMPLETED" ? (
-                      "Đã hoàn thành"
+                      "Đã nhận hàng"
                     ) : it.status === "CANCELLED" ? (
                       "Khách huỷ"
                     ) : it.status === "REJECTED" ? (
@@ -227,6 +227,7 @@ export const AdminOrderTablePage = () => {
                 <div className="flex justify-center gap-2">
                   {it.status === "PENDING" && (
                     <>
+                      <span className="mr-4 italic">Chờ xác nhận</span>
                       <Popconfirm
                         title="Bạn chắc chắn xác nhận đơn hàng này?"
                         onConfirm={() =>
@@ -270,8 +271,10 @@ export const AdminOrderTablePage = () => {
                       </Popconfirm>
                     </>
                   )}
+                  
                   {["APPROVED", "DELIVERING"].includes(it.status) && (
                     <>
+                      <span className="mr-4 italic">{it.status === "DELIVERING" ? "Đang giao hàng" : "Đang chế biến"}</span>
                       {it.status === "APPROVED" && (
                         <Popconfirm
                           title="Bạn chắc chắn sẽ giao đơn hàng này?"
@@ -342,9 +345,6 @@ export const AdminOrderTablePage = () => {
               </Tooltip>
             </>
           ),
-          info: (
-            <>{it.status}</>
-          ),
         }))}
         size="small"
         locale={{
@@ -365,7 +365,7 @@ const getColumns = () => {
     },
     {
       title: "Mã đơn hàng",
-      dataIndex: "code",
+      dataIndex: "id",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
     },
@@ -376,7 +376,7 @@ const getColumns = () => {
         text: it.label,
         value: it.key,
       })),
-      filterMultiple: true,
+      filterMultiple: false,
     },
     {
       title: "Khách hàng",
@@ -393,10 +393,6 @@ const getColumns = () => {
       dataIndex: "createdAt",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
-    },
-    {
-      title: "",
-      dataIndex: "info",
     },
   ] as TableColumnsType;
 };

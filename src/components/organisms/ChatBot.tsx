@@ -30,7 +30,7 @@ export default function ChatBot({ showChatbot, toggleChatbot }: Props) {
       </div>
 
       <span
-        className="fixed bottom-12 z-50 right-2 w-auto h-10 p-5 rounded-lg flex items-center cursor-pointer transition-colors duration-300"
+        className="fixed bottom-24 z-50 right-2 w-auto h-10 p-5 rounded-lg flex items-center cursor-pointer transition-colors duration-300"
         onClick={handleToggleChatbot}
       >
         <div className="relative">

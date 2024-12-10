@@ -1,6 +1,6 @@
 import HeaderBar from "@/components/molecules/HeaderBar";
 import Footer from "@/components/organisms/Footer";
-import HeaderMain from "@/components/organisms/HeaderMain";
+import { HeaderMain } from "@/components/organisms/HeaderMain.tsx";
 import { RootState } from "@/redux/store.ts";
 import { getThumbnail } from "@/utils/common.ts";
 import {
@@ -9,7 +9,7 @@ import {
   LikeOutlined,
   MoneyCollectOutlined,
   ProfileOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons";
 import { Image, Menu, MenuProps } from "antd";
 import React, { ReactNode } from "react";

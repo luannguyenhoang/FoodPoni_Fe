@@ -3,13 +3,13 @@ import { RootState } from "@/redux/store.ts";
 import { Menu } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ProductLoading } from "../atoms/ProductLoading";
 import { getThumbnail } from "@/utils/common";
 
 export default function ProductCategory() {
   const navigate = useNavigate();
-
+  const { pathVariable } = useParams();
   const dispatch = useDispatch();
 
   const { page, isFetchLoading } = useSelector(
@@ -29,11 +29,11 @@ export default function ProductCategory() {
       ) : (
         <Menu
           className="rounded-lg !border-none"
-          defaultSelectedKeys={["all"]}
+          defaultSelectedKeys={[pathVariable ?? "all"]}
           mode="inline"
-          items={page.content.map((it, index) => {
+          items={page.content.map((it) => {
             return {
-              key: index,
+              key: it.slug,
               label: (
                 <span
                   className="flex items-center"

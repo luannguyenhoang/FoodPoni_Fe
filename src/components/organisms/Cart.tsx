@@ -3,7 +3,7 @@ import { deleteCartRequest, fetchCartsAction } from "@/redux/modules/cart.ts";
 import { RootState } from "@/redux/store.ts";
 import { currencyFormat, getThumbnail } from "@/utils/common.ts";
 import { CloseOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button, Divider, Drawer, List, Popconfirm } from "antd";
+import { Avatar, Badge, Button, Divider, Drawer, List, Popconfirm, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -91,7 +91,7 @@ export default function Cart({
                             okText="Đồng ý"
                             cancelText="Hủy"
                           >
-                            <CloseOutlined className="p-0" />
+                            {it.isDeleteLoading ? <Spin /> : <CloseOutlined className="p-0" />}
                           </Popconfirm>
                         </div>
                       </div>

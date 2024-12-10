@@ -20,8 +20,9 @@ export const CartHeader = ({
   updateAllCheckedRequest?: () => void;
   deleteAllCartRequest?: () => void;
 }) => (
-  <div className="p-2 bg-white border-[1px] rounded-lg ">
-    <Row>
+  <div className="p-2 bg-white border-[1px] rounded-lg">
+    {/* Desktop View */}
+    <Row className="hidden md:flex">
       {!enableCartGroup && (
         <Col flex="3%">
           {isCheckAllLoading ? (
@@ -35,12 +36,12 @@ export const CartHeader = ({
           )}
         </Col>
       )}
-      <Col flex="40%">Tất cả</Col>
-      <Col flex="10%">Đơn giá</Col>
-      <Col flex="12%">Số lượng</Col>
-      <Col flex="14%">Thành tiền</Col>
-      <Col flex="18%">Ghi chú</Col>
-      <Col flex="3%" className="text-center">
+      <Col flex={`${enableCartGroup?"34%":"32%"}`}>Tất cả</Col>
+      <Col flex={`${enableCartGroup?"11%":"12%"}`}>Đơn giá</Col>
+      <Col flex={`${enableCartGroup?"17%":"16%"}`}>Số lượng</Col>
+      <Col flex={`${enableCartGroup?"14%":"14%"}`}>Thành tiền</Col>
+      <Col flex={`${enableCartGroup?"10%":"18%"}`}>Ghi chú</Col>
+      <Col flex={`${enableCartGroup?"3%":"5%"}`} className="text-center">
         {!enableCartGroup && enableDeleteAll && (
           <Popconfirm
             title="Bạn có chắc chắn muốn xóa không?"
@@ -51,11 +52,39 @@ export const CartHeader = ({
             {isDeleteAllLoading ? (
               <Spin size="small" />
             ) : (
-              <DeleteOutlined className="cursor-pointer " />
+              <DeleteOutlined className="cursor-pointer" />
             )}
           </Popconfirm>
         )}
       </Col>
     </Row>
+
+    {/* Mobile View */}
+    <div className="flex md:hidden justify-between items-center">
+      <div className="flex items-center gap-2">
+        {!enableCartGroup && (
+          <Checkbox
+            disabled={isDisableCheckbox}
+            checked={isAllChecked}
+            onClick={updateAllCheckedRequest}
+          />
+        )}
+        <span>Tất cả</span>
+      </div>
+      {!enableCartGroup && enableDeleteAll && (
+        <Popconfirm
+          title="Bạn có chắc chắn muốn xóa không?"
+          onConfirm={deleteAllCartRequest}
+          okText="Đồng ý"
+          cancelText="Hủy"
+        >
+          {isDeleteAllLoading ? (
+            <Spin size="small" />
+          ) : (
+            <DeleteOutlined className="cursor-pointer" />
+          )}
+        </Popconfirm>
+      )}
+    </div>
   </div>
 );

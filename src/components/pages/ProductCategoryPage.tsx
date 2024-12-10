@@ -29,7 +29,11 @@ export const ProductCategoryPage = () => {
   }, [dispatch, pathVariable]);
 
   if (isFetchLoading) {
-    return <ProductLoading />;
+    return (
+      <SidebarLayout sidebarContents={[<ProductCategory />]}>
+        <ProductLoading />
+      </SidebarLayout>
+    );
   }
 
   return (
@@ -40,9 +44,9 @@ export const ProductCategoryPage = () => {
         </h1>
         {page.content.length === 0 ? (
           <EmptyNotice
-            w="72"
+            w="60"
             h="60"
-            src="/no-product.png"
+            src="/emty-3.png"
             message="Không có món ăn nào"
           />
         ) : (

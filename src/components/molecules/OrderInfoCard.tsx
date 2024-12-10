@@ -63,7 +63,7 @@ export function OrderInfoCard({ selectedOrder }: { selectedOrder: Order }) {
             </Text>
 
             <span className="mx-2">/</span>
-            {selectedOrder.payment.method === "VNPAY" && (
+            {["VNPAY", "POSTPAID"].includes(selectedOrder.payment.method) && (
               <>
                 {selectedOrder.payment.status === "PAID" && (
                   <span className="text-green-500">Đã thanh toán</span>

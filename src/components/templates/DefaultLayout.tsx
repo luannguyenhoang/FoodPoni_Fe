@@ -1,7 +1,7 @@
 
 import HeaderBar from "@/components/molecules/HeaderBar";
 import Footer from "@/components/organisms/Footer";
-import HeaderMain from "@/components/organisms/HeaderMain";
+import { HeaderMain } from "@/components/organisms/HeaderMain";
 import { ReactNode } from "react";
 
 export const DefaultLayout = ({ children }: { children: ReactNode }) => {

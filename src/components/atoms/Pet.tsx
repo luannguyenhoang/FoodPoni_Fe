@@ -148,7 +148,7 @@ const CatBackground = () => {
   }, []);
 
   return (
-    <div className="box">
+    <div className="w-full">
       <svg
         viewBox="200 0 650 360"
         xmlns="http://www.w3.org/2000/svg"

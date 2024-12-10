@@ -42,6 +42,7 @@ import { getAvatar } from "@/utils/common.ts";
 import { getNotificationOrderMessage } from "@/utils/constraint.ts";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client/dist/sockjs";
+import "./NotificationDropdown.scss";
 
 export default function NotificationDropdown() {
   const dispatch = useDispatch();
@@ -60,183 +61,192 @@ export default function NotificationDropdown() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (currentUser) {
+      const sock = new SockJS(`${server}/ws?token=Bearer ${accessToken}`);
 
-    const sock = new SockJS(`${server}/ws?token=Bearer ${accessToken}`);
-    if (sock) {
-      const client = new Client({
-        webSocketFactory: () => sock,
-        onConnect: () => {
-          console.log("Connect to socket successfully..." + currentUser.id);
-          client.subscribe("/user/topic/notifications", (message) => {
-            const notificationEvent: Notification = JSON.parse(message.body);
+      if (sock) {
+        const client = new Client({
+          webSocketFactory: () => sock,
+          onConnect: () => {
+            console.log("Connect to socket successfully..." + currentUser.id);
+            client.subscribe("/user/topic/notifications", (message) => {
+              const notificationEvent: Notification = JSON.parse(message.body);
 
-            const attributes = JSON.parse(
-              notificationEvent.attributes
-            ) as NotificationAttributes;
+              const attributes = JSON.parse(
+                notificationEvent.attributes
+              ) as NotificationAttributes;
 
-            if (notificationEvent.toUser.id === currentUser.id) {
-              dispatch(
-                pushNotificationSuccess({
-                  notification: {
-                    ...notificationEvent,
-                    isMarkLoading: false,
-                  },
-                })
-              );
-              notification.open({
-                type: [
-                  "COMPLETED",
-                  "APPROVED",
-                  "PENDING",
-                  "DELIVERING",
-                ].includes(attributes.orderStatus)
-                  ? "success"
-                  : "error",
-                placement: "bottomRight",
-                message:
-                  notificationEvent.createdAt &&
-                  format(
-                    new Date(notificationEvent.createdAt),
-                    "HH:mm:ss - dd/MM/yyyy"
-                  ),
-                description:
-                  notificationEvent.type === "ORDER"
-                    ? getNotificationOrderMessage(
-                        attributes.id,
-                        attributes.orderStatus
-                      )
-                    : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
-                duration: 10,
-              });
-            }
-          });
-
-          if (currentUser.role !== "RETAILER") {
-            client.subscribe("/user/topic/room", (message) => {
-              const cartGroupEvent: CartGroupEvent = JSON.parse(message.body);
-              if (
-                cartGroupEvent.type === "ADD_CART_ITEM" &&
-                cartGroupEvent.attributes &&
-                "productDetail" in cartGroupEvent.attributes
-              ) {
-                const {
-                  cartItemId,
-                  quantity,
-                  productDetail,
-                  productName,
-                  toppings,
-                  type,
-                } = cartGroupEvent.attributes;
+              if (notificationEvent.toUser.id === currentUser.id) {
                 dispatch(
-                  addToCartItemsSuccess({
-                    cartItem: {
-                      id: cartItemId,
-                      quantity,
-                      productDetail,
-                      productName,
-                      user: cartGroupEvent.user,
-                      toppings,
-                      type,
+                  pushNotificationSuccess({
+                    notification: {
+                      ...notificationEvent,
+                      isMarkLoading: false,
                     },
-                    roomId: cartGroupEvent.roomId,
                   })
                 );
+                notification.open({
+                  type: [
+                    "COMPLETED",
+                    "APPROVED",
+                    "PENDING",
+                    "DELIVERING",
+                  ].includes(attributes.orderStatus)
+                    ? "success"
+                    : "error",
+                  placement: "bottomRight",
+                  message:
+                    notificationEvent.createdAt &&
+                    format(
+                      new Date(notificationEvent.createdAt),
+                      "HH:mm:ss - dd/MM/yyyy"
+                    ),
+                  description:
+                    notificationEvent.type === "ORDER"
+                      ? getNotificationOrderMessage(
+                          attributes.id,
+                          attributes.orderStatus
+                        )
+                      : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
+                  duration: 10,
+                });
               }
+            });
 
-              if (cartGroupEvent.user.id !== currentUser.id) {
+            if (currentUser.role !== "RETAILER") {
+              client.subscribe("/user/topic/room", (message) => {
+                const cartGroupEvent: CartGroupEvent = JSON.parse(message.body);
                 if (
-                  cartGroupEvent.type === "UPDATE_CART_ITEM_QUANTITY" &&
+                  cartGroupEvent.type === "ADD_CART_ITEM" &&
                   cartGroupEvent.attributes &&
-                  "cartItemId" in cartGroupEvent.attributes &&
-                  "quantity" in cartGroupEvent.attributes
+                  "productDetail" in cartGroupEvent.attributes
                 ) {
-                  const { cartItemId, quantity } = cartGroupEvent.attributes;
+                  const {
+                    cartItemId,
+                    quantity,
+                    productDetail,
+                    productName,
+                    toppings,
+                    type,
+                  } = cartGroupEvent.attributes;
                   dispatch(
-                    updateCartItemQuantitySuccess({ id: cartItemId, quantity })
-                  );
-                }
-
-                if (
-                  cartGroupEvent.type === "UPDATE_CART_ITEM_NOTE" &&
-                  cartGroupEvent.attributes &&
-                  "cartItemId" in cartGroupEvent.attributes &&
-                  "note" in cartGroupEvent.attributes
-                ) {
-                  const { cartItemId, note } = cartGroupEvent.attributes;
-                  dispatch(updateCartItemNoteSuccess({ id: cartItemId, note }));
-                }
-
-                if (
-                  cartGroupEvent.type === "DELETE_CART_ITEM" &&
-                  cartGroupEvent.attributes &&
-                  "cartItemId" in cartGroupEvent.attributes
-                ) {
-                  const { cartItemId } = cartGroupEvent.attributes;
-                  dispatch(deleteCartItemSuccess({ id: cartItemId }));
-                }
-
-                if (cartGroupEvent.type === "LEAVE_GROUP") {
-                  dispatch(
-                    leaveCartGroupSuccess({
-                      roomId: cartGroupEvent.roomId,
-                      userId: cartGroupEvent.user.id,
-                    })
-                  );
-                }
-
-                if (cartGroupEvent.type === "DELETE_GROUP") {
-                  dispatch(
-                    deleteCartGroupSuccess({
+                    addToCartItemsSuccess({
+                      cartItem: {
+                        id: cartItemId,
+                        quantity,
+                        productDetail,
+                        productName,
+                        user: cartGroupEvent.user,
+                        toppings,
+                        type,
+                      },
                       roomId: cartGroupEvent.roomId,
                     })
                   );
                 }
 
-                if (
-                  cartGroupEvent.type === "KICK_USER" &&
-                  "userId" in cartGroupEvent.attributes
-                ) {
-                  if (cartGroupEvent.attributes.userId === currentUser.id) {
+                if (cartGroupEvent.user.id !== currentUser.id) {
+                  if (
+                    cartGroupEvent.type === "UPDATE_CART_ITEM_QUANTITY" &&
+                    cartGroupEvent.attributes &&
+                    "cartItemId" in cartGroupEvent.attributes &&
+                    "quantity" in cartGroupEvent.attributes
+                  ) {
+                    const { cartItemId, quantity } = cartGroupEvent.attributes;
+                    dispatch(
+                      updateCartItemQuantitySuccess({
+                        id: cartItemId,
+                        quantity,
+                      })
+                    );
+                  }
+
+                  if (
+                    cartGroupEvent.type === "UPDATE_CART_ITEM_NOTE" &&
+                    cartGroupEvent.attributes &&
+                    "cartItemId" in cartGroupEvent.attributes &&
+                    "note" in cartGroupEvent.attributes
+                  ) {
+                    const { cartItemId, note } = cartGroupEvent.attributes;
+                    dispatch(
+                      updateCartItemNoteSuccess({ id: cartItemId, note })
+                    );
+                  }
+
+                  if (
+                    cartGroupEvent.type === "DELETE_CART_ITEM" &&
+                    cartGroupEvent.attributes &&
+                    "cartItemId" in cartGroupEvent.attributes
+                  ) {
+                    const { cartItemId } = cartGroupEvent.attributes;
+                    dispatch(deleteCartItemSuccess({ id: cartItemId }));
+                  }
+
+                  if (cartGroupEvent.type === "LEAVE_GROUP") {
+                    dispatch(
+                      leaveCartGroupSuccess({
+                        roomId: cartGroupEvent.roomId,
+                        userId: cartGroupEvent.user.id,
+                      })
+                    );
+                  }
+
+                  if (cartGroupEvent.type === "DELETE_GROUP") {
                     dispatch(
                       deleteCartGroupSuccess({
                         roomId: cartGroupEvent.roomId,
                       })
                     );
-                  } else {
-                    dispatch(
-                      kickUserSuccess({
-                        roomId: cartGroupEvent.roomId,
-                        userId: cartGroupEvent.attributes.userId,
-                      })
-                    );
+                  }
+
+                  if (
+                    cartGroupEvent.type === "KICK_USER" &&
+                    "userId" in cartGroupEvent.attributes
+                  ) {
+                    if (cartGroupEvent.attributes.userId === currentUser.id) {
+                      dispatch(
+                        deleteCartGroupSuccess({
+                          roomId: cartGroupEvent.roomId,
+                        })
+                      );
+                    } else {
+                      dispatch(
+                        kickUserSuccess({
+                          roomId: cartGroupEvent.roomId,
+                          userId: cartGroupEvent.attributes.userId,
+                        })
+                      );
+                    }
                   }
                 }
-              }
-            });
-          }
-        },
-        onStompError: (frame) => {
-          console.log("Error connecting to Websocket server", frame);
-        },
-      });
-      client.activate();
+              });
+            }
+          },
+          onStompError: (frame) => {
+            console.log("Error connecting to Websocket server", frame);
+          },
+        });
+        client.activate();
+      }
+
+      return () => {
+        if (sock) {
+          sock.close();
+        }
+      };
     }
 
-    return () => {
-      if (sock) {
-        sock.close();
-      }
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       <Dropdown
-        className="cursor-pointer"
+        className="cursor-pointer inset-x-0"
+        placement="bottomLeft"
+        trigger={["click"]}
         dropdownRender={() => (
-          <div className="w-[500px] shadow border rounded-lg bg-white">
+          <div className="w-screen md:w-[500px] shadow border rounded-lg bg-white">
             <div className="flex items-center justify-between gap-2.5 text-sm text-gray-900 font-semibold px-5 py-2.5">
               Thông báo {isFetchLoading && <Spin />}
             </div>
@@ -412,7 +422,7 @@ export default function NotificationDropdown() {
               </ScrollPane>
             </div>
             <div className="border-b border-b-gray-200"></div>
-            <div className="grid grid-cols-2 p-5 gap-2.5">
+            <div className="grid grid-cols-2 px-4 py-4 gap-2.5">
               <button className="btn btn-sm btn-light justify-center hover:text-[#F36F24]">
                 Xem thông báo trước đó
               </button>
@@ -422,8 +432,6 @@ export default function NotificationDropdown() {
             </div>
           </div>
         )}
-        placement="bottomRight"
-        trigger={["click"]}
       >
         <Badge
           count={

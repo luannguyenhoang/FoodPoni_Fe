@@ -39,7 +39,7 @@ export const OrderForm = ({
         shippingMethod: "FREE",
       }}
     >
-      <ScrollPane maxHeight={`${enableCartGroup && "max-h-[333px]"}`}>
+      <ScrollPane maxHeight={`${enableCartGroup && "md:max-h-[333px]"}`}>
         <Form.Item name="addressId">
           <ShippingAddressSelector
             value={form.getFieldValue("addressId")}
