@@ -179,7 +179,7 @@ export type Notification = {
   readonly read: boolean;
   readonly status: boolean;
   readonly attributes: string;
-  readonly type: "ORDER" | "PROMOTION" | "VOUCHER" | "RATE";
+  readonly type: "ORDER" | "ORDER_GROUP";
   readonly createdAt: Date;
 };
 

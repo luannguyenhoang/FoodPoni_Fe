@@ -2,7 +2,6 @@ import { BellOutlined } from "@ant-design/icons";
 import {
   Avatar,
   Badge,
-  Button,
   Dropdown,
   notification,
   Radio,
@@ -69,7 +68,7 @@ export default function NotificationDropdown() {
         webSocketFactory: () => sock,
         onConnect: () => {
           console.log("Connect to socket successfully..." + currentUser.id);
-          client.subscribe("/topic/admin-notifications", (message) => {
+          client.subscribe("/user/topic/notifications", (message) => {
             const notificationEvent: Notification = JSON.parse(message.body);
 
             const attributes = JSON.parse(
@@ -95,20 +94,20 @@ export default function NotificationDropdown() {
                   ? "success"
                   : "error",
                 placement: "bottomRight",
-                message: notificationEvent.createdAt.toString(),
-                description: getNotificationOrderMessage(
-                  attributes.id,
-                  attributes.orderStatus
-                ),
+                message:
+                  notificationEvent.createdAt &&
+                  format(
+                    new Date(notificationEvent.createdAt),
+                    "HH:mm:ss - dd/MM/yyyy"
+                  ),
+                description:
+                  notificationEvent.type === "ORDER"
+                    ? getNotificationOrderMessage(
+                        attributes.id,
+                        attributes.orderStatus
+                      )
+                    : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
                 duration: 10,
-                btn: (
-                  <Button
-                    className="bg-primary text-white"
-                    onClick={() => console.log("Click vao thong bao")}
-                  >
-                    Xem ngay
-                  </Button>
-                ),
               });
             }
           });
@@ -346,10 +345,12 @@ export default function NotificationDropdown() {
                           <div className="flex flex-col gap-3.5">
                             <div className="flex flex-col gap-1">
                               <div className="text-2sm font-medium">
-                                {getNotificationOrderMessage(
-                                  attributes.id,
-                                  attributes.orderStatus
-                                )}
+                                {it.type === "ORDER"
+                                  ? getNotificationOrderMessage(
+                                      attributes.id,
+                                      attributes.orderStatus
+                                    )
+                                  : `Đơn hàng nhóm của ${it.fromUser.username} đã được tạo thành công.`}
                               </div>
                               <span className="flex items-center text-2xs font-medium text-gray-500">
                                 {(() => {
