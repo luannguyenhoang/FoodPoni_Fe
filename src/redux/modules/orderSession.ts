@@ -52,6 +52,10 @@ const orderSessionSlice = createSlice({
       ...state,
       isFetchLoading: false,
     }),
+    updateLoadingForCreatingSuccess: (state) => ({
+      ...state,
+      isCreateLoading: true,
+    }),
     createOrderSessionSuccess: (state) => ({
       ...state,
       isCreateLoading: false,
@@ -70,6 +74,7 @@ export const {
   fetchOrderSessionsFailure,
   fetchOrderSessionSuccess,
   fetchOrderSessionFailure,
+  updateLoadingForCreatingSuccess,
   createOrderSessionFailure,
   createOrderSessionSuccess,
 } = orderSessionSlice.actions;
@@ -119,7 +124,9 @@ function* handleCreateOrderSession() {
     );
 
     try {
+      yield put(updateLoadingForCreatingSuccess());
       const id: string = yield call(createOrderSession, cartSessions, values);
+      sessionStorage.removeItem("cartSessions");
 
       navigate(`/order/${id}`);
     } catch (e) {

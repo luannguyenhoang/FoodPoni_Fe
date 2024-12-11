@@ -23,6 +23,7 @@ export const OrderSessionForm = () => {
     (state: RootState) => state.address
   );
   const { cartSessions } = useSelector((state: RootState) => state.cartSession);
+  const { isCreateLoading } = useSelector((state: RootState) => state.orderSession);
 
   const [form] = useForm<OrderSessionRequest>();
 
@@ -109,7 +110,7 @@ export const OrderSessionForm = () => {
           <Button
             type="primary"
             htmlType="button"
-            loading={false}
+            loading={isCreateLoading}
             disabled={cartSessions.length <= 0}
             block
           >
