@@ -118,6 +118,8 @@ export const ConsolidatedInvoicePage = () => {
           ),
           createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
           status: (
+            <div className="text-center italic">
+
             <Tag
               icon={
                 it.payment.status === "PAID" ? (
@@ -142,8 +144,11 @@ export const ConsolidatedInvoicePage = () => {
                   ? "Thanh toán thất bại"
                   : "Chưa thanh toán"}
             </Tag>
+            </div>
           ),
           actions: (
+            <div className="text-center italic">
+
             <Popconfirm
               title="Bạn có chắc chắn muốn thanh toán phiếu nợ này?"
               onConfirm={() => {
@@ -157,7 +162,7 @@ export const ConsolidatedInvoicePage = () => {
               cancelText="Hủy"
             >
               <Button
-                className="bg-primary text-white w-2/3 m-auto"
+                className="bg-primary text-white m-auto"
                 icon={
                   it.payment.status === "PAID" ? (
                     <CheckCircleOutlined />
@@ -173,10 +178,11 @@ export const ConsolidatedInvoicePage = () => {
                 {it.payment.status === "PAID"
                   ? "Đã thanh toán"
                   : it.payment.status === "FAILED"
-                    ? "Thanh toán lại"
-                    : "Thanh toán"}
+                    ? "Thanh toán lại bằng VNPAY"
+                    : "Thanh toán bằng VNPAY"}
               </Button>
             </Popconfirm>
+            </div>
           ),
         }))}
         size="small"

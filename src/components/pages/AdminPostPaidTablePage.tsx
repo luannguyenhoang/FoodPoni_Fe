@@ -7,7 +7,7 @@ import { currencyFormat, getThumbnail } from "@/utils/common";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
-  DownloadOutlined
+  DownloadOutlined,
 } from "@ant-design/icons";
 import {
   Badge,
@@ -19,7 +19,7 @@ import {
   Table,
   TableColumnsType,
   Tag,
-  Tooltip
+  Tooltip,
 } from "antd";
 import Button from "antd-button-color";
 import "antd-button-color/dist/css/style.css";
@@ -29,6 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
 import { AdminLayout } from "../templates/AdminLayout";
 import "./AdminOrderTablePage.scss";
+import { Link } from "react-router-dom";
 
 const TableToolbar = ({
   isFetchLoading,
@@ -192,7 +193,13 @@ export const AdminPostPaidTablePage = () => {
           ...it,
           key: it.id,
           no: page.number * page.size + index + 1,
-          id: it.id.toUpperCase().substring(0, 6),
+          id: (
+            <Tooltip title="Xem chi tiết phiếu nợ">
+              <Link to={`/admin/orders-postpaid-detail/${it.id}`}>
+                {it.id.toUpperCase().substring(0, 6)}
+              </Link>
+            </Tooltip>
+          ),
           fullName: (
             <AvatarInfo
               fullName={it.user?.address.fullName}
@@ -207,7 +214,7 @@ export const AdminPostPaidTablePage = () => {
           ),
           createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
           paymentStatus:
-            it.payment.status === "PAYING" ? (
+            it.payment.status === "PAYING" || it.payment.status === "FAILED" ? (
               <div className="text-center italic">
                 <Tooltip title="Nhấn vào nút để xác nhận thanh toán cho phiếu nợ này.">
                   <Popconfirm
@@ -221,7 +228,7 @@ export const AdminPostPaidTablePage = () => {
                     }
                   >
                     <Button
-                    danger
+                      danger
                       size="small"
                       type="success"
                       icon={<CheckCircleOutlined />}

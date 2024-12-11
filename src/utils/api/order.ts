@@ -79,6 +79,22 @@ export const getPostPaidOrders = (
     .then((res: AxiosResponse<Page<Order[]>>) => res.data);
 };
 
+export const getPostPaidOrdersByRetailer = (
+  ppid: string,
+  queryParams: QueryParams
+): Promise<Page<Order[]>> => {
+  return apiWithToken()
+    .get(
+      generateQueryString(`/retailer/orders-post-paid/${ppid}`, queryParams),
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    )
+    .then((res: AxiosResponse<Page<Order[]>>) => res.data);
+};
+
 export const getRefundPageByRetailer = (
   queryParams: QueryParams
 ): Promise<Page<Order[]>> => {

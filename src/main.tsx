@@ -31,6 +31,7 @@ import { AdminRefundTablePage } from "./components/pages/AdminRefundTablePage.ts
 import { AddressPage } from "./components/pages/AddressPage.tsx";
 import { AdminUserTablePage } from "./components/pages/AdminUserTablePage.tsx";
 import { AdminPostPaidTablePage } from "./components/pages/AdminPostPaidTablePage.tsx";
+import { AdminDetailPostPaidPage } from "./components/pages/AdminDetailPostPaidPage.tsx";
 
 export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
   createBrowserRouter([
@@ -195,6 +196,14 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
           element: (
             <SecuredRoute currentRole={currentRole} role={["RETAILER"]}>
               <AdminRefundTablePage />
+            </SecuredRoute>
+          ),
+        },
+        {
+          path: "orders-postpaid-detail/:orderId",
+          element: (
+            <SecuredRoute currentRole={currentRole} role={["RETAILER"]}>
+              <AdminDetailPostPaidPage />
             </SecuredRoute>
           ),
         },

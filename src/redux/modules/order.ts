@@ -9,6 +9,7 @@ import {
   getOrdersPageByCustomer,
   getOrdersPageByRetailer,
   getPostPaidOrders,
+  getPostPaidOrdersByRetailer,
   getRefundPageByRetailer,
   refund,
   refundConfirmationrefund,
@@ -273,6 +274,10 @@ export const fetchPostPaidOrdersAction = createAction<{
   ppid: string;
   queryParams: QueryParams;
 }>(`${SLICE_NAME}/fetchPostPaidOrdersRequest`);
+export const fetchPostPaidOrdersByRetailerAction = createAction<{
+  ppid: string;
+  queryParams: QueryParams;
+}>(`${SLICE_NAME}/fetchPostPaidOrdersByRetailerRequest`);
 export const createOrderAction = createAction<{
   navigate: NavigateFunction;
   values: OrderRequest;
@@ -300,16 +305,19 @@ function* handleFetchOrders() {
       fetOrdersByRetailer,
       fetPostPaidOrders,
       fetRefund,
+      fetPostPaidOrdersByRetailer
     }: {
       fetchOrdersByCustomer: ReturnType<typeof fetchOrdersByCustomerAction>;
       fetOrdersByRetailer: ReturnType<typeof fetchOrdersByRetailerAction>;
       fetPostPaidOrders: ReturnType<typeof fetchPostPaidOrdersAction>;
       fetRefund: ReturnType<typeof fetchRefundByRetailerAction>;
+      fetPostPaidOrdersByRetailer: ReturnType<typeof fetchPostPaidOrdersByRetailerAction>;
     } = yield race({
       fetchOrdersByCustomer: take(fetchOrdersByCustomerAction),
       fetOrdersByRetailer: take(fetchOrdersByRetailerAction),
       fetPostPaidOrders: take(fetchPostPaidOrdersAction),
       fetRefund: take(fetchRefundByRetailerAction),
+      fetPostPaidOrdersByRetailer: take(fetchPostPaidOrdersByRetailerAction),
     });
 
     try {
@@ -377,6 +385,26 @@ function* handleFetchOrders() {
         const page: Page<Order[]> = yield call(
           getRefundPageByRetailer,
           fetRefund.payload.queryParams,
+        );
+        yield put(
+          fetchOrdersSuccess({
+            page: {
+              ...page,
+              content: page.content.map((order) => ({
+                ...order,
+                isUpdateStatusLoading: false,
+                isUpdatePaymentStatusLoading: false,
+              })),
+            },
+          }),
+        );
+      }
+      if (fetPostPaidOrdersByRetailer) {
+        yield put(updateFetchLoading());
+        const page: Page<Order[]> = yield call(
+          getPostPaidOrdersByRetailer,
+          fetPostPaidOrdersByRetailer.payload.ppid,
+          fetPostPaidOrdersByRetailer.payload.queryParams,
         );
         yield put(
           fetchOrdersSuccess({
