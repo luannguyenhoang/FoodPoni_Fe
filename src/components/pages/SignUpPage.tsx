@@ -20,7 +20,7 @@ export const SignUpPage = () => {
             <div className="flex justify-center font-medium text-xl gap-2">
               Đăng ký
               <span className="text-orange-500 font-['Impact','fantasy'] flex">
-                <img src="/public/logo-02.png" className="w-6 h-6" alt="Logo" />
+                <img src="/logo-02.png" className="w-6 h-6" alt="Logo" />
                 FoodPoni
               </span>
             </div>

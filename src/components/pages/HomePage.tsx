@@ -21,8 +21,8 @@ export const HomePage = () => {
         <div className="overflow-auto relative mb-4">
           {/* <CarouselBanner
             images={[
-              "/public/7.webp",
-              "/public/Fast-Food-Banner-Background-for-Wall-1.jpg",
+              "/7.webp",
+              "/Fast-Food-Banner-Background-for-Wall-1.jpg",
             ]}
           /> */}
           {/*<SearchPosition />*/}

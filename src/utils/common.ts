@@ -40,7 +40,7 @@ export const checkDirty = (
 
 export const getAvatar = (user: User) => {
   if (user.role === "RETAILER") {
-    return "/public/logo-02.png";
+    return "/logo-02.png";
   }
 
   if (user.avatar) {
@@ -48,7 +48,7 @@ export const getAvatar = (user: User) => {
       ? user.avatar
       : server + user.avatar;
   }
-  return "/public/no-avatar.png";
+  return "/no-avatar.png";
 };
 
 export const getThumbnail = (thumbnail?: string | null) => {
@@ -57,7 +57,7 @@ export const getThumbnail = (thumbnail?: string | null) => {
       ? thumbnail
       : server + thumbnail;
   }
-  return "/public/no-avatar.png";
+  return "/no-avatar.png";
 };
 
 export const currencyFormat = (amount: number) => {
