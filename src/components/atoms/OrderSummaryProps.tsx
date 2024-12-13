@@ -10,11 +10,13 @@ export const OrderSummary = ({
   shippingFee,
   orderItems,
   orderStatus,
+  openButton,
 }: {
   totalAmount: number;
   shippingFee: number;
   orderItems: Array<OrderItem>;
   orderStatus: string;
+  openButton: boolean;
 }) => {
   const dispatch = useDispatch();
   const { page } = useSelector((state: RootState) => state.cart);
@@ -36,19 +38,23 @@ export const OrderSummary = ({
   );
 
   return (
-    <div className="text-right">
-      <Button
-        loading={isBuyAgainLoading}
-        className="text-primary"
-        disabled={isAllItemsInCart || orderStatus !== "COMPLETED"}
-        onClick={() => {
-          dispatch(buyAgainOrderAction({ orderItems }));
-        }}
-      >
-        {isAllItemsInCart
-          ? "Tất cả món ăn đã có trong giỏ hàng"
-          : "Mua lại đơn hàng"}
-      </Button>
+    <div className="flex justify-between mt-4">
+      <div className="content-end">
+        {openButton && (
+          <Button
+            loading={isBuyAgainLoading}
+            className="text-primary"
+            disabled={isAllItemsInCart || orderStatus !== "COMPLETED"}
+            onClick={() => {
+              dispatch(buyAgainOrderAction({ orderItems }));
+            }}
+          >
+            {isAllItemsInCart
+              ? "Tất cả món ăn đã có trong giỏ hàng"
+              : "Mua lại đơn hàng"}
+          </Button>
+        )}
+      </div>
       <div className="flex justify-end items-center gap-8">
         <div className="text-right text-gray-500">
           <div className="mb-2">Tạm tính</div>

@@ -11,6 +11,7 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
 import { currencyFormat } from "@/utils/common";
+import { OrderSummary } from "../atoms/OrderSummaryProps";
 
 export const InvoiceModal = ({ id }: { id: string }) => {
   const dispatch = useDispatch();
@@ -28,8 +29,7 @@ export const InvoiceModal = ({ id }: { id: string }) => {
             fetchOrderItemsByOrderIdAction({ oid: id, queryParams: {} })
           );
         }}
-      >
-      </Button>
+      />
       <Modal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -42,7 +42,7 @@ export const InvoiceModal = ({ id }: { id: string }) => {
   );
 };
 
-const InvoiceContent = () => {
+export const InvoiceContent = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const { isFetchLoading: isFetchOrderLoading, selectedOrder } = useSelector(
     (state: RootState) => state.order
@@ -166,6 +166,15 @@ const InvoiceContent = () => {
             }))}
             pagination={false}
           />
+          {selectedOrder && (
+            <OrderSummary
+              openButton={false}
+              totalAmount={selectedOrder.totalAmount}
+              shippingFee={selectedOrder.shippingFee}
+              orderItems={page.content}
+              orderStatus={selectedOrder.status}
+            />
+          )}
 
           <div className="mt-6 flex justify-between">
             <p className="text-gray-600">Cảm ơn bạn đã lựa chọn FoodPoni!</p>

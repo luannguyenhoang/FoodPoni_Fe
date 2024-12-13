@@ -32,6 +32,7 @@ import { AddressPage } from "./components/pages/AddressPage.tsx";
 import { AdminUserTablePage } from "./components/pages/AdminUserTablePage.tsx";
 import { AdminPostPaidTablePage } from "./components/pages/AdminPostPaidTablePage.tsx";
 import { AdminDetailPostPaidPage } from "./components/pages/AdminDetailPostPaidPage.tsx";
+import { AnonymousOrderPage } from "./components/pages/AnonymousOrderPage.tsx";
 
 export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
   createBrowserRouter([
@@ -89,6 +90,14 @@ export const router = (currentRole?: "RETAILER" | "CUSTOMER" | "VIP" | null) =>
       element: (
         <SecuredRoute currentRole={currentRole} role={["CUSTOMER", "VIP"]}>
           <OrderDetailPage />
+        </SecuredRoute>
+      ),
+    },
+    {
+      path: "/order/:orderId",
+      element: (
+        <SecuredRoute currentRole={currentRole} role={["CUSTOMER", "VIP"]}>
+          <AnonymousOrderPage />
         </SecuredRoute>
       ),
     },

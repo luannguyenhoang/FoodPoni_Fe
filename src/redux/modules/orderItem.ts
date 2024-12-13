@@ -1,6 +1,6 @@
 import { OrderItem, Page } from "@/type/types";
 import { QueryParams } from "@/utils/api/common";
-import { getOrderItemsPageByCustomer } from "@/utils/api/orderItem";
+import { getOrderItemsPageByCustomer, getOrderItemsPageByAnonymous } from "@/utils/api/orderItem";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { call, fork, put, take } from "redux-saga/effects";
 import { addMessageSuccess } from "./message";
@@ -64,6 +64,11 @@ export const fetchOrderItemsByOrderIdAction = createAction<{
   queryParams: QueryParams;
 }>(`${SLICE_NAME}/fetchOrderItemsByOrderIdRequest`);
 
+export const fetchOrderItemsByAnonymousAction = createAction<{
+  oid: string;
+  queryParams: QueryParams;
+}>(`${SLICE_NAME}/fetchOrderItemsByAnonymousRequest`);
+
 function* handleFetchOrderItemsByOrderId() {
   while (true) {
     const {
@@ -86,4 +91,24 @@ function* handleFetchOrderItemsByOrderId() {
   }
 }
 
-export const orderItemSagas = [fork(handleFetchOrderItemsByOrderId)];
+function* handleFetchOrderItemsByAnonymous() {
+  while (true) {
+    const { payload: { oid ,queryParams} }: ReturnType<typeof fetchOrderItemsByAnonymousAction> = yield take(
+      fetchOrderItemsByAnonymousAction
+    );
+    try {
+      yield put(updateFetchLoadingSuccess());
+      const page: Page<OrderItem[]> = yield call(
+        getOrderItemsPageByAnonymous,
+        oid,
+        queryParams
+      );
+      yield put(fetchOrderItemsSuccess({ page }));
+    } catch (e) {
+      yield put(addMessageSuccess({ error: e }));
+      yield put(fetchOrderItemsFailure());
+    }
+  }
+}
+
+export const orderItemSagas = [fork(handleFetchOrderItemsByOrderId), fork(handleFetchOrderItemsByAnonymous)];

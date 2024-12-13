@@ -18,3 +18,14 @@ export const getOrderItemsPageByCustomer = (
     )
     .then((res: AxiosResponse<Page<OrderItem[]>>) => res.data);
 };
+
+export const getOrderItemsPageByAnonymous = (
+  oid: string,
+  queryParams: QueryParams
+): Promise<Page<OrderItem[]>> => {
+  return apiWithToken()
+    .get(
+      generateQueryString(`/customer/walk-in-guest/order-items/orders/${oid}`, queryParams)
+    )
+    .then((res: AxiosResponse<Page<OrderItem[]>>) => res.data);
+};

@@ -61,6 +61,7 @@ export const OrderGroupDetailCard = ({
       </div>
     ))}
     <OrderSummary
+      openButton={true}
       totalAmount={selectedOrder.totalAmount}
       shippingFee={selectedOrder.shippingFee}
       orderItems={page.content}

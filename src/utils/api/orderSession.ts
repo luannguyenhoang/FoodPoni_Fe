@@ -2,6 +2,8 @@ import { CartSessionState } from "@/redux/modules/cartSession";
 import { AxiosResponse } from "axios";
 import { api } from "../axiosConfig";
 import { OrderSessionRequest } from "@/components/molecules/OrderSessionForm";
+import generateQueryString from "./common";
+import { Order, Page } from "@/type/types";
 
 export const createOrderSession = (
   cartSessions: CartSessionState["cartSessions"],
@@ -24,4 +26,14 @@ export const createOrderSession = (
       note: values.note,
     })
     .then((res: AxiosResponse<string>) => res.data);
+};
+
+export const getOrderSession = (
+  oid: string,
+): Promise<Page<Order[]>> => {
+  return api
+    .get(
+      generateQueryString(`/customer/walk-in-guest/orders/${oid}`)
+    )
+    .then((res: AxiosResponse<Page<Order[]>>) => res.data);
 };

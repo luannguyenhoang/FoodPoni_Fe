@@ -37,6 +37,7 @@ export const OrderPostPaidDetailCard = ({
     />
     <Divider />
     <OrderSummary
+      openButton={false}
       totalAmount={selectedOrder.totalAmount}
       shippingFee={selectedOrder.shippingFee}
       orderItems={page.content}
