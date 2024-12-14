@@ -51,6 +51,10 @@ export default function ShippingAddressInfo({
         name="phoneNumber"
         rules={[
           { required: true, message: "Vui lòng nhập số điện thoại nhận hàng." },
+          {
+            pattern: /^0[0-9]{9}$/,
+            message: "Số điện thoại không hợp lệ.",
+          },
         ]}
       >
         <Input placeholder="Số điện thoại" />

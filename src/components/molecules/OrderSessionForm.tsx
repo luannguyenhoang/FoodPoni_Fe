@@ -46,6 +46,10 @@ export const OrderSessionForm = () => {
         name="fullName"
         rules={[
           { required: true, message: "Vui lòng nhập tên người nhận hàng." },
+          {
+            pattern: /^0[0-9]{9}$/,
+            message: "Số điện thoại không hợp lệ.",
+          },
         ]}
       >
         <Input placeholder="Họ tên" />

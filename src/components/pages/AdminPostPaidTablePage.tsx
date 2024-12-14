@@ -196,7 +196,7 @@ export const AdminPostPaidTablePage = () => {
           id: (
             <Tooltip title="Xem chi tiết phiếu nợ">
               <Link to={`/admin/orders-postpaid-detail/${it.id}`}>
-                {it.id.toUpperCase().substring(0, 6)}
+                PN-{it.id.toUpperCase().substring(0, 7)}
               </Link>
             </Tooltip>
           ),
@@ -212,32 +212,39 @@ export const AdminPostPaidTablePage = () => {
               <div>Tổng tiền: {currencyFormat(it.totalAmount)}</div>
             </div>
           ),
-          createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
+          createdAt:
+            it.createdAt &&
+            format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
+          updatedAt:
+            it.updatedAt &&
+            format(new Date(it.updatedAt), "HH:mm:ss - dd/MM/yyyy"),
           paymentStatus:
             it.payment.status === "PAYING" || it.payment.status === "FAILED" ? (
               <div className="text-center italic">
-                <Tooltip title="Nhấn vào nút để xác nhận thanh toán cho phiếu nợ này.">
-                  <Popconfirm
-                    title="Bạn chắc chắn xác nhận thanh toán cho phiếu nợ này?"
-                    onConfirm={() =>
-                      dispatch(
-                        confirmationPosPaidAction({
-                          pid: it.id,
-                        })
-                      )
-                    }
-                  >
-                    <Button
-                      danger
-                      size="small"
-                      type="success"
-                      icon={<CheckCircleOutlined />}
-                      loading={it.isUpdateStatusLoading}
+                {it.totalAmount > 0 && (
+                  <Tooltip title="Nhấn vào nút để xác nhận thanh toán cho phiếu nợ này.">
+                    <Popconfirm
+                      title="Bạn chắc chắn xác nhận thanh toán cho phiếu nợ này?"
+                      onConfirm={() =>
+                        dispatch(
+                          confirmationPosPaidAction({
+                            pid: it.id,
+                          })
+                        )
+                      }
                     >
-                      Xác nhận thanh toán bằng tiền mặt
-                    </Button>
-                  </Popconfirm>
-                </Tooltip>
+                      <Button
+                        danger
+                        size="small"
+                        type="success"
+                        icon={<CheckCircleOutlined />}
+                        loading={it.isUpdateStatusLoading}
+                      >
+                        Xác nhận thanh toán bằng tiền mặt
+                      </Button>
+                    </Popconfirm>
+                  </Tooltip>
+                )}
               </div>
             ) : (
               <div className="text-center italic">
@@ -248,6 +255,11 @@ export const AdminPostPaidTablePage = () => {
             ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );
@@ -284,6 +296,12 @@ const getColumns = () => {
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
+      showSorterTooltip: { target: "full-header" },
+      sorter: true,
+    },
+    {
+      title: "Ngày trả",
+      dataIndex: "updatedAt",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
     },

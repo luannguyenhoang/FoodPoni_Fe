@@ -4,6 +4,9 @@ import TextArea from "antd/es/input/TextArea";
 import { PaymentSelector } from "../organisms/PaymentSelector";
 import { ShippingAddressSelector } from "../organisms/ShippingAddressSelector";
 import { ScrollPane } from "@/components/atoms/ScrollPane.tsx";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export type OrderRequest = {
   addressId: string;
@@ -29,6 +32,17 @@ export const OrderForm = ({
   onSubmit: (values: OrderRequest) => void;
 }) => {
   const [form] = useForm<OrderRequest>();
+  const {validate} = useSelector((state: RootState) => state.message);
+
+  useEffect(() => {
+    form.setFields([
+      {
+        name: "addressId",
+        errors: [validate.addressId],
+      },
+    ]);
+  }, [validate, form]);
+
   return (
     <Form
       form={form}

@@ -51,9 +51,13 @@ const messageSlice = createSlice({
         },
       };
     },
+    clearValidate: (state) => ({
+      ...state,
+      validate: {},
+    }),
   },
 });
 
-export const { addMessageSuccess } = messageSlice.actions;
+export const { addMessageSuccess, clearValidate } = messageSlice.actions;
 
 export default messageSlice.reducer;

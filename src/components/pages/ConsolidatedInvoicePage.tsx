@@ -6,21 +6,11 @@ import { RootState } from "@/redux/store";
 import { currencyFormat, POSTPAID_STATUSES } from "@/utils/common";
 import {
   CheckCircleOutlined,
-  CloseCircleOutlined,
   DownloadOutlined,
-  ExclamationCircleOutlined,
   MoneyCollectOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Col,
-  Flex,
-  Popconfirm,
-  Table,
-  TableColumnsType,
-  Tag,
-} from "antd";
+import { Button, Col, Flex, Popconfirm, Table, TableColumnsType } from "antd";
 import { format } from "date-fns";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -83,7 +73,7 @@ export const ConsolidatedInvoicePage = () => {
                 page: pagination.current ? pagination.current - 1 : 0,
                 pageSize: pagination.pageSize,
                 sort,
-                status:
+                paymentStatus:
                   filters && filters["status"]
                     ? (filters["status"][0] as boolean)
                     : undefined,
@@ -108,7 +98,7 @@ export const ConsolidatedInvoicePage = () => {
           no: page.number * page.size + index + 1,
           code: (
             <Link to={`/ghi-no/${it.id}`}>
-              {it.id.toUpperCase().substring(0, 6)}
+              PN-{it.id.toUpperCase().substring(0, 7)}
             </Link>
           ),
           totalAmount: (
@@ -116,72 +106,48 @@ export const ConsolidatedInvoicePage = () => {
               <div>{currencyFormat(it.totalAmount)}</div>
             </div>
           ),
-          createdAt: format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
+          createdAt:
+            it.createdAt &&
+            format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
+          updatedAt:
+            it.updatedAt &&
+            format(new Date(it.updatedAt), "HH:mm:ss - dd/MM/yyyy"),
           status: (
             <div className="text-center italic">
-
-            <Tag
-              icon={
-                it.payment.status === "PAID" ? (
-                  <CheckCircleOutlined />
-                ) : it.payment.status === "FAILED" ? (
-                  <CloseCircleOutlined />
-                ) : (
-                  <ExclamationCircleOutlined />
-                )
-              }
-              color={
-                it.payment.status === "PAID"
-                  ? "success"
-                  : it.payment.status === "FAILED"
-                    ? "error"
-                    : "warning"
-              }
-            >
-              {it.payment.status === "PAID"
-                ? "Đã thanh toán"
-                : it.payment.status === "FAILED"
-                  ? "Thanh toán thất bại"
-                  : "Chưa thanh toán"}
-            </Tag>
-            </div>
-          ),
-          actions: (
-            <div className="text-center italic">
-
-            <Popconfirm
-              title="Bạn có chắc chắn muốn thanh toán phiếu nợ này?"
-              onConfirm={() => {
-                dispatch(
-                  createPostPaidOrdersAction({
-                    ppid: it.id,
-                  })
-                );
-              }}
-              okText="Đồng ý"
-              cancelText="Hủy"
-            >
-              <Button
-                className="bg-primary text-white m-auto"
-                icon={
-                  it.payment.status === "PAID" ? (
-                    <CheckCircleOutlined />
-                  ) : it.payment.status === "FAILED" ? (
-                    <SyncOutlined />
-                  ) : (
-                    <MoneyCollectOutlined />
-                  )
-                }
-                loading={it.isPaymentLoading}
-                disabled={it.payment.status === "PAID"}
+              <Popconfirm
+                title="Bạn có chắc chắn muốn thanh toán phiếu nợ này?"
+                onConfirm={() => {
+                  dispatch(
+                    createPostPaidOrdersAction({
+                      ppid: it.id,
+                    })
+                  );
+                }}
+                okText="Đồng ý"
+                cancelText="Hủy"
               >
-                {it.payment.status === "PAID"
-                  ? "Đã thanh toán"
-                  : it.payment.status === "FAILED"
-                    ? "Thanh toán lại bằng VNPAY"
-                    : "Thanh toán bằng VNPAY"}
-              </Button>
-            </Popconfirm>
+                <Button
+                  className="bg-primary text-white m-auto"
+                  size="small"
+                  icon={
+                    it.payment.status === "PAID" ? (
+                      <CheckCircleOutlined />
+                    ) : it.payment.status === "FAILED" ? (
+                      <SyncOutlined />
+                    ) : (
+                      <MoneyCollectOutlined />
+                    )
+                  }
+                  loading={it.isPaymentLoading}
+                  disabled={it.payment.status === "PAID"}
+                >
+                  {it.payment.status === "PAID"
+                    ? "Đã thanh toán"
+                    : it.payment.status === "FAILED"
+                      ? "Thanh toán lại bằng VNPAY"
+                      : "Thanh toán bằng VNPAY"}
+                </Button>
+              </Popconfirm>
             </div>
           ),
         }))}
@@ -203,7 +169,7 @@ const getColumns = () => {
       dataIndex: "no",
     },
     {
-      title: "Mã hóa đơn",
+      title: "Mã phiếu nợ",
       dataIndex: "code",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
@@ -215,7 +181,7 @@ const getColumns = () => {
         text: it.label,
         value: it.key,
       })),
-      filterMultiple: true,
+      filterMultiple: false,
     },
     {
       title: "Tổng tiền",
@@ -228,10 +194,13 @@ const getColumns = () => {
       dataIndex: "createdAt",
       showSorterTooltip: { target: "full-header" },
       sorter: true,
+      defaultSortOrder: "descend",
     },
     {
-      title: "Hành động",
-      dataIndex: "actions",
+      title: "Ngày trả",
+      dataIndex: "updatedAt",
+      showSorterTooltip: { target: "full-header" },
+      sorter: true,
     },
   ] as TableColumnsType;
 };

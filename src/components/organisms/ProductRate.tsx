@@ -155,11 +155,14 @@ export default function ProductRate({ productDetail }: Props) {
                   {item.images?.map((url, imgIndex) => (
                     <div key={imgIndex} className="mr-[10px] mb-[10px]">
                       <Image
-                        src={url}
+                        src={getThumbnail(url)}
                         alt={`Image ${imgIndex}`}
                         width={70}
                         height={70}
                         className="object-cover cursor-pointer rounded-lg"
+                        onError={(e) => {
+                          e.currentTarget.src = getThumbnail("");
+                        }}
                       />
                     </div>
                   ))}

@@ -17,7 +17,7 @@ export type QueryParams = {
   startDate?: string | null;
   endDate?: string | null;
   year?: string | null;
-  paymentStatus?: string | null;
+  paymentStatus?: string | boolean | null;
 };
 
 export default function generateQueryString(

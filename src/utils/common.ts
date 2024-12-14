@@ -180,5 +180,4 @@ export const ORDER_STATUSES = [
 export const POSTPAID_STATUSES = [
   { label: "Đã thanh toán", key: "PAID" },
   { label: "Chưa thanh toán", key: "PAYING" },
-  { label: "Thanh toán thất bại", key: "FAILED" },
 ];

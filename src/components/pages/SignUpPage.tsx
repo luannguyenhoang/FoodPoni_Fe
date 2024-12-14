@@ -5,12 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { RootState } from "@/redux/store.ts";
 import { useEffect } from "react";
+import { clearValidate } from "@/redux/modules/message";
 
 export const SignUpPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isPending } = useSelector((state: RootState) => state.auth);
   const { validate } = useSelector((state: RootState) => state.message);
+
+  useEffect(() => {
+    dispatch(clearValidate());
+  }, [dispatch]);
 
   return (
     <div className='font-medium bg-[url("/logo-bg.jpeg")] bg-cover bg-center bg-no-repeat h-screen flex justify-center  items-center'>
@@ -68,15 +73,15 @@ const SignUpForm = ({
     form.setFields([
       {
         name: "username",
-        errors: validate.username ? [validate.username] : [],
+        errors: [validate.username],
       },
       {
         name: "email",
-        errors: validate.email ? [validate.email] : [],
+        errors: [validate.email],
       },
       {
         name: "password",
-        errors: validate.password ? [validate.password] : [],
+        errors: [validate.password],
       },
     ]);
   }, [validate, form]);

@@ -141,6 +141,10 @@ export const getMessage = (key: string) => {
       return "Phiếu ghi nợ đã được thanh toán. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!";
     case "pp04":
       return "Vui lòng thanh toán đơn hàng trả sau";
+    case "pp05":
+      return "Không thể thanh toán đơn hàng trả sau vì một số đơn hàng chưa được xử lý.";
+    case "pp06":
+      return "Số tiền trả nợ không hợp lệ.";
 
     case "r01":
       return "Có vẻ như nhóm không tồn tại. Hãy thử lại!";

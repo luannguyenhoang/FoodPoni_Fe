@@ -1,21 +1,27 @@
 import { Button, Card, Checkbox, Form, Input, Space } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { REMEMBER_ME, server } from "@/utils/server.ts";
 import Cookies from "js-cookie";
 import { clientId, redirectUri, responseType, scopes } from "@/utils/oauth2.ts";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store.ts";
 import { loginAction } from "@/redux/modules/auth.ts";
 import { UserRemember } from "@/type/types.ts";
 import { useForm } from "antd/es/form/Form";
 import { HomeOutlined } from "@ant-design/icons";
+import { clearValidate } from "@/redux/modules/message";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoadingGoogle, setLoadingGoogle] = useState(false);
   const { isPending } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    dispatch(clearValidate());
+    
+  }, [dispatch]);
 
   const rememberMe = useMemo(() => {
     const rememberMeCookie = Cookies.get(REMEMBER_ME);
@@ -40,7 +46,7 @@ export const LoginPage = () => {
         "&scope=" +
         scopes.join("+"),
       "Google LoginWrapper",
-      "width=" + w + ",height=" + h + ",top=" + top + ", left=" + left,
+      "width=" + w + ",height=" + h + ",top=" + top + ", left=" + left
     );
 
     const getMessage = (event: MessageEvent<string>) => {
@@ -131,6 +137,20 @@ const LoginForm = ({
   onSubmit: (values: LoginRequest) => void;
 }) => {
   const [form] = useForm<LoginRequest>();
+  const { validate } = useSelector((state: RootState) => state.message);
+
+  useEffect(() => {
+    form.setFields([
+      {
+        name: "username",
+        errors: [validate.username],
+      },
+      {
+        name: "password",
+        errors: [validate.password],
+      },
+    ]);
+  }, [validate, form]);
 
   return (
     <Form
