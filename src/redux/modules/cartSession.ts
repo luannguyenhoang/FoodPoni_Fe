@@ -136,7 +136,7 @@ function* handleCreateCart() {
     );
 
     const cartSession = {
-      id: productDetail.id.substring(0, 5) + Array.from(new Set(toppingsSelected.map(it => it.id.substring(0, 5)))).join(",") + toSlug(type || ""),
+      id: productDetail.id.substring(0, 7) + Array.from(new Set(toppingsSelected.map(it => it.id.substring(0, 7)))).join(",") + toSlug(type || ""),
       quantity,
       productName: product.name + " - " + productDetail.name,
       productDetail: {

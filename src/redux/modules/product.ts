@@ -139,6 +139,7 @@ const productSlide = createSlice({
       itemsSelected: {
         ...state.itemsSelected,
         productDetail: action.payload.productDetail,
+        toppingsSelected: [],
       },
       isFetchLoading: false,
     }),
