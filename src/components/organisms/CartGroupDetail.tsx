@@ -8,6 +8,7 @@ import {
   CartGroupState,
   createCartGroupRequest,
   deleteCartGroupAction,
+  deleteCartGroupSuccess,
   leaveCartGroupAction,
   updateCartGroupSelectedSuccess,
   updateRoomTimeOutInputtingSuccess,
@@ -30,6 +31,7 @@ import {
   Col,
   Divider,
   Input,
+  notification,
   Popconfirm,
   Row,
   Spin,
@@ -197,7 +199,13 @@ export function CartGroupDetail({
               isVisibleCapital={true}
               timeout={it.timeout}
               roomId={it.roomId}
-              deleteCartGroup={() => deleteCartGroup(it.roomId)}
+              deleteCartGroup={() => {
+                deleteCartGroupSuccess({ roomId: it.roomId });
+                notification.info({
+                  message: "Thông báo!",
+                  description: `Đơn nhóm ${it.roomId} của ${it.user.username} đã bị hết hạn!`,
+                });
+              }}
             />
           ),
           children: (
@@ -298,11 +306,12 @@ export function CartGroupDetail({
                     <Button
                       className="bg-red-600 text-white"
                       type="default"
-                      size="large"
                       loading={it.deletingCartGroupLoading}
                       icon={<DeleteOutlined />}
                     >
-                      Xóa đơn nhóm
+                      <span className="sr-only md:not-sr-only">
+                        Xóa đơn nhóm
+                      </span>
                     </Button>
                   </Popconfirm>
                 )}

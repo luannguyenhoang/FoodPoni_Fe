@@ -115,6 +115,7 @@ export default function ProductCart() {
                           avatar={it.user.avatar}
                           info={`#${it.roomId}`}
                           timeout={it.timeout}
+                          roomId={it.roomId}
                         />
                       </span>
                     ),

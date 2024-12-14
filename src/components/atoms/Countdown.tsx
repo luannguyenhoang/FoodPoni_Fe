@@ -23,7 +23,7 @@ export const Countdown = ({
         const now = new Date().getTime(); // Thời điểm hiện tại
         const remainingTime = endTime - now; // Thời gian còn lại
 
-        if (remainingTime <= 3000) {
+        if (remainingTime <= 0) {
           deleteCartGroup && deleteCartGroup();
           clearInterval(intervalId);
           setTimeLeft(0); // Đặt timeLeft về 0 khi hết thời gian

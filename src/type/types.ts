@@ -88,7 +88,6 @@ export type Order = {
   readonly payment: PaymentInfo;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  readonly paymentStatus: PaymentInfo;
   readonly shippingFee: number;
 };
 
