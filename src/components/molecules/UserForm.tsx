@@ -1,8 +1,9 @@
 import { updateUserAction } from "@/redux/modules/user";
 import { RootState } from "@/redux/store";
 import { User } from "@/type/types";
-import { Button, Form, Input, Popconfirm, Select } from "antd";
+import { Button, DatePicker, Form, Input, Popconfirm, Radio } from "antd";
 import { useForm } from "antd/es/form/Form";
+import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ImageSelector } from "./ImageSelector";
@@ -11,9 +12,8 @@ export type UserFormState = {
   id: string;
   avatar: string;
   email: string;
-  birthday: Date;
+  birthday: dayjs.Dayjs | null;
   gender: boolean;
-  username: string;
 };
 
 export const UserForm = ({ user }: { user: User }) => {
@@ -23,23 +23,24 @@ export const UserForm = ({ user }: { user: User }) => {
 
   useEffect(() => {
     if (user) {
-      const formattedBirthday = user.birthday
-        ? new Date(user.birthday).toISOString().split("T")[0]
-        : "";
-
       form.setFieldsValue({
         ...user,
-        birthday: formattedBirthday,
+        birthday: user.birthday ? dayjs(user.birthday) : null,
       });
     }
   }, [user, form]);
+
   return (
     <Form
       form={form}
       onFinish={(value) => {
+        const formattedValue = {
+          ...value,
+          birthday: value.birthday ? dayjs(value.birthday) : null,
+        };
         dispatch(
           updateUserAction({
-            user: value,
+            user: formattedValue,
             resetForm: () => form.resetFields(),
           })
         );
@@ -48,6 +49,7 @@ export const UserForm = ({ user }: { user: User }) => {
       initialValues={
         user && {
           ...user,
+          birthday: user.birthday ? dayjs(user.birthday) : null,
         }
       }
     >
@@ -63,37 +65,38 @@ export const UserForm = ({ user }: { user: User }) => {
           />
         </Form.Item>
         <div className="w-full">
-          <Form.Item
-            name="username"
-            label="Tên tài khoản"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên tài khoản!" },
-            ]}
-          >
-            <Input />
+          <Form.Item name="username" label="Tên tài khoản">
+            <Input disabled />
           </Form.Item>
           <Form.Item
             name="birthday"
             label="Ngày sinh"
-            rules={[{ required: true, message: "Vui lòng nhập ngày sinh" }]}
+            rules={[{ required: true, message: "Vui lòng chọn ngày sinh" }]}
           >
-            <Input placeholder="YYYY-MM-DD" />
+            <DatePicker
+              value={
+                form.getFieldValue("birthday")
+                  ? dayjs(form.getFieldValue("birthday"))
+                  : null
+              }
+              className="w-full"
+            />
+          </Form.Item>
+          <Form.Item
+            name="gender"
+            label="Giới tính"
+            rules={[{ required: true }]}
+          >
+            <Radio.Group>
+              <Radio value={true}>Nam</Radio>
+              <Radio value={false}>Nữ</Radio>
+            </Radio.Group>
           </Form.Item>
         </div>
       </div>
 
-      <Form.Item name="gender" label="Giới tính" rules={[{ required: true }]}>
-        <Select
-          allowClear
-          placeholder="Please select"
-          options={[
-            { value: true, label: "Nam" },
-            { value: false, label: "Nữ" },
-          ]}
-        />
-      </Form.Item>
       <Form.Item className="mb-0 text-end">
-        <Popconfirm title="Are you sure to save?" onConfirm={form.submit}>
+        <Popconfirm title="Bạn có chắc chắn muốn lưu?" onConfirm={form.submit}>
           <Button loading={isUpdateLoading} type="primary">
             Lưu
           </Button>
