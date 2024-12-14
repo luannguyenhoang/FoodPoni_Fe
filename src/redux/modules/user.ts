@@ -5,10 +5,16 @@ import { QueryParams } from "@/utils/api/common";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { call, fork, put, take } from "redux-saga/effects";
 import { addMessageSuccess } from "./message";
-import { getUserById, getUserPage, updateAvatarUser, updateUser } from "@/utils/api/user";
+import {
+  getUserById,
+  getUserPage,
+  updateAvatarUser,
+  updateRole,
+  updateUser,
+} from "@/utils/api/user";
 
 export type UserState = {
-  readonly page: Page<User[]>;
+  readonly page: Page<Array<User & { isUpdateRoleLoading?: boolean }>>;
   readonly selectedUser: User;
   readonly isFetchLoading: boolean;
   readonly isCreateLoading: boolean;
@@ -75,6 +81,58 @@ const UserSlide = createSlice({
       selectedUser: {} as User,
       isFetchLoading: false,
     }),
+    updateLoadingForUpdatingRoleSuccess: (
+      state,
+      action: PayloadAction<{ id: string }>
+    ) => ({
+      ...state,
+      page: {
+        ...state.page,
+        content: state.page.content.map((user) => {
+          if (user.id === action.payload.id) {
+            return {
+              ...user,
+              isUpdateRoleLoading: true,
+            };
+          }
+          return user;
+        }),
+      },
+    }),
+    updateRoleSuccess: (
+      state,
+      action: PayloadAction<{ id: string; role: "VIP" | "CUSTOMER" }>
+    ) => ({
+      ...state,
+      page: {
+        ...state.page,
+        content: state.page.content.map((user) => {
+          if (user.id === action.payload.id) {
+            return {
+              ...user,
+              role: action.payload.role,
+              isUpdateRoleLoading: false,
+            };
+          }
+          return user;
+        }),
+      },
+    }),
+    updateRoleFailure: (state, action: PayloadAction<{ id: string }>) => ({
+      ...state,
+      page: {
+        ...state.page,
+        content: state.page.content.map((user) => {
+          if (user.id === action.payload.id) {
+            return {
+              ...user,
+              isUpdateRoleLoading: false,
+            };
+          }
+          return user;
+        }),
+      },
+    }),
   },
 });
 export default UserSlide.reducer;
@@ -86,10 +144,16 @@ export const fetchUsersAction = createAction<{ queryParams: QueryParams }>(
 export const fetchUserByIdAction = createAction<{ uid: string }>(
   `${SLICE_NAME}/fetchUserByIdRequest`
 );
+
 export const updateUserAction = createAction<{
   user: UserFormState;
   resetForm: () => void;
 }>(`${SLICE_NAME}/updateUserRequest`);
+
+export const updateRoleAction = createAction<{
+  id: string;
+  role: "VIP" | "CUSTOMER";
+}>(`${SLICE_NAME}/updateRoleRequest`);
 
 export const {
   updateFetchLoadingSuccess,
@@ -100,6 +164,9 @@ export const {
   updateUserFailure,
   getUserByIdSuccess,
   getUserByIdFailure,
+  updateLoadingForUpdatingRoleSuccess,
+  updateRoleSuccess,
+  updateRoleFailure,
 } = UserSlide.actions;
 
 function* handleFetchUsers() {
@@ -151,8 +218,25 @@ function* handleGetUserById() {
   }
 }
 
+function* handleUpdateRole() {
+  while (true) {
+    const {
+      payload: { id, role },
+    }: ReturnType<typeof updateRoleAction> = yield take(updateRoleAction);
+    try {
+      yield put(updateLoadingForUpdatingRoleSuccess({ id }));
+      yield call(updateRole, id, role);
+      yield put(updateRoleSuccess({ id, role }));
+    } catch (e) {
+      yield put(addMessageSuccess({ error: e }));
+      yield put(updateRoleFailure({ id }));
+    }
+  }
+}
+
 export const userSagas = [
   fork(handleFetchUsers),
   fork(handleUpdateUser),
   fork(handleGetUserById),
+  fork(handleUpdateRole),
 ];

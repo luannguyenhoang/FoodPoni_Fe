@@ -195,7 +195,7 @@ export const getMessage = (key: string) => {
     case "u13":
       return "OTP đã tồn tại.";
     case "u14":
-      return "Người dùng bị chặn.";
+      return "Người dùng bị khóa.";
     case "u15":
       return "Email và tên người dùng không được để trống.";
     case "u16":

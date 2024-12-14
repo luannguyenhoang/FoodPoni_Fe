@@ -1,12 +1,14 @@
-import { fetchUsersAction } from "@/redux/modules/user";
+import { fetchUsersAction, updateRoleAction } from "@/redux/modules/user";
 import { RootState } from "@/redux/store";
 import { getThumbnail } from "@/utils/common";
-import { Table, TableColumnsType, Tag } from "antd";
+import { Popconfirm, Table, TableColumnsType, Tag } from "antd";
 import { format } from "date-fns";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
 import { AdminLayout } from "../templates/AdminLayout";
+import { ArrowUpOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import Button from "antd-button-color";
 
 export const AdminUserTablePage = () => {
   const dispatch = useDispatch();
@@ -33,9 +35,9 @@ export const AdminUserTablePage = () => {
           const sort =
             sorter && Object.keys(sorter).length > 0
               ? (Array.isArray(sorter) ? sorter : [sorter]).map(
-                (it) =>
-                  `${it.field},${it.order === "ascend" ? "asc" : "desc"}`
-              )
+                  (it) =>
+                    `${it.field},${it.order === "ascend" ? "asc" : "desc"}`
+                )
               : ["createdAt,desc"];
 
           dispatch(
@@ -74,13 +76,52 @@ export const AdminUserTablePage = () => {
               info={it.address?.fullName}
             />
           ),
-          status: it.status? <Tag color="success">Hoạt động</Tag> :<Tag color="error">Bị Chặn</Tag>,
+          status: it.status ? (
+            <Tag color="success">Hoạt động</Tag>
+          ) : (
+            <Tag color="error">Bị khóa</Tag>
+          ),
           email: it.email,
           phoneNumber: it.address?.phoneNumber,
-          address: it.address?.address,
-          createdAt: (it.createdAt ? format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy") : ""),
+          role:
+            it.role === "CUSTOMER" ? (
+              <Tag>Khách thường</Tag>
+            ) : (
+              <Tag icon={<SafetyCertificateOutlined />} color="success">
+                Khách quen
+              </Tag>
+            ),
+          createdAt: it.createdAt
+            ? format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy")
+            : "",
+          action: (
+            <>
+              {it.role === "CUSTOMER" && it.status && (
+                <Popconfirm
+                  title="Bạn có chắc chắn muốn nâng cấp tài khoản này không?"
+                  onConfirm={() =>
+                    dispatch(updateRoleAction({ id: it.id, role: "VIP" }))
+                  }
+                >
+                  <Button
+                    icon={<ArrowUpOutlined />}
+                    type="success"
+                    size="small"
+                    loading={it.isUpdateRoleLoading}
+                  >
+                    Nâng cấp tài khoản
+                  </Button>
+                </Popconfirm>
+              )}
+            </>
+          ),
         }))}
         size="small"
+        locale={{
+          triggerDesc: "Nhấn vào để sắp xếp từ Z-A",
+          triggerAsc: "Nhấn vào để sắp xếp từ A-Z",
+          cancelSort: "Nhấn vào để hủy sắp xếp",
+        }}
       />
     </AdminLayout>
   );
@@ -96,9 +137,29 @@ const getColumns = () => {
       title: "Tên người dùng",
       dataIndex: "username",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 2,
-      },
+      sorter: true,
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      showSorterTooltip: { target: "full-header" },
+      sorter: true,
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phoneNumber",
+      showSorterTooltip: { target: "full-header" },
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "createdAt",
+      showSorterTooltip: { target: "full-header" },
+      sorter: true,
+    },
+    {
+      title: "Cấp bậc",
+      dataIndex: "role",
+      showSorterTooltip: { target: "full-header" },
     },
     {
       title: "Trạng thái",
@@ -109,38 +170,14 @@ const getColumns = () => {
           value: true,
         },
         {
-          text: "Bị chặn",
+          text: "Bị khóa",
           value: false,
         },
       ],
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 2,
-      },
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phoneNumber",
-      showSorterTooltip: { target: "full-header" },
-      
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      width: 250, 
-      showSorterTooltip: { target: "full-header" },
-    },
-    {
-      title: "Ngày tạo",
-      dataIndex: "createdAt",
-      showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 1,
-      },
+      title: "Hành động",
+      dataIndex: "action",
     },
   ] as TableColumnsType;
 };

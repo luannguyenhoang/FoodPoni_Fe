@@ -45,3 +45,18 @@ export const getUserById = (uid: string): Promise<User> => {
     })
     .then((res: AxiosResponse<User>) => res.data);
 };
+
+export const updateRole = (
+  id: string,
+  role: "VIP" | "CUSTOMER"
+): Promise<void> => {
+  return apiWithToken().patch(
+    "/retailer/users/update-role",
+    { id, role },
+    {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    }
+  );
+};
