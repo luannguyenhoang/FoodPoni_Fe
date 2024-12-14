@@ -41,7 +41,7 @@ export function ProductCard({ product }: { product: Product }) {
               <div className="overflow-hidden rounded-t-lg">
                 <img
                   alt="example"
-                  className="aspect-square object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="w-full h-full aspect-square object-cover transition-transform duration-300 group-hover:scale-110"
                   src={
                     product.thumbnail ? server + product.thumbnail : fallback
                   }
