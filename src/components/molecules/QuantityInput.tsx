@@ -7,7 +7,10 @@ import {
   updateQuantityInputAction,
 } from "@/redux/modules/cart.ts";
 import { updateCartItemQuantityAction } from "@/redux/modules/cartGroup.ts";
-import { updateQuantityButtonCartSessionAction } from "@/redux/modules/cartSession";
+import {
+  updateQuantityButtonCartSessionAction,
+  updateQuantityInputCartSessionAction,
+} from "@/redux/modules/cartSession";
 
 export function QuantityInput({
   enableCartGroup,
@@ -56,12 +59,17 @@ export function QuantityInput({
           const inputValue = parseInt(e.target.value);
           if (!isNaN(inputValue) && inputValue >= 1 && inputValue <= 100) {
             dispatch(
-              !enableCartGroup
-                ? updateQuantityInputAction({
-                    id: item.id,
-                    quantity: inputValue,
-                  })
-                : updateCartItemQuantityAction({
+              currentUserId
+                ? !enableCartGroup
+                  ? updateQuantityInputAction({
+                      id: item.id,
+                      quantity: inputValue,
+                    })
+                  : updateCartItemQuantityAction({
+                      id: item.id,
+                      quantity: inputValue,
+                    })
+                : updateQuantityInputCartSessionAction({
                     id: item.id,
                     quantity: inputValue,
                   })

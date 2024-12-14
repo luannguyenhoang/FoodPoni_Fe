@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios";
 import generateQueryString, { QueryParams } from "./common";
 
 export const getAddressesPage = (
-  queryParams: QueryParams,
+  queryParams: QueryParams
 ): Promise<Page<Address[]>> => {
   return apiWithToken()
     .get(generateQueryString("/addresses", queryParams), {
@@ -18,7 +18,7 @@ export const getAddressesPage = (
 
 export const getAddressById = (
   aid: string,
-  queryParams: QueryParams,
+  queryParams: QueryParams
 ): Promise<Address> => {
   return apiWithToken()
     .get(generateQueryString(`/addresses/${aid}`, queryParams), {
@@ -50,13 +50,13 @@ export const createAddress = ({
         headers: {
           Authorization: "Bearer " + accessToken,
         },
-      },
+      }
     )
     .then((res: AxiosResponse<string>) => res.data);
 };
 
 export const updateAddress = (
-  values: AddressRequest,
+  values: AddressRequest
 ): Promise<{ id: string }> => {
   return apiWithToken()
     .put("/addresses/update-info", values, {
@@ -78,11 +78,11 @@ export const deleteAddressById = (aid: string): Promise<void> => {
 };
 
 export const searchAddresses = (
-  value: string,
+  value: string
 ): Promise<Array<SearchResult>> => {
   return api
     .get(
-      `https://nominatim.openstreetmap.org/search?q=${value}&format=json&addressdetails=1&countrycodes=vn`,
+      `https://nominatim.openstreetmap.org/search?q=${value}&format=json&addressdetails=1&countrycodes=vn`
     )
     .then((res: AxiosResponse<Array<SearchResult>>) => res.data);
 };
@@ -94,5 +94,14 @@ export const calculateShippingFee = (addressId: string): Promise<number> => {
         Authorization: "Bearer " + accessToken,
       },
     })
+    .then((res: AxiosResponse<number>) => res.data);
+};
+
+export const calculateShippingFee2 = (
+  lon: number,
+  lat: number
+): Promise<number> => {
+  return api
+    .get(`/shipping-fee?lon=${lon}&lat=${lat}`)
     .then((res: AxiosResponse<number>) => res.data);
 };

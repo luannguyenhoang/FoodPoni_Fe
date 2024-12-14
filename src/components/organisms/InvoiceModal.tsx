@@ -34,7 +34,7 @@ export const InvoiceModal = ({ id }: { id: string }) => {
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
-        width={600}
+        width={800}
       >
         <InvoiceContent maxHeight="600px" />
       </Modal>
@@ -167,7 +167,14 @@ export const InvoiceContent = ({ maxHeight }: { maxHeight?: string }) => {
                     " - " +
                     it.productDetail.name
                   }
-                  info={it.toppings.map((topping) => topping.name).join(", ")}
+                  info={it.toppings.map((tp, tpIndex) => (
+                    <div
+                      key={tpIndex}
+                      className="text-[10px] inline-block bg-primary text-white rounded-lg mr-1 px-1 mb-1"
+                    >
+                      {tp.name}: {currencyFormat(tp.price)}
+                    </div>
+                  ))}
                   avatar={it.productDetail.images[0]}
                 />
               ),

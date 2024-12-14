@@ -1,5 +1,6 @@
 import { getThumbnail } from "@/utils/common.ts";
 import { Countdown } from "./Countdown";
+import { ReactNode } from "react";
 
 export const AvatarInfo = ({
   fullName,
@@ -13,7 +14,7 @@ export const AvatarInfo = ({
 }: {
   fullName?: string;
   avatar?: string | null;
-  info: string;
+  info: string | ReactNode;
   padding?: string;
   isVisibleCapital?: boolean;
   timeout?: number;
@@ -23,7 +24,7 @@ export const AvatarInfo = ({
   <div className={`flex items-center gap-4 ${padding}`}>
     <div className="relative">
       <img
-        className="w-10 h-10 rounded-full object-cover"
+        className="min-w-[40px] h-[40px] aspect-square rounded-full object-cover"
         src={getThumbnail(avatar)}
         alt=""
         onError={(e) => {

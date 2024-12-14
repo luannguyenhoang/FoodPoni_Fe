@@ -19,11 +19,12 @@ export default function ProductCart() {
   const { page, isCreateLoading } = useSelector(
     (state: RootState) => state.cart
   );
+  const { cartSessions } = useSelector((state: RootState) => state.cartSession);
   const { cartGroupsJoined: cartGroupsJoined, addingToCartItemLoading } =
     useSelector((state: RootState) => state.cartGroup);
   const { currentUser } = useSelector((state: RootState) => state.auth);
 
-  const isExisted: boolean = page.content.some(
+  const isExisted: boolean = (currentUser ? page.content : cartSessions).some(
     (it) =>
       it.productDetail.id === productDetail.id &&
       JSON.stringify(it.toppings) === JSON.stringify(toppingsSelected) &&
@@ -95,9 +96,7 @@ export default function ProductCart() {
               loading={isCreateLoading}
               disabled={isExisted || currentUser?.role === "RETAILER"}
             >
-              {isExisted
-                ? "Món ăn đã có trong giỏ hàng"
-                : "Thêm vào giỏ hàng"}
+              {isExisted ? "Món ăn đã có trong giỏ hàng" : "Thêm vào giỏ hàng"}
             </Button>
             {cartGroupsJoined.length > 0 && (
               <Dropdown

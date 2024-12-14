@@ -97,10 +97,8 @@ export const CheckoutPage = () => {
                 <span className="float-right">
                   {isCalculateShippingFeeLoading ? (
                     <Spin />
-                  ) : currentUser?.addressId ? (
-                    currencyFormat(shippingFee)
                   ) : (
-                    currencyFormat(0)
+                    currencyFormat(shippingFee)
                   )}
                 </span>
               </div>

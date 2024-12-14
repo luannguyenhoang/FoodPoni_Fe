@@ -4,7 +4,7 @@ import {
 } from "@/redux/modules/address.ts";
 import { RootState } from "@/redux/store.ts";
 import { Address, SearchResult } from "@/type/types.ts";
-import { AutoComplete, Button, Form, Input, Popconfirm } from "antd";
+import { Button, Form, Input, Popconfirm, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,8 +23,8 @@ export default function ShippingAddressInfo({
   address?: Address;
 }) {
   const dispatch = useDispatch();
-  const { isUpdateLoading, addressesSearched } = useSelector(
-    (state: RootState) => state.address,
+  const { isUpdateLoading, addressesSearched, isSearchLoading } = useSelector(
+    (state: RootState) => state.address
   );
 
   const [form] = useForm<AddressRequest>();
@@ -69,20 +69,22 @@ export default function ShippingAddressInfo({
                 return Promise.resolve();
               }
               return Promise.reject(
-                new Error("Vui lòng chọn địa chỉ nhận hàng."),
+                new Error("Vui lòng chọn địa chỉ nhận hàng.")
               );
             },
           }),
         ]}
       >
-        <AutoComplete
+        <Select
+          showSearch
+          loading={isSearchLoading}
           options={addressesSearched.map(
             (result: SearchResult, index: number) => ({
               value: result.display_name,
               label: result.display_name,
               data: result,
               key: index,
-            }),
+            })
           )}
           onSelect={(_: string, option: { data: SearchResult }): void => {
             if (option.data.display_name) {
@@ -95,6 +97,7 @@ export default function ShippingAddressInfo({
             dispatch(startSearchAddressAction({ value }));
           }}
           placeholder="Tìm kiếm địa chỉ tại đây"
+          notFoundContent={null}
           style={{ width: "100%" }}
         />
       </Form.Item>

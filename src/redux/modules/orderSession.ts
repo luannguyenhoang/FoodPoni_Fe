@@ -5,7 +5,7 @@ import { call, fork, put, select, take } from "redux-saga/effects";
 import { addMessageSuccess } from "./message";
 import { createOrderSession } from "@/utils/api/orderSession";
 import { RootState } from "../store";
-import { CartSessionState } from "./cartSession";
+import { CartSessionState, filterCartSessionAction } from "./cartSession";
 import { OrderSessionRequest } from "@/components/molecules/OrderSessionForm";
 
 export type OrderSessionState = {
@@ -93,23 +93,23 @@ export const createOrderSessionAction = createAction<{
 }>(`${SLICE_NAME}/createOrderSessionRequest`);
 
 function* handleFetchOrderSessions() {
-//   while (true) {
-//     try {
-//     } catch (e) {
-//       yield put(addMessageSuccess({ error: e }));
-//       yield put(fetchOrderSessionsFailure());
-//     }
-//   }
+  //   while (true) {
+  //     try {
+  //     } catch (e) {
+  //       yield put(addMessageSuccess({ error: e }));
+  //       yield put(fetchOrderSessionsFailure());
+  //     }
+  //   }
 }
 
 function* handleFetchOrderSession() {
-//   while (true) {
-//     try {
-//     } catch (e) {
-//       yield put(addMessageSuccess({ error: e }));
-//       yield put(fetchOrderSessionFailure());
-//     }
-//   }
+  //   while (true) {
+  //     try {
+  //     } catch (e) {
+  //       yield put(addMessageSuccess({ error: e }));
+  //       yield put(fetchOrderSessionFailure());
+  //     }
+  //   }
 }
 
 function* handleCreateOrderSession() {
@@ -125,8 +125,19 @@ function* handleCreateOrderSession() {
 
     try {
       yield put(updateLoadingForCreatingSuccess());
-      const id: string = yield call(createOrderSession, cartSessions, values);
-      sessionStorage.removeItem("cartSessions");
+      const id: string = yield call(
+        createOrderSession,
+        cartSessions.filter((it) => it.checked),
+        values
+      );
+
+      yield put(createOrderSessionSuccess());
+
+      yield put(filterCartSessionAction({ isChecked: true }));
+      sessionStorage.setItem(
+        "cartSessions",
+        JSON.stringify(cartSessions.filter((it) => it.checked))
+      );
 
       navigate(`/order/${id}`);
     } catch (e) {

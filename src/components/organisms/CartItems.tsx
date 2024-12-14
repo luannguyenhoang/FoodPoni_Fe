@@ -36,7 +36,7 @@ export const CartItems = ({
         enableDeleteAll={
           (currentUser ? page.content.length : cartSessions.length) > 0
         }
-        isAllChecked={isAllChecked}
+        isAllChecked={currentUser? isAllChecked: cartSessions.every((cart) => cart.checked)}
         isDeleteAllLoading={isDeleteAllLoading}
         isCheckAllLoading={isCheckAllLoading}
         isDisableCheckbox={

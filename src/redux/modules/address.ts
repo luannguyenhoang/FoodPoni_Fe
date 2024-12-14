@@ -2,6 +2,7 @@ import { AddressRequest } from "@/components/organisms/ShippingAddressInfo.tsx";
 import { Address, Page, SearchResult } from "@/type/types.ts";
 import {
   calculateShippingFee,
+  calculateShippingFee2,
   createAddress,
   deleteAddressById,
   getAddressesPage,
@@ -11,7 +12,7 @@ import {
 import { QueryParams } from "@/utils/api/common.ts";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Task } from "redux-saga";
-import { call, cancel, delay, fork, put, take } from "redux-saga/effects";
+import { call, cancel, delay, fork, put, race, take } from "redux-saga/effects";
 import { addMessageSuccess } from "./message";
 
 export type AddressState = {
@@ -28,6 +29,7 @@ export type AddressState = {
   readonly isFetchLoading: boolean;
   readonly isUpdateLoading: boolean;
   readonly isCalculateShippingFeeLoading: boolean;
+  readonly isSearchLoading: boolean;
 };
 
 const initialState: AddressState = {
@@ -48,6 +50,7 @@ const initialState: AddressState = {
   isFetchLoading: false,
   isUpdateLoading: false,
   isCalculateShippingFeeLoading: false,
+  isSearchLoading: false,
 };
 
 const SLICE_NAME = "address";
@@ -185,12 +188,21 @@ const addressSlide = createSlice({
         }),
       },
     }),
-    updateAddressesSearchedSuccess: (
+    updateLoadingForSearchingAddressSuccess: (state) => ({
+      ...state,
+      isSearchLoading: true,
+    }),
+    searchAddressesSuccess: (
       state,
       action: PayloadAction<{ addresses: Array<SearchResult> }>
     ) => ({
       ...state,
       addressesSearched: action.payload.addresses,
+      isSearchLoading: false,
+    }),
+    searchAddressesFailure: (state) => ({
+      ...state,
+      isSearchLoading: false,
     }),
     updateLoadingForCalculatingShippingFeeSuccess: (state) => ({
       ...state,
@@ -229,7 +241,9 @@ export const {
   updateLoadingForAddressDeleteSuccess,
   deleteAddressSuccess,
   deleteAddressFailure,
-  updateAddressesSearchedSuccess,
+  updateLoadingForSearchingAddressSuccess,
+  searchAddressesSuccess,
+  searchAddressesFailure,
   updateLoadingForCalculatingShippingFeeSuccess,
   updateShippingFeeSuccess,
   updateShippingFeeFailure,
@@ -251,6 +265,10 @@ export const startSearchAddressAction = createAction<{
 export const calculateShippingFeeAction = createAction<{
   addressId: string;
 }>(`${SLICE_NAME}/calculateShippingFeeRequest`);
+export const calculateShippingFee2Action = createAction<{
+  lon: number;
+  lat: number;
+}>(`${SLICE_NAME}/calculateShippingFee2Request`);
 
 function* handleFetchAddresses() {
   while (true) {
@@ -348,35 +366,55 @@ function* handleStartSearchAddress() {
       startSearchAddressAction
     );
 
-    if (searchTask) {
-      yield cancel(searchTask);
-      searchTask = null;
-    }
+    try {
+      yield put(updateLoadingForSearchingAddressSuccess());
+      if (searchTask) {
+        yield cancel(searchTask);
+        searchTask = null;
+      }
 
-    searchTask = yield fork(searchAddress, value);
+      searchTask = yield fork(searchAddress, value);
+    } catch (e) {
+      yield put(addMessageSuccess({ error: e }));
+      yield put(searchAddressesFailure());
+    }
   }
 }
 
 function* searchAddress(value: string) {
   yield delay(500);
   const result: Array<SearchResult> = yield call(searchAddresses, value);
-  yield put(updateAddressesSearchedSuccess({ addresses: result }));
+  yield put(searchAddressesSuccess({ addresses: result }));
 }
 
 function* handleCalculateShippingFee() {
   while (true) {
     const {
-      payload: { addressId },
-    }: ReturnType<typeof calculateShippingFeeAction> = yield take(
-      calculateShippingFeeAction
-    );
+      startCaculateShippingFee,
+      startCaculateShippingFee2,
+    }: {
+      startCaculateShippingFee: ReturnType<typeof calculateShippingFeeAction>;
+      startCaculateShippingFee2: ReturnType<typeof calculateShippingFee2Action>;
+    } = yield race({
+      startCaculateShippingFee: take(calculateShippingFeeAction),
+      startCaculateShippingFee2: take(calculateShippingFee2Action),
+    });
+
     try {
       yield put(updateLoadingForCalculatingShippingFeeSuccess());
-      const shippingFee: number = yield call(calculateShippingFee, addressId);
+      const shippingFee: number = startCaculateShippingFee
+        ? yield call(
+            calculateShippingFee,
+            startCaculateShippingFee.payload.addressId
+          )
+        : yield call(
+            calculateShippingFee2,
+            startCaculateShippingFee2.payload.lon,
+            startCaculateShippingFee2.payload.lat
+          );
       yield put(updateShippingFeeSuccess({ shippingFee }));
     } catch (e) {
       yield put(addMessageSuccess({ error: e }));
-
       yield put(updateShippingFeeFailure());
     }
   }

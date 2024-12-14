@@ -17,6 +17,7 @@ export const createOrderSession = (
           toppings: it.toppings.map((it) => it.id),
           type: it.type,
           quantity: it.quantity,
+          note: it.note,
         }
       )),
       addressCreationRequestDTO: {

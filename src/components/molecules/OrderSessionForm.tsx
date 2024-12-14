@@ -1,8 +1,11 @@
-import { startSearchAddressAction } from "@/redux/modules/address";
+import {
+  calculateShippingFee2Action,
+  startSearchAddressAction,
+} from "@/redux/modules/address";
 import { createOrderSessionAction } from "@/redux/modules/orderSession";
 import { RootState } from "@/redux/store";
 import { SearchResult } from "@/type/types";
-import { AutoComplete, Button, Form, Input, Popconfirm } from "antd";
+import { Button, Form, Input, Popconfirm, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -19,11 +22,13 @@ export type OrderSessionRequest = {
 export const OrderSessionForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { addressesSearched } = useSelector(
+  const { addressesSearched, isSearchLoading } = useSelector(
     (state: RootState) => state.address
   );
   const { cartSessions } = useSelector((state: RootState) => state.cartSession);
-  const { isCreateLoading } = useSelector((state: RootState) => state.orderSession);
+  const { isCreateLoading } = useSelector(
+    (state: RootState) => state.orderSession
+  );
 
   const [form] = useForm<OrderSessionRequest>();
 
@@ -74,7 +79,9 @@ export const OrderSessionForm = () => {
           }),
         ]}
       >
-        <AutoComplete
+        <Select
+          showSearch
+          loading={isSearchLoading}
           options={addressesSearched.map(
             (result: SearchResult, index: number) => ({
               value: result.display_name,
@@ -88,12 +95,20 @@ export const OrderSessionForm = () => {
               form.setFieldValue("address", option.data.display_name);
               form.setFieldValue("lon", option.data.lon);
               form.setFieldValue("lat", option.data.lat);
+
+              dispatch(
+                calculateShippingFee2Action({
+                  lon: option.data.lon,
+                  lat: option.data.lat,
+                })
+              );
             }
           }}
           onSearch={(value: string): void => {
             dispatch(startSearchAddressAction({ value }));
           }}
           placeholder="Tìm kiếm địa chỉ tại đây"
+          notFoundContent={null}
           style={{ width: "100%" }}
         />
       </Form.Item>
@@ -111,7 +126,7 @@ export const OrderSessionForm = () => {
             type="primary"
             htmlType="button"
             loading={isCreateLoading}
-            disabled={cartSessions.length <= 0}
+            disabled={cartSessions.filter((it) => it.checked).length <= 0}
             block
           >
             Đặt hàng

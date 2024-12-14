@@ -2,13 +2,7 @@ import { ProductState } from "@/redux/modules/product.ts";
 import { RootState } from "@/redux/store.ts";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
-import {
-  fork,
-  put,
-  race,
-  select,
-  take
-} from "redux-saga/effects";
+import { fork, put, race, select, take } from "redux-saga/effects";
 import { CartState } from "./cart";
 import { toSlug } from "@/utils/common";
 
@@ -17,7 +11,7 @@ export type CartSessionState = {
 };
 
 const initialState: CartSessionState = {
-  cartSessions: JSON.parse(sessionStorage.getItem("cartSessions") || "[]")
+  cartSessions: JSON.parse(sessionStorage.getItem("cartSessions") || "[]"),
 };
 
 const SLICE_NAME = "cartSession";
@@ -38,21 +32,21 @@ const cartSessionListSlide = createSlice({
       action: PayloadAction<{ cartSessions: CartSessionState["cartSessions"] }>
     ) => ({
       ...state,
-      cartSessions: action.payload.cartSessions
+      cartSessions: action.payload.cartSessions,
     }),
     updateNoteCartSessionSuccess: (
       state,
       action: PayloadAction<{ cartSessions: CartSessionState["cartSessions"] }>
     ) => ({
       ...state,
-      cartSessions: action.payload.cartSessions
+      cartSessions: action.payload.cartSessions,
     }),
     updateCheckedCartSessionSuccess: (
       state,
       action: PayloadAction<{ cartSessions: CartSessionState["cartSessions"] }>
     ) => ({
       ...state,
-      cartSessions: action.payload.cartSessions
+      cartSessions: action.payload.cartSessions,
     }),
     updateAllCheckedCartSessionSuccess: (
       state,
@@ -61,15 +55,16 @@ const cartSessionListSlide = createSlice({
       ...state,
       cartSessions: action.payload.cartSessions,
     }),
-    deleteCartSessionSuccess: (state, action: PayloadAction<{ cartSessions: CartSessionState["cartSessions"] }>) => (
-      {
-        ...state,
-        cartSessions: action.payload.cartSessions
-      }
-    ),
+    deleteCartSessionSuccess: (
+      state,
+      action: PayloadAction<{ cartSessions: CartSessionState["cartSessions"] }>
+    ) => ({
+      ...state,
+      cartSessions: action.payload.cartSessions,
+    }),
     deleteAllCartSessionSuccess: (state) => ({
       ...state,
-      cartSessions: []
+      cartSessions: [],
     }),
   },
 });
@@ -109,19 +104,29 @@ export const updateCheckedCartSessionAction = createAction<{
   checked: boolean;
 }>(`${SLICE_NAME}/updateCheckedCartSessionRequest`);
 
-export const updateAllCheckedCartSessionAction = createAction(`${SLICE_NAME}/updateAllCheckedCartSessionRequest`);
+export const updateAllCheckedCartSessionAction = createAction(
+  `${SLICE_NAME}/updateAllCheckedCartSessionRequest`
+);
 
 export const deleteCartSessionAction = createAction<{
   id: string;
 }>(`${SLICE_NAME}/deleteCartSessionRequest`);
 
-export const deleteAllCartSessionsAction = createAction(`${SLICE_NAME}/deleteAllCartsRequest`);
+export const filterCartSessionAction = createAction<{
+  isChecked: boolean;
+}>(`${SLICE_NAME}/filterCartSessionRequest`);
+
+export const deleteAllCartSessionsAction = createAction(
+  `${SLICE_NAME}/deleteAllCartsRequest`
+);
 
 function* handleCreateCart() {
   while (true) {
     const {
       payload: { navigate },
-    }: ReturnType<typeof createCartSessionAction> = yield take(createCartSessionAction);
+    }: ReturnType<typeof createCartSessionAction> = yield take(
+      createCartSessionAction
+    );
 
     const {
       productDetail,
@@ -136,7 +141,12 @@ function* handleCreateCart() {
     );
 
     const cartSession = {
-      id: productDetail.id.substring(0, 7) + Array.from(new Set(toppingsSelected.map(it => it.id.substring(0, 7)))).join(",") + toSlug(type || ""),
+      id:
+        productDetail.id.substring(0, 7) +
+        Array.from(
+          new Set(toppingsSelected.map((it) => it.id.substring(0, 7)))
+        ).join(",") +
+        toSlug(type || ""),
       quantity,
       productName: product.name + " - " + productDetail.name,
       productDetail: {
@@ -150,11 +160,15 @@ function* handleCreateCart() {
       checked: true,
     };
 
-    const { cartSessions }: CartSessionState = yield select((state: RootState) => state.cartSession);
+    const { cartSessions }: CartSessionState = yield select(
+      (state: RootState) => state.cartSession
+    );
 
     const newCartSessions = cartSessions
-      .map(it => it.id)
-      .includes(cartSession.id) ? cartSessions : [...cartSessions, cartSession];
+      .map((it) => it.id)
+      .includes(cartSession.id)
+      ? cartSessions
+      : [...cartSessions, cartSession];
 
     yield put(createCartSesstionSuccess({ cartSessions: newCartSessions }));
 
@@ -172,14 +186,20 @@ function* handleUpdateQuantityCart() {
       updateQuantityButton,
       updateQuantityInput,
     }: {
-      updateQuantityButton: ReturnType<typeof updateQuantityButtonCartSessionAction>;
-      updateQuantityInput: ReturnType<typeof updateQuantityInputCartSessionAction>;
+      updateQuantityButton: ReturnType<
+        typeof updateQuantityButtonCartSessionAction
+      >;
+      updateQuantityInput: ReturnType<
+        typeof updateQuantityInputCartSessionAction
+      >;
     } = yield race({
       updateQuantityButton: take(updateQuantityButtonCartSessionAction),
       updateQuantityInput: take(updateQuantityInputCartSessionAction),
     });
 
-    const { id } = updateQuantityButton ? updateQuantityButton.payload : updateQuantityInput.payload;
+    const { id } = updateQuantityButton
+      ? updateQuantityButton.payload
+      : updateQuantityInput.payload;
 
     const { cartSessions }: CartSessionState = yield select(
       (state: RootState) => state.cartSession
@@ -208,16 +228,22 @@ function* handleUpdateQuantityCart() {
         quantityEdit = quantity;
       }
 
-      const { cartSessions }: CartSessionState = yield select((state: RootState) => state.cartSession);
+      const { cartSessions }: CartSessionState = yield select(
+        (state: RootState) => state.cartSession
+      );
 
-      const newCartSessions = cartSessions.map((it) => it.id === id ? {
-        ...it,
-        quantity: quantityEdit
-      } : it);
+      const newCartSessions = cartSessions.map((it) =>
+        it.id === id
+          ? {
+              ...it,
+              quantity: quantityEdit,
+            }
+          : it
+      );
 
       yield put(
         updateQuantityCartSessionSuccess({
-          cartSessions: newCartSessions
+          cartSessions: newCartSessions,
         })
       );
 
@@ -230,7 +256,9 @@ function* handleUpdateNoteCart() {
   while (true) {
     const {
       payload: { id, note },
-    }: ReturnType<typeof updateNoteCartSessionAction> = yield take(updateNoteCartSessionAction);
+    }: ReturnType<typeof updateNoteCartSessionAction> = yield take(
+      updateNoteCartSessionAction
+    );
 
     const { cartSessions }: CartSessionState = yield select(
       (state: RootState) => state.cartSession
@@ -238,15 +266,19 @@ function* handleUpdateNoteCart() {
 
     const cartSession = cartSessions.find((it) => it.id === id);
 
-    const newCartSessions = cartSessions.map((it) => it.id === id ? {
-      ...it,
-      note
-    } : it);
+    const newCartSessions = cartSessions.map((it) =>
+      it.id === id
+        ? {
+            ...it,
+            note,
+          }
+        : it
+    );
 
     if (cartSession) {
       yield put(
         updateNoteCartSessionSuccess({
-          cartSessions: newCartSessions
+          cartSessions: newCartSessions,
         })
       );
     }
@@ -259,7 +291,9 @@ function* handleUpdateCheckedCart() {
   while (true) {
     const {
       payload: { id, checked },
-    }: ReturnType<typeof updateCheckedCartSessionAction> = yield take(updateCheckedCartSessionAction);
+    }: ReturnType<typeof updateCheckedCartSessionAction> = yield take(
+      updateCheckedCartSessionAction
+    );
 
     const { cartSessions }: CartSessionState = yield select(
       (state: RootState) => state.cartSession
@@ -267,15 +301,19 @@ function* handleUpdateCheckedCart() {
 
     const cartSession = cartSessions.find((it) => it.id === id);
 
-    const newCartSessions = cartSessions.map((it) => it.id === id ? {
-      ...it,
-      checked
-    } : it);
+    const newCartSessions = cartSessions.map((it) =>
+      it.id === id
+        ? {
+            ...it,
+            checked,
+          }
+        : it
+    );
 
     if (cartSession) {
       yield put(
         updateCheckedCartSessionSuccess({
-          cartSessions: newCartSessions
+          cartSessions: newCartSessions,
         })
       );
     }
@@ -290,14 +328,14 @@ function* handleUpdateAllCheckedCart() {
 
     const { cartSessions }: CartSessionState = yield select(
       (state: RootState) => state.cartSession
-    )
+    );
 
     const checked = cartSessions.every((it) => it.checked);
 
     const newCartSessions = cartSessions.map((it) => ({
       ...it,
-      checked: !checked
-    }))
+      checked: !checked,
+    }));
 
     yield put(
       updateAllCheckedCartSessionSuccess({
@@ -312,14 +350,25 @@ function* handleUpdateAllCheckedCart() {
 function* handleDeleteCart() {
   while (true) {
     const {
-      payload: { id },
-    }: ReturnType<typeof deleteCartSessionAction> = yield take(deleteCartSessionAction);
+      deleteCartSession,
+      filterCartSession,
+    }: {
+      deleteCartSession: ReturnType<typeof deleteCartSessionAction>;
+      filterCartSession: ReturnType<typeof filterCartSessionAction>;
+    } = yield race({
+      deleteCartSession: take(deleteCartSessionAction),
+      filterCartSession: take(filterCartSessionAction),
+    });
 
     const { cartSessions }: CartSessionState = yield select(
       (state: RootState) => state.cartSession
     );
 
-    const newCartSessions = cartSessions.filter((it) => it.id !== id);
+    const newCartSessions = deleteCartSession
+      ? cartSessions.filter((it) => it.id !== deleteCartSession.payload.id)
+      : cartSessions.filter(
+          (it) => it.checked !== filterCartSession.payload.isChecked
+        );
 
     yield put(deleteCartSessionSuccess({ cartSessions: newCartSessions }));
 
