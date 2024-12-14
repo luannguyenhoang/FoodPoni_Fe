@@ -4,8 +4,6 @@ import {
 } from "@/redux/modules/topping";
 import { RootState } from "@/redux/store";
 import { formatCurrency } from "@/utils/common";
-
-import { fetchProductsAction } from "@/redux/modules/product";
 import {
   CloseCircleOutlined,
   CopyOutlined,
@@ -123,7 +121,7 @@ export const AdminToppingTablePage = () => {
               : ["createdAt,desc"];
 
           dispatch(
-            fetchProductsAction({
+            fetchToppingsAction({
               queryParams: {
                 page: pagination.current ? pagination.current - 1 : 0,
                 pageSize: pagination.pageSize,
@@ -252,34 +250,26 @@ const getColumns = () => {
       title: "Tên toppping",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 2,
-      },
+      sorter: true
     },
 
     {
       title: "Giá",
       dataIndex: "price",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 1,
-      },
+      sorter: true
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 1,
-      },
+      sorter: true
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updatedAt",
       showSorterTooltip: { target: "full-header" },
-      sorter: {
-        multiple: 1,
-      },
+      sorter: true
     },
     {
       title: "Hành động",
