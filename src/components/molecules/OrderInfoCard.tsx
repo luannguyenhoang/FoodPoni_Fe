@@ -1,10 +1,12 @@
 import { Order } from "@/type/types";
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
   DollarCircleOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
-import { Card, Divider, Typography } from "antd";
+import { Card, Divider, Tag, Typography } from "antd";
 
 const { Text } = Typography;
 
@@ -63,28 +65,34 @@ export function OrderInfoCard({ selectedOrder }: { selectedOrder: Order }) {
             </Text>
 
             <span className="mx-2">/</span>
-            {["VNPAY", "POSTPAID"].includes(selectedOrder.payment.method) && (
-              <>
-                {selectedOrder.payment.status === "PAID" && (
-                  <span className="text-green-500">Đã thanh toán</span>
-                )}
-                {selectedOrder.payment.status === "PAYING" && (
-                  <span className="text-yellow-500">Đang thanh toán</span>
-                )}
-              </>
-            )}
-            {selectedOrder.payment.method === "CASH" && (
-              <span
-                className={`${selectedOrder.status === "COMPLETED" ? "text-green-500" : "text-yellow-500"}`}
-              >
-                {selectedOrder.status === "COMPLETED"
-                  ? "Đã thanh toán"
-                  : "Chưa thanh toán"}
-              </span>
-            )}
-            {selectedOrder.payment.status === "FAILED" && (
-              <span className="text-red-500">Thanh toán thất bại</span>
-            )}
+            <Tag
+              color={
+                ["PAID", "REFUNDED"].includes(selectedOrder.payment.status)
+                  ? "success"
+                  : selectedOrder.payment.status === "FAILED"
+                    ? "error"
+                    : ""
+              }
+              icon={
+                ["PAID", "REFUNDED"].includes(selectedOrder.payment.status) ? (
+                  <CheckCircleOutlined />
+                ) : selectedOrder.payment.status === "FAILED" ? (
+                  <CloseCircleOutlined />
+                ) : (
+                  ""
+                )
+              }
+            >
+              {selectedOrder.payment.status === "PAID"
+                ? "Đã thanh toán"
+                : selectedOrder.payment.status === "PAYING"
+                  ? "Đang thanh toán"
+                  : selectedOrder.payment.status === "REFUNDING"
+                    ? "Đang hoàn tiền"
+                    : selectedOrder.payment.status === "REFUNDED"
+                      ? "Đã hoàn tiền"
+                      : "Thất bại"}
+            </Tag>
           </div>
           {selectedOrder.payment.paymentUrl && (
             <div className="flex items-center mt-1">

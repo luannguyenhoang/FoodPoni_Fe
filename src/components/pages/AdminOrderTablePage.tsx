@@ -162,9 +162,7 @@ export const AdminOrderTablePage = () => {
               {it.payment.method === "POSTPAID" && (
                 <SalesLabel color="red-500" content="Nợ" />
               )}
-              {it.payment.method === "VNPAY" && (
-                <SalesLabel content="VNPAY" />
-              )}
+              {it.payment.method === "VNPAY" && <SalesLabel content="VNPAY" />}
               <AvatarInfo
                 fullName={it.shippingAddress.fullName}
                 avatar={it.user && it.user.avatar}
@@ -233,47 +231,51 @@ export const AdminOrderTablePage = () => {
                   {it.status === "PENDING" && (
                     <>
                       <span className="mr-4 italic">Chờ xác nhận</span>
-                      <Popconfirm
-                        title="Bạn chắc chắn xác nhận đơn hàng này?"
-                        onConfirm={() =>
-                          dispatch(
-                            updateOrderStatusAction({
-                              oid: it.id,
-                              orderStatus: "APPROVED",
-                            })
-                          )
-                        }
-                      >
-                        <Button
-                          type="info"
-                          size="small"
-                          icon={<SyncOutlined spin />}
-                          loading={it.isUpdateStatusLoading}
-                        >
-                          Xác nhận
-                        </Button>
-                      </Popconfirm>
-                      <Popconfirm
-                        title="Bạn chắc chắn từ chối đơn hàng này?"
-                        onConfirm={() =>
-                          dispatch(
-                            updateOrderStatusAction({
-                              oid: it.id,
-                              orderStatus: "REJECTED",
-                            })
-                          )
-                        }
-                      >
-                        <Button
-                          type="primary"
-                          danger
-                          size="small"
-                          icon={<CloseCircleOutlined />}
-                          loading={it.isUpdateStatusLoading}
-                        >
-                          Từ chối
-                        </Button>
-                      </Popconfirm>
+                      {it.payment.method !== "VNPAY" && (
+                        <>
+                          <Popconfirm
+                            title="Bạn chắc chắn xác nhận đơn hàng này?"
+                            onConfirm={() =>
+                              dispatch(
+                                updateOrderStatusAction({
+                                  oid: it.id,
+                                  orderStatus: "APPROVED",
+                                })
+                              )
+                            }
+                          >
+                            <Button
+                              type="info"
+                              size="small"
+                              icon={<SyncOutlined spin />}
+                              loading={it.isUpdateStatusLoading}
+                            >
+                              Xác nhận
+                            </Button>
+                          </Popconfirm>
+                          <Popconfirm
+                            title="Bạn chắc chắn từ chối đơn hàng này?"
+                            onConfirm={() =>
+                              dispatch(
+                                updateOrderStatusAction({
+                                  oid: it.id,
+                                  orderStatus: "REJECTED",
+                                })
+                              )
+                            }
+                          >
+                            <Button
+                              type="primary"
+                              danger
+                              size="small"
+                              icon={<CloseCircleOutlined />}
+                              loading={it.isUpdateStatusLoading}
+                            >
+                              Từ chối
+                            </Button>
+                          </Popconfirm>
+                        </>
+                      )}
                     </>
                   )}
 
