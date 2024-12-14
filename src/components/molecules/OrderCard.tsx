@@ -38,7 +38,7 @@ const OrderCard = ({
   index,
   orderGroup,
 }: {
-  order: Order & { isUpdatePaymentStatusLoading?: boolean };  
+  order: Order & { isUpdatePaymentStatusLoading?: boolean };
   index: number;
   orderGroup: boolean;
 }) => {
@@ -67,7 +67,8 @@ const OrderCard = ({
                 <span>{`${index}. Đơn hàng #${order.id?.substring(0, 7).toUpperCase()} `}</span>
                 <span className="text-primary font-bold">/</span>
                 <span>
-                  {order.createdAt && format(new Date(order.createdAt), "HH:mm:ss - dd/MM/yyyy")}
+                  {order.createdAt &&
+                    format(new Date(order.createdAt), "HH:mm:ss - dd/MM/yyyy")}
                 </span>
               </div>
             }
@@ -113,13 +114,18 @@ const OrderCard = ({
                           e.stopPropagation();
                           e.preventDefault();
                         }}
-                        disabled={order.payment.status === "REFUNDING"}
+                        disabled={
+                          order.payment.status === "REFUNDING" ||
+                          order.payment.status === "REFUNDED"
+                        }
                         loading={order.isUpdatePaymentStatusLoading}
                         icon={<TransactionOutlined />}
                       >
                         {order.payment.status === "REFUNDING"
                           ? "Đang hoàn tiền"
-                          : "Hoàn tiền"}
+                          : order.payment.status === "REFUNDED"
+                            ? "Đã hoàn tiền"
+                            : "Hoàn tiền"}
                       </Button>
                     </Popconfirm>
                   )}
