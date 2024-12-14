@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateRoomCodeInputting } from "@/redux/modules/cartGroup.ts";
+import "./CodeInput.scss";
 
 export const CodeInput = () => {
   const [code, setCode] = useState("");
@@ -17,7 +18,7 @@ export const CodeInput = () => {
         <input
           key={index}
           ref={(el) => (inputRefs.current[index] = el)}
-          type="text"
+          type="number"
           className="h-12 w-12 rounded-lg border-2 border-orange-400 bg-gray-200 p-3 text-center text-xl font-bold text-gray-800 outline-none hover:border-orange-500 focus:border-orange-600 focus:bg-white focus:ring-2 focus:ring-orange-300"
           maxLength={1}
           onChange={(e) => {
