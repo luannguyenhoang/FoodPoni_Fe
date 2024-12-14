@@ -1,11 +1,9 @@
 import { Order, OrderItem, Page } from "@/type/types";
-import { groupOrderByUser } from "@/utils/common";
-import { Card, Divider, List } from "antd";
+import { currencyFormat, groupOrderByUser } from "@/utils/common";
+import { Card, Divider, Table } from "antd";
 import { AvatarInfo } from "../atoms/AvatarInfo";
 import { OrderSummary } from "../atoms/OrderSummaryProps";
 import { OrderItemDetail } from "../organisms/OrderItemDetail";
-import { OrderItemPricing } from "./OrderItemPricing";
-import HeadTable from "./TableHead";
 
 export const OrderGroupDetailCard = ({
   currentUserId,
@@ -19,7 +17,6 @@ export const OrderGroupDetailCard = ({
   selectedOrder: Order;
 }) => (
   <Card size="small" loading={isFetchOrderItemsLoading}>
-    <HeadTable />
     <Divider className="my-4" />
     {groupOrderByUser(page.content).map((groupedItems) => (
       <div key={groupedItems.user.id} className="mb-4">
@@ -35,26 +32,66 @@ export const OrderGroupDetailCard = ({
             />
           }
         >
-          <List
-            dataSource={groupedItems.items}
-            renderItem={(item) => (
-              <List.Item className="hover:bg-gray-50 transition-colors duration-200">
-                <div
-                  className={`grid grid-cols-10 py-3 px-6 w-full relative rounded-lg
-                        `}
-                >
-                  <div className="col-span-5">
-                    <OrderItemDetail
-                      orderItem={item}
-                      orderStatus={selectedOrder.status}
-                    />
-                  </div>
-                  <div className="col-span-5">
-                    <OrderItemPricing orderItem={item} />
-                  </div>
-                </div>
-              </List.Item>
-            )}
+          <Table
+            size="small"
+            loading={isFetchOrderItemsLoading}
+            columns={[
+              {
+                title: "STT",
+                dataIndex: "no",
+              },
+              {
+                title: "Tên món ăn",
+                dataIndex: "name",
+              },
+              {
+                title: "Số lượng",
+                dataIndex: "quantity",
+              },
+              {
+                title: "Đơn giá",
+                dataIndex: "price",
+              },
+              {
+                title: "Thành tiền",
+                dataIndex: "total",
+              },
+              {
+                title: "Ghi chú",
+                dataIndex: "note",
+              },
+            ]}
+            dataSource={page.content.map((it, index) => ({
+              ...it,
+              no: index + 1,
+              name: (
+                <>
+                  <AvatarInfo
+                    fullName={
+                      it.productDetail.product.name +
+                      " - " +
+                      it.productDetail.name
+                    }
+                    info={it.toppings.map((topping) => topping.name).join(", ")}
+                    avatar={it.productDetail.images[0]}
+                  />
+                  <OrderItemDetail
+                    orderItem={it}
+                    orderStatus={selectedOrder.status}
+                  />
+                </>
+              ),
+              price: currencyFormat(
+                it.price + it.toppings.reduce((sum, tp) => sum + tp.price, 0)
+              ),
+              total: currencyFormat(
+                (it.price +
+                  it.toppings.reduce((sum, tp) => sum + tp.price, 0)) *
+                  it.quantity
+              ),
+              note: it.note,
+            }))}
+            pagination={false}
           />
         </Card>
         <Divider className="my-4" />

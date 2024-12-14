@@ -1,12 +1,14 @@
+import { buyBackCartAction } from "@/redux/modules/cart";
+import {
+  setInitialRatedItems,
+  setSelectOrderItemRate,
+  setShowModalAddRate,
+} from "@/redux/modules/rate";
 import { RootState } from "@/redux/store";
 import { OrderItem } from "@/type/types";
-import { server } from "@/utils/server";
-import { useDispatch, useSelector } from "react-redux";
-import { OrderItemActions } from "../molecules/OrderItemActions";
-import RateAdd from "./RateAdd";
 import { useEffect } from "react";
-import { setInitialRatedItems } from "@/redux/modules/rate";
-import { currencyFormat } from "@/utils/common.ts";
+import { useDispatch, useSelector } from "react-redux";
+import RateAdd from "./RateAdd";
 
 type Props = {
   orderItem: OrderItem;
@@ -39,50 +41,43 @@ export function OrderItemDetail({ orderItem, orderStatus }: Props) {
     }
     return isMatch;
   });
+  const isRated = ratedOrderItems.includes(orderItem.id);
 
   return (
-    <div className="font-sans text-[17px] text-gray-600">
-      <div className="flex gap-2">
-        <img
-          src={server + orderItem.productDetail.product.thumbnail}
-          className="w-[70px] h-[70px] aspect-square object-cover rounded-lg"
-          alt={orderItem.productDetail.product.name}
-        />
-        <div>
-          <div>
-            {orderItem.productDetail.product.name +
-              " " +
-              orderItem.productDetail.name}
-            {orderItem.type && (
-              <div className="text-[10px]">
-                Loại:{" "}
-                <span className="bg-primary text-white rounded-lg mr-1 px-1">
-                  {orderItem.type}
-                </span>
-              </div>
-            )}
-            {orderItem.toppings && orderItem.toppings.length > 0 && (
-              <div className="text-[10px]">
-                <div>Topping:</div>
-                {orderItem.toppings.map((tp, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="inline-block bg-primary text-white rounded-lg mr-1 px-1 mb-1"
-                    >{`${tp.name}: ${currencyFormat(tp.price)}`}</div>
-                  );
-                })}
-              </div>
-            )}
+    <div className="font-sans text-[17px] text-gray-600 mt-2 gap-2">
+      <div className="flex flex-wrap gap-2">
+        {orderStatus === "COMPLETED" && (
+          <div
+            className="text-sm cursor-pointer hover:underline"
+            onClick={() => {
+              dispatch(setSelectOrderItemRate(orderItem.id));
+              dispatch(setShowModalAddRate(true));
+            }}
+          >
+            Đánh giá
           </div>
-          <OrderItemActions
-            orderItem={orderItem}
-            orderStatus={orderStatus}
-            isInCart={isInCart}
-          />
-          <RateAdd />
-        </div>
+        )}
+        {isRated && (
+          <div className="text-sm cursor-pointer hover:underline">
+            Xem đánh giá
+          </div>
+        )}
+
+        {!isInCart && (
+          <div
+            className="text-sm cursor-pointer hover:underline"
+            onClick={() => {
+              if (orderItem) {
+                dispatch(buyBackCartAction({ orderItem }));
+              }
+              window.location.href = "/checkout";
+            }}
+          >
+            Mua lại
+          </div>
+        )}
       </div>
+      <RateAdd />
     </div>
   );
 }

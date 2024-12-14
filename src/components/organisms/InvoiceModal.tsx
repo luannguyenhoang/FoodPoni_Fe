@@ -2,6 +2,7 @@ import { ScrollPane } from "@/components/atoms/ScrollPane.tsx";
 import { fetchOrderByRetailerAction } from "@/redux/modules/order";
 import { fetchOrderItemsByOrderIdAction } from "@/redux/modules/orderItem";
 import { RootState } from "@/redux/store";
+import { currencyFormat } from "@/utils/common";
 import { EyeOutlined, FilePdfOutlined } from "@ant-design/icons";
 import { Button, Modal, Spin, Table, Tooltip } from "antd";
 import { format } from "date-fns";
@@ -10,7 +11,6 @@ import jsPDF from "jspdf";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarInfo } from "../atoms/AvatarInfo";
-import { currencyFormat } from "@/utils/common";
 import { OrderSummary } from "../atoms/OrderSummaryProps";
 
 export const InvoiceModal = ({ id }: { id: string }) => {
@@ -36,13 +36,13 @@ export const InvoiceModal = ({ id }: { id: string }) => {
         footer={null}
         width={600}
       >
-        <InvoiceContent />
+        <InvoiceContent maxHeight="600px" />
       </Modal>
     </>
   );
 };
 
-export const InvoiceContent = () => {
+export const InvoiceContent = ({ maxHeight }: { maxHeight?: string }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const { isFetchLoading: isFetchOrderLoading, selectedOrder } = useSelector(
     (state: RootState) => state.order
@@ -53,7 +53,7 @@ export const InvoiceContent = () => {
 
   return (
     <Spin spinning={isFetchOrderLoading}>
-      <ScrollPane maxHeight="max-h-[600px]">
+      <ScrollPane maxHeight={`max-h-[${maxHeight}]`}>
         <div
           className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8"
           ref={ref}
@@ -66,9 +66,16 @@ export const InvoiceContent = () => {
                 className="h-16 w-auto mr-4"
               />
               <div>
-                <div className="text-2xl font-bold">Hóa đơn</div>
+                <div className="text-2xl font-bold">
+                  {selectedOrder?.status !== "COMPLETED"
+                    ? "Đơn hàng"
+                    : "Hóa đơn"}
+                </div>
                 <p className="text-gray-600">
-                  Hóa đơn #{selectedOrder?.id.substring(0, 7).toUpperCase()}
+                  {selectedOrder?.status !== "COMPLETED"
+                    ? "Đơn hàng "
+                    : "Hóa đơn "}
+                  #{selectedOrder?.id.substring(0, 7).toUpperCase()}
                 </p>
               </div>
             </div>
@@ -84,17 +91,19 @@ export const InvoiceContent = () => {
                     )}
                 </span>
               </p>
-              <p className="text-gray-600">
-                Giao lúc:{" "}
-                <span className="font-semibold">
-                  {selectedOrder &&
-                    selectedOrder.status === "COMPLETED" &&
-                    format(
-                      new Date(selectedOrder.updatedAt),
-                      "HH:mm:ss - dd/MM/yyyy"
-                    )}
-                </span>
-              </p>
+              {selectedOrder?.status === "COMPLETED" && (
+                <p className="text-gray-600">
+                  Giao lúc:{" "}
+                  <span className="font-semibold">
+                    {selectedOrder &&
+                      selectedOrder.status === "COMPLETED" &&
+                      format(
+                        new Date(selectedOrder.updatedAt),
+                        "HH:mm:ss - dd/MM/yyyy"
+                      )}
+                  </span>
+                </p>
+              )}
             </div>
           </header>
 
@@ -114,6 +123,9 @@ export const InvoiceContent = () => {
             <p className="text-gray-600">
               Số diện thoại: {selectedOrder?.shippingAddress.phoneNumber}
             </p>
+            {selectedOrder?.note && (
+              <p className="text-gray-600">Ghi chú: {selectedOrder?.note}</p>
+            )}
           </section>
 
           <Table
@@ -140,6 +152,10 @@ export const InvoiceContent = () => {
                 title: "Thành tiền",
                 dataIndex: "total",
               },
+              {
+                title: "Ghi chú",
+                dataIndex: "note",
+              },
             ]}
             dataSource={page.content.map((it, index) => ({
               ...it,
@@ -163,6 +179,7 @@ export const InvoiceContent = () => {
                   it.toppings.reduce((sum, tp) => sum + tp.price, 0)) *
                   it.quantity
               ),
+              note: it.note,
             }))}
             pagination={false}
           />
