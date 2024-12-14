@@ -46,25 +46,31 @@ export const HeaderMain = memo(() => {
           />
           <div className="md:block">FoodPoni</div>
         </div>
-        {!currentUser ? (
-          <Button
-            className="block lg:hidden"
-            type="primary"
-            onClick={() => navigate("/login")}
-            icon={<UserOutlined />}
-            size="large"
-          >
-            <span className="lg:inline">Đăng nhập</span>
-          </Button>
-        ) : (
-          !isLg && (
-            <div className="flex items-center justify-end gap-4 order-2 lg:hidden">
+        <div className="flex items-center justify-end gap-4 order-2 lg:order-3">
+          {!isLg &&
+            (!currentUser ||
+              (currentUser && currentUser.role !== "RETAILER")) && (
               <Cart currentUser={currentUser} />
-              <NotificationDropdown />
-              <UserDropdown />
-            </div>
-          )
-        )}
+            )}
+          {!currentUser ? (
+            <Button
+              className="block lg:hidden"
+              type="primary"
+              onClick={() => navigate("/login")}
+              icon={<UserOutlined />}
+              size="large"
+            >
+              <span className="sr-only md:not-sr-only">Đăng nhập</span>
+            </Button>
+          ) : (
+            !isLg && (
+              <>
+                <NotificationDropdown />
+                <UserDropdown />
+              </>
+            )
+          )}
+        </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] items-center gap-4">
         <div className="order-1 lg:order-2 mt-4 lg:mt-0">
