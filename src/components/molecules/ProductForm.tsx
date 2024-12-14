@@ -172,6 +172,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
             mode="multiple"
             allowClear
             placeholder="Chọn..."
+            optionFilterProp="label"
             loading={isProductCategoryFetchLoading}
             options={productCategoryPage.content.map((item) => ({
               value: item.id,
@@ -188,6 +189,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
             mode="multiple"
             allowClear
             placeholder="Chọn..."
+            optionFilterProp="label"
             options={toppingPage.content.map((item) => ({
               value: item.id,
               label: `${item.name}: ${currencyFormat(item.price)}`,
