@@ -16,14 +16,14 @@ export const ProductCategoriesModalEdit = ({
       <div onClick={() => setOpen(!isOpen)}>
         {isOpen ? (
           <>
-            <CloseOutlined /> "Close"
+            <CloseOutlined /> "Đóng"
           </>
         ) : (
           "Chỉnh sửa"
         )}
       </div>
       <Modal
-        title="Edit"
+        title="Sửa"
         open={isOpen}
         onCancel={() => setOpen(false)}
         width={700}

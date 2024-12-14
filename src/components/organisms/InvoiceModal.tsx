@@ -125,7 +125,7 @@ export const InvoiceContent = () => {
                 dataIndex: "no",
               },
               {
-                title: "__________Tên món ăn",
+                title: "Tên món ăn",
                 dataIndex: "name",
               },
               {

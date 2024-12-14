@@ -15,12 +15,12 @@ export const ToppingModalEdit = ({ topping }: { topping?: Topping }) => {
             <CloseOutlined /> "Close"
           </>
         ) : (
-          "Edit"
+          "Sửa"
         )}{" "}
         Topping
       </div>
       <Modal
-        title="Edit"
+        title="Sửa"
         open={isOpen}
         onCancel={() => setOpen(false)}
         width={700}

@@ -53,12 +53,12 @@ export const ImagesSelector = ({
           className={`${className} p-1`}
           onClick={() => setOpenDialog(true)}
         >
-          Choose
+          Chọn
         </Button>
       </div>
 
       <Modal
-        title="Choose thumbnail"
+        title="Chọn ảnh"
         open={openDialog}
         width={800}
         onCancel={() => {
@@ -73,7 +73,7 @@ export const ImagesSelector = ({
               setOpenDialog(false);
             }}
           >
-            Cancel
+            Hủy
           </Button>,
           <Button
             key="link"
@@ -86,7 +86,7 @@ export const ImagesSelector = ({
               }
             }}
           >
-            Choose
+            Chọn
           </Button>,
         ]}
       >

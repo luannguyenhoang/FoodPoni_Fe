@@ -191,7 +191,7 @@ export const AdminProductTablePage = () => {
                       label: <ProductModalEdit product={it} />,
                     };
                   }
-                  if (item.key === "4") {
+                  if (item.key === "3") {
                     return {
                       ...item,
                       onClick: () => handleViewDetails(it.id),
@@ -271,11 +271,6 @@ const tableRowActions = [
   },
   {
     key: "3",
-    icon: <EyeOutlined />,
-    label: "Preview Card",
-  },
-  {
-    key: "4",
     icon: <EyeOutlined />,
     label: "Xem món ăn chi tiết",
   },

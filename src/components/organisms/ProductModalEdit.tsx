@@ -12,14 +12,14 @@ export const ProductModalEdit = ({ product }: { product?: Product }) => {
       <div onClick={() => setOpen(!isOpen)}>
         {isOpen ? (
           <>
-            <CloseOutlined /> "Close"
+            <CloseOutlined /> "Đóng"
           </>
         ) : (
-          "Edit"
+          "Sửa"
         )}{" "}
-        Product
+        món ăn
       </div>
-      <Modal title="Edit" open={isOpen} onCancel={() => setOpen(false)} width={700} footer={null}>
+      <Modal title="Sửa món ăn" open={isOpen} onCancel={() => setOpen(false)} width={700} footer={null}>
         <ProductForm product={product} />
       </Modal>
     </>

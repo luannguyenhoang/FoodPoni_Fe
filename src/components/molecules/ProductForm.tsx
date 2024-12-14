@@ -91,7 +91,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
         <Form.Item name="id" label="ID" hidden={true}>
           <Input disabled />
         </Form.Item>
-        <Form.Item name="thumbnail" label="Thumbnail">
+        <Form.Item name="thumbnail" label="Ảnh món ăn">
           <ImageSelector
             className="w-[120px] h-[120px]"
             value={form.getFieldValue("thumbnail")}
@@ -101,7 +101,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
         <div className="w-full">
           <Form.Item
             name="name"
-            label="Product Name"
+            label="Tên món ăn"
             rules={[{ required: true }]}
           >
             <Input
@@ -161,17 +161,17 @@ export const ProductForm = ({ product }: { product?: Product }) => {
           </Form.Item>
         </div>
       </div>
-      <Form.Item name="shortDescription" label="Short Description">
+      <Form.Item name="shortDescription" label="Mô tả ngắn">
         <Input.TextArea showCount maxLength={500} />
       </Form.Item>
-      <Form.Item name="productCategories" label="Product Categories">
+      <Form.Item name="productCategories" label="Danh mục món ăn">
         {isProductCategoryFetchLoading ? (
           <Spin />
         ) : (
           <Select
             mode="multiple"
             allowClear
-            placeholder="Please select"
+            placeholder="Chọn..."
             loading={isProductCategoryFetchLoading}
             options={productCategoryPage.content.map((item) => ({
               value: item.id,
@@ -187,7 +187,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
           <Select
             mode="multiple"
             allowClear
-            placeholder="Please select"
+            placeholder="Chọn..."
             options={toppingPage.content.map((item) => ({
               value: item.id,
               label: `${item.name}: ${currencyFormat(item.price)}`,
@@ -198,7 +198,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
       <Form.List name="types">
         {(fields, { add, remove }) => (
           <>
-            <Form.Item label="Types" required={false}>
+            <Form.Item label="Loại" required={false}>
               <ScrollPane maxHeight="max-h-[200px]">
                 <div className="grid grid-cols-3 gap-4">
                   {fields.map((field) => (
@@ -241,7 +241,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
                 onClick={() => add()}
                 icon={<PlusOutlined />}
               >
-                Add Type
+                Thêm loại
               </Button>
             </Form.Item>
           </>
@@ -250,7 +250,7 @@ export const ProductForm = ({ product }: { product?: Product }) => {
       <Form.Item className="mb-0 text-end">
         <Popconfirm title="Are you sure to save?" onConfirm={form.submit}>
           <Button loading={isCreateLoading || isUpdateLoading} type="primary">
-            Save
+            Lưu
           </Button>
         </Popconfirm>
       </Form.Item>

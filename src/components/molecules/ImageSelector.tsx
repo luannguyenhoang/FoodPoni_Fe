@@ -35,7 +35,7 @@ export const ImageSelector = ({
               src={getThumbnail(value)}
             />
           ) : (
-            "Choose"
+            "Chọn"
           )}
         </Button>
         {value && (
@@ -56,13 +56,13 @@ export const ImageSelector = ({
         )}
       </div>
       <Modal
-        title="Choose thumbnail"
+        title="Chọn ảnh"
         open={openDialog}
         width={800}
         onCancel={() => setOpenDialog(false)}
         footer={[
           <Button key="back" onClick={() => setOpenDialog(false)}>
-            Cancel
+            Hủy
           </Button>,
           <Button
             key="link"
@@ -75,7 +75,7 @@ export const ImageSelector = ({
               }
             }}
           >
-            Choose
+            Chọn
           </Button>,
         ]}
       >

@@ -95,7 +95,7 @@ export const UserForm = ({ user }: { user: User }) => {
       <Form.Item className="mb-0 text-end">
         <Popconfirm title="Are you sure to save?" onConfirm={form.submit}>
           <Button loading={isUpdateLoading} type="primary">
-            Save
+            Lưu
           </Button>
         </Popconfirm>
       </Form.Item>

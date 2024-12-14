@@ -13,7 +13,7 @@ export default function EmptyNotice({ w, h, src, message }: Props) {
           <img
             className={`w-${w} h-${h} object-cover`}
             src={src}
-            alt="No Product"
+            alt="Không có món ăn"
           />
         </div>
         <div className="text-2xl text-center text-gray-500 nunito">

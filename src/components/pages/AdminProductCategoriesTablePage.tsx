@@ -241,7 +241,7 @@ const tableRowActions = [
   {
     key: "1",
     icon: <EditOutlined />,
-    label: "Edit",
+    label: "Sửa",
   },
   {
     key: "2",
