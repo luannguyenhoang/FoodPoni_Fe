@@ -111,6 +111,7 @@ export const ConsolidatedInvoicePage = () => {
             format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
           updatedAt:
             it.updatedAt &&
+            it.payment.status === "PAID" &&
             format(new Date(it.updatedAt), "HH:mm:ss - dd/MM/yyyy"),
           status: (
             <div className="text-center italic">

@@ -219,3 +219,20 @@ export const refundConfirmationrefund = (oid: string): Promise<void> => {
     )
     .then((res: AxiosResponse<void>) => res.data);
 };
+
+export const CancelOrder = (
+  oid: string,
+  queryParams: QueryParams
+): Promise<void> => {
+  return apiWithToken()
+    .patch(
+      generateQueryString(`/customer/orders/${oid}`, queryParams),
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    )
+    .then((res: AxiosResponse<void>) => res.data);
+};

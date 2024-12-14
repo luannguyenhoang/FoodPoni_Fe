@@ -2,6 +2,7 @@ import { OrderRequest } from "@/components/molecules/OrderForm";
 import { Order, OrderStatus, Page } from "@/type/types";
 import { QueryParams } from "@/utils/api/common";
 import {
+  CancelOrder,
   createOrderByCashOrPostPaid,
   createOrderByVNPay,
   getOrderByCustomer,
@@ -15,13 +16,13 @@ import {
   refundConfirmationrefund,
   updateStatus,
 } from "@/utils/api/order";
+import { getOrderSession } from "@/utils/api/orderSession";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { notification } from "antd";
 import { NavigateFunction } from "react-router-dom";
 import { call, fork, put, race, take } from "redux-saga/effects";
 import { deleteCartGroupSuccess, updateVisible } from "./cartGroup";
 import { addMessageSuccess } from "./message";
-import { getOrderSession } from "@/utils/api/orderSession";
 
 export type OrderState = {
   readonly page: Page<
@@ -231,6 +232,11 @@ const orderSlice = createSlice({
         }),
       },
     }),
+    cancelOrderSuccess: (state, action: PayloadAction<{ oid: string }>) => {
+      state.page.content = state.page.content.filter(
+        (order) => order.id !== action.payload.oid
+      );
+    },
   },
 });
 
@@ -252,6 +258,7 @@ export const {
   refundSuccess,
   refundFailure,
   refundConfirmationSuccess,
+  cancelOrderSuccess,
 } = orderSlice.actions;
 export const updateOrderItemsAction = createAction<void>(
   `${SLICE_NAME}/updateOrderItemsRequest`
@@ -301,6 +308,10 @@ export const refundAction = createAction<{
 export const refundConfirmationAction = createAction<{
   oid: string;
 }>(`${SLICE_NAME}/refundConfirmationRequest`);
+export const cancelOrderAction = createAction<{
+  oid: string;
+  queryParams: QueryParams;
+}>(`${SLICE_NAME}/cancelOrderRequest`);
 
 function* handleFetchOrders() {
   while (true) {
@@ -309,13 +320,15 @@ function* handleFetchOrders() {
       fetOrdersByRetailer,
       fetPostPaidOrders,
       fetRefund,
-      fetPostPaidOrdersByRetailer
+      fetPostPaidOrdersByRetailer,
     }: {
       fetchOrdersByCustomer: ReturnType<typeof fetchOrdersByCustomerAction>;
       fetOrdersByRetailer: ReturnType<typeof fetchOrdersByRetailerAction>;
       fetPostPaidOrders: ReturnType<typeof fetchPostPaidOrdersAction>;
       fetRefund: ReturnType<typeof fetchRefundByRetailerAction>;
-      fetPostPaidOrdersByRetailer: ReturnType<typeof fetchPostPaidOrdersByRetailerAction>;
+      fetPostPaidOrdersByRetailer: ReturnType<
+        typeof fetchPostPaidOrdersByRetailerAction
+      >;
     } = yield race({
       fetchOrdersByCustomer: take(fetchOrdersByCustomerAction),
       fetOrdersByRetailer: take(fetchOrdersByRetailerAction),
@@ -407,7 +420,7 @@ function* handleFetchOrders() {
         const page: Page<Order[]> = yield call(
           getPostPaidOrdersByRetailer,
           fetPostPaidOrdersByRetailer.payload.ppid,
-          fetPostPaidOrdersByRetailer.payload.queryParams,
+          fetPostPaidOrdersByRetailer.payload.queryParams
         );
         yield put(
           fetchOrdersSuccess({
@@ -419,7 +432,7 @@ function* handleFetchOrders() {
                 isUpdatePaymentStatusLoading: false,
               })),
             },
-          }),
+          })
         );
       }
     } catch (e) {
@@ -617,10 +630,26 @@ function* handleRefundOperations() {
   }
 }
 
+function* handleCancelOrder() {
+  while (true) {
+    const {
+      payload: { oid, queryParams },
+    }: ReturnType<typeof cancelOrderAction> = yield take(cancelOrderAction);
+    try {
+      yield put(updateLoadingForUpdatingStatus({ oid }));
+      yield call(CancelOrder, oid, queryParams);
+      yield put(cancelOrderSuccess({ oid }));
+    } catch (e) {
+      yield put(addMessageSuccess({ error: e }));
+    }
+  }
+}
+
 export const orderSagas = [
   fork(handleFetchOrders),
   fork(handleFetchOrder),
   fork(handleCreateOrder),
   fork(handleUpdateOrderStatus),
   fork(handleRefundOperations),
+  fork(handleCancelOrder),
 ];

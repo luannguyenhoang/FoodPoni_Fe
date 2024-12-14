@@ -1,8 +1,9 @@
-import { refundAction } from "@/redux/modules/order";
+import { cancelOrderAction, refundAction } from "@/redux/modules/order";
 import { Order } from "@/type/types";
 import { currencyFormat } from "@/utils/common.ts";
 import {
   EnvironmentOutlined,
+  StopOutlined,
   TransactionOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -38,7 +39,10 @@ const OrderCard = ({
   index,
   orderGroup,
 }: {
-  order: Order & { isUpdatePaymentStatusLoading?: boolean };
+  order: Order & {
+    isUpdatePaymentStatusLoading?: boolean;
+    isUpdateStatusLoading?: boolean;
+  };
   index: number;
   orderGroup: boolean;
 }) => {
@@ -129,6 +133,34 @@ const OrderCard = ({
                       </Button>
                     </Popconfirm>
                   )}
+
+                {order.status === "PENDING" && (
+                  <Popconfirm
+                    title="Bạn có chắc chắn muốn hủy đơn hàng?"
+                    onConfirm={() => {
+                      dispatch(
+                        cancelOrderAction({
+                          oid: order.id,
+                          queryParams: {
+                            status: "CANCELLED",
+                          },
+                        })
+                      );
+                    }}
+                  >
+                    <Button
+                      className="mt-4 bg-primary text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                      loading={order.isUpdateStatusLoading}
+                      icon={<StopOutlined />}
+                    >
+                      Hủy đơn hàng
+                    </Button>
+                  </Popconfirm>
+                )}
               </div>
             </div>
           </Card>
