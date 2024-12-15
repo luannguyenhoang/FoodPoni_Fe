@@ -43,7 +43,7 @@ export const getMessage = (key: string) => {
     case "a11":
       return "Slug bạn cung cấp đã được sử dụng. Hãy thử một slug khác để đảm bảo tính duy nhất.";
     case "a12":
-      return "Địa chỉ của bạn cần phải nằm trong khoảng cách 1 km. Vui lòng kiểm tra và nhập lại.";
+      return "Địa chỉ của bạn cần phải nằm trong khoảng cách 3km. Vui lòng kiểm tra và nhập lại.";
 
     case "c01":
       return "Có vẻ như danh mục sản không tồn tại. Hãy thử lại!";

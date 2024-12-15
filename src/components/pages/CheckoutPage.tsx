@@ -114,7 +114,7 @@ export const CheckoutPage = () => {
                     {currencyFormat(
                       calculateTotalAmount(
                         currentUser ? page.content : cartSessions
-                      ) + (currentUser?.addressId ? shippingFee : 0)
+                      ) + shippingFee
                     )}
                   </div>
                   <div className="right-0 text-gray-400">
