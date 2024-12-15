@@ -111,6 +111,7 @@ export const AdminToppingTablePage = () => {
         selectedRowKeys={selectedRowKeys}
       />
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0
@@ -250,26 +251,26 @@ const getColumns = () => {
       title: "Tên toppping",
       dataIndex: "name",
       showSorterTooltip: { target: "full-header" },
-      sorter: true
+      sorter: true,
     },
 
     {
       title: "Giá",
       dataIndex: "price",
       showSorterTooltip: { target: "full-header" },
-      sorter: true
+      sorter: true,
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
       showSorterTooltip: { target: "full-header" },
-      sorter: true
+      sorter: true,
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updatedAt",
       showSorterTooltip: { target: "full-header" },
-      sorter: true
+      sorter: true,
     },
     {
       title: "Hành động",

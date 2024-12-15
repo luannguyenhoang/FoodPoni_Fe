@@ -16,8 +16,6 @@ export const AccountInformationPage = () => {
 
   useEffect(() => {
     if (currentUser?.id) {
-      console.log(currentUser);
-      
       dispatch(fetchUserByIdAction({ uid: currentUser.id }));
     }
   }, [currentUser?.id]);

@@ -2,7 +2,7 @@ import EmptyNotice from "@/components/atoms/EmptyNotice";
 import { fetchPostPaidOrdersAction } from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
 import { ORDER_STATUSES } from "@/utils/common";
-import { Badge, List, Segmented, Space } from "antd";
+import { Badge, List, Segmented } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -48,53 +48,50 @@ export const PostPaidDetailPage = () => {
   // }
   return (
     <ManagementLayout>
-      <Space direction="vertical" style={{ marginBottom: 16 }}>
-        <div className="flex justify-between">
-          <Segmented
-            value={status}
-            onChange={(value) => {
-              if (!isFetchLoading) {
-                setStatus(value);
-                setCurrentPage(1);
-              }
-            }}
-            disabled={isFetchLoading}
-            options={ORDER_STATUSES.map((it) => ({
-              label: (
-                <Badge
-                  className="px-1"
-                  count={
-                    it.key === "APPROVED" &&
-                    it.key === status &&
-                    !isFetchLoading
-                      ? page.totalElements
-                      : 0
-                  }
-                  overflowCount={999}
-                >
-                  {it.label}
-                </Badge>
-              ),
-              value: it.key,
-            }))}
-          />
-          <Segmented
-            className="bg-primary text-white"
-            value={orderGroup}
-            onChange={(value) => {
-              if (!isFetchLoading) {
-                setOrderGroup(value);
-                setCurrentPage(1);
-              }
-            }}
-            disabled={isFetchLoading}
-            options={[
-              { label: "Đơn hàng thường", value: false },
-              { label: "Đơn hàng nhóm", value: true },
-            ]}
-          />
-        </div>
-      </Space>
+      <div className="overflow-scroll scrollbar-rounded mb-4">
+        <Segmented
+          value={status}
+          onChange={(value) => {
+            if (!isFetchLoading) {
+              setStatus(value);
+              setCurrentPage(1);
+            }
+          }}
+          disabled={isFetchLoading}
+          options={ORDER_STATUSES.map((it) => ({
+            label: (
+              <Badge
+                className="px-1"
+                count={
+                  it.key === "APPROVED" && it.key === status && !isFetchLoading
+                    ? page.totalElements
+                    : 0
+                }
+                overflowCount={999}
+              >
+                {it.label}
+              </Badge>
+            ),
+            value: it.key,
+          }))}
+        />
+      </div>
+      <Segmented
+        className="bg-primary text-white h-fit"
+        value={orderGroup}
+        onChange={(value) => {
+          if (!isFetchLoading) {
+            setOrderGroup(value);
+            setCurrentPage(1);
+          }
+        }}
+        disabled={isFetchLoading}
+        options={[
+          { label: "Đơn hàng thường", value: false },
+          { label: "Đơn hàng nhóm", value: true },
+        ]}
+      />
+
       {!isFetchLoading ? (
         <List
           grid={{

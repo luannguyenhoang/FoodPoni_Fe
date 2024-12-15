@@ -50,7 +50,7 @@ export const ManagementLayout = ({ children }: { children: ReactNode }) => {
       <div className="bg-[#F5F5FA]">
         <div className="px-2 max-w-screen-xl mx-auto py-4">
           <div className="flex gap-4">
-            <div className="p-4 bg-white rounded-lg h-fit">
+            <div className="w-full p-4 bg-white rounded-lg h-fit">
               <div className="flex">
                 <Image
                   width={50}
@@ -71,9 +71,9 @@ export const ManagementLayout = ({ children }: { children: ReactNode }) => {
               <div className="mt-[16px]">
                 <Menu
                   onClick={(e) => navigate(`${e.key}`)}
-                  className="min-w-[256px] rounded-[8px] !border-none"
+                  className="w-full lg:min-w-[256px] rounded-[8px] !border-none mb-4"
                   selectedKeys={[location.pathname]}
-                  mode="inline"
+                  mode="horizontal"
                   items={[
                     getItem(
                       "Thông tin tài khoản",
@@ -117,9 +117,9 @@ export const ManagementLayout = ({ children }: { children: ReactNode }) => {
                     ),
                   ]}
                 />
+                <div className="w-full">{children}</div>
               </div>
             </div>
-            <div className="w-full">{children}</div>
           </div>
         </div>
       </div>

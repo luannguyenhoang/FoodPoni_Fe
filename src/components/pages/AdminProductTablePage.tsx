@@ -116,6 +116,7 @@ export const AdminProductTablePage = () => {
         selectedRowKeys={selectedRowKeys}
       />
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0

@@ -237,6 +237,7 @@ export const AdminDashboardPage = () => {
         <Col md={24} lg={24} xl={12} xxl={12}>
           <Card title="Món ăn phổ biến" style={cardStyles}>
             <Table
+              scroll={{ x: "max-content" }}
               pagination={false}
               columns={PRODUCTS_COLUMNS()}
               dataSource={popularProducts.map((it, index) => ({
@@ -262,6 +263,7 @@ export const AdminDashboardPage = () => {
         <Col md={24} lg={24} xl={12} xxl={12}>
           <Card title="Món ăn chi tiết bán chạy nhất">
             <Table
+              scroll={{ x: "max-content" }}
               pagination={false}
               loading={isProductsDetialerLoading}
               columns={SELLER_COLUMNS()}
@@ -287,6 +289,7 @@ export const AdminDashboardPage = () => {
         <Col md={24} lg={24} xl={12} xxl={12}>
           <Card title="Danh mục phổ biến" style={cardStyles}>
             <Table
+              scroll={{ x: "max-content" }}
               pagination={false}
               loading={isPopularCategoriesLoading}
               columns={CATEGORIES_COLUMNS()}
@@ -436,6 +439,7 @@ export const CustomerOrder = () => {
       ]}
     >
       <Table
+        scroll={{ x: "max-content" }}
         pagination={false}
         loading={isFetchLoading}
         columns={ORDERS_COLUMNS()}

@@ -88,7 +88,7 @@ const OrderCard = ({
                 <EnvironmentOutlined /> Địa chỉ: {order.shippingAddress.address}
               </li>
             </ul>
-            <div className="flex justify-between">
+            <div className="block lg:flex justify-between">
               <div className="flex justify-between">
                 <div className="flex justify-end mt-4 text-xl gap-2 font-sans">
                   <div className="text-gray-400">Tổng tiền:</div>
@@ -149,7 +149,7 @@ const OrderCard = ({
                     }}
                   >
                     <Button
-                      className="mt-4 bg-primary text-white"
+                      className="mt-4 w-full lg:w-auto bg-primary text-white"
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();

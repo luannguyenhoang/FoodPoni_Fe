@@ -2,7 +2,7 @@ import EmptyNotice from "@/components/atoms/EmptyNotice";
 import { fetchOrdersByCustomerAction } from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
 import { ORDER_STATUSES } from "@/utils/common";
-import { Badge, List, Segmented, Space } from "antd";
+import { Badge, List, Segmented } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ProductLoading } from "../atoms/ProductLoading";
@@ -42,7 +42,7 @@ export const OrderPage = () => {
 
   return (
     <ManagementLayout>
-      <Space direction="vertical" style={{ marginBottom: 16 }}>
+      <div className="overflow-scroll scrollbar-rounded mb-4">
         <Segmented
           value={status}
           onChange={(value) => {
@@ -69,7 +69,7 @@ export const OrderPage = () => {
             value: it.key,
           }))}
         />
-      </Space>
+      </div>
       {!isFetchLoading ? (
         <List
           grid={{

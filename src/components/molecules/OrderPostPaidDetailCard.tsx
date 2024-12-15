@@ -18,6 +18,7 @@ export const OrderPostPaidDetailCard = ({
     <Table
       size="small"
       loading={isFetchOrderItemsLoading}
+      scroll={{ x: "max-content" }}
       columns={[
         {
           title: "STT",

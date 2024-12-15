@@ -13,7 +13,7 @@ const { Text } = Typography;
 
 export function OrderInfoCard({ selectedOrder }: { selectedOrder: Order }) {
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-4 bg-gray-100 p-5 rounded-lg">
+    <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-4 rounded-lg">
       <Card>
         <div>
           <h3 className="font-bold text-primary text-xl">NGƯỜI NHẬN</h3>

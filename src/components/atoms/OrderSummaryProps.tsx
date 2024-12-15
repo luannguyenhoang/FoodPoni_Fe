@@ -38,12 +38,13 @@ export const OrderSummary = ({
   );
 
   return (
-    <div className="flex justify-between mt-4">
+    <div className="block md:flex justify-between mt-4">
       <div className="content-end">
         {openButton && (
           <Button
-            loading={isBuyAgainLoading}
-            className="text-primary"
+          className="text-primary mb-4 md:mb-0"
+          loading={isBuyAgainLoading}
+          size="small"
             disabled={isAllItemsInCart || orderStatus !== "COMPLETED"}
             onClick={() => {
               dispatch(buyAgainOrderAction({ orderItems }));

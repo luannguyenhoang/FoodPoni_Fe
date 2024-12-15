@@ -17,15 +17,19 @@ export const OrderDetailCard = ({
   <Card size="small" loading={isFetchOrderItemsLoading}>
     <Table
       size="small"
+      virtual
       loading={isFetchOrderItemsLoading}
+      scroll={{ x: 800, y: "max-content" }}
       columns={[
         {
           title: "STT",
           dataIndex: "no",
+          width: 50,
         },
         {
           title: "Tên món ăn",
           dataIndex: "name",
+          width: 300,
         },
         {
           title: "Số lượng",

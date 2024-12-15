@@ -146,6 +146,7 @@ export const AdminPostPaidTablePage = () => {
         />
       </div>
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0 // Kiểm tra nếu sorter không phải là đối tượng rỗng
@@ -216,7 +217,8 @@ export const AdminPostPaidTablePage = () => {
             it.createdAt &&
             format(new Date(it.createdAt), "HH:mm:ss - dd/MM/yyyy"),
           updatedAt:
-            it.updatedAt && it.payment.status === "PAID" &&
+            it.updatedAt &&
+            it.payment.status === "PAID" &&
             format(new Date(it.updatedAt), "HH:mm:ss - dd/MM/yyyy"),
           paymentStatus:
             it.payment.status === "PAYING" || it.payment.status === "FAILED" ? (

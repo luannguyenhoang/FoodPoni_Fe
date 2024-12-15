@@ -17,7 +17,6 @@ export const OrderGroupDetailCard = ({
   selectedOrder: Order;
 }) => (
   <Card size="small" loading={isFetchOrderItemsLoading}>
-    <Divider className="my-4" />
     {groupOrderByUser(page.content).map((groupedItems) => (
       <div key={groupedItems.user.id} className="mb-4">
         <Card
@@ -35,14 +34,17 @@ export const OrderGroupDetailCard = ({
           <Table
             size="small"
             loading={isFetchOrderItemsLoading}
+            scroll={{ x: "max-content" }}
             columns={[
               {
                 title: "STT",
                 dataIndex: "no",
+                width: 50,
               },
               {
                 title: "Tên món ăn",
                 dataIndex: "name",
+                width: 300,
               },
               {
                 title: "Số lượng",
@@ -99,7 +101,7 @@ export const OrderGroupDetailCard = ({
       </div>
     ))}
     <OrderSummary
-      openButton={true}
+      openButton={false}
       totalAmount={selectedOrder.totalAmount}
       shippingFee={selectedOrder.shippingFee}
       orderItems={page.content}

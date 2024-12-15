@@ -1,14 +1,14 @@
 import { CartGroup } from "@/components/organisms/CartGroup";
-import ChatBot from "@/components/organisms/ChatBot";
-import { useState } from "react";
+// import ChatBot from "@/components/organisms/ChatBot";
+// import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
-  const [showChatbot, setShowChatbot] = useState(false);
+  // const [showChatbot, setShowChatbot] = useState(false);
 
-  const toggleChatbot = () => {
-    setShowChatbot(!showChatbot);
-  };
+  // const toggleChatbot = () => {
+  //   setShowChatbot(!showChatbot);
+  // };
   return (
     <div className="bg-[#f5f5fa] w-full">
       <footer className="py-8 px-4 md:px-6 lg:px-8">
@@ -64,7 +64,7 @@ export default function Footer() {
           </div>
         </div>
       </footer>
-      <ChatBot showChatbot={showChatbot} toggleChatbot={toggleChatbot} />
+      {/* <ChatBot showChatbot={showChatbot} toggleChatbot={toggleChatbot} /> */}
       <CartGroup />
     </div>
   );

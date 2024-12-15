@@ -131,6 +131,7 @@ export const InvoiceContent = ({ maxHeight }: { maxHeight?: string }) => {
           <Table
             size="small"
             loading={isFetchOrderItemLoading}
+            scroll={{ x: "max-content" }}
             columns={[
               {
                 title: "STT",

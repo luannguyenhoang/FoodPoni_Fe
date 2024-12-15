@@ -49,7 +49,7 @@ export const OrderPostPaidDetailPage = () => {
 
   return (
     <ManagementLayout>
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto max-w-7xl">
         <Card className="shadow-lg rounded-lg border-0">
           <OrderHeader
             orderId={selectedOrder.id}

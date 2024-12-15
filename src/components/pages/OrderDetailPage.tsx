@@ -44,7 +44,16 @@ export const OrderDetailPage = () => {
 
   return (
     <ManagementLayout>
-      <div className="container mx-auto px-4 py-8">
+      <Link to="/don-hang" className="inline-block mb-4">
+        <Button
+          type="link"
+          icon={<LeftOutlined />}
+          className="text-orange-600 hover:text-orange-400"
+        >
+          Quay lại đơn hàng của tôi
+        </Button>
+      </Link>
+      <div className="container mx-auto">
         <Card className="shadow-lg">
           <OrderHeader
             orderId={selectedOrder.id}

@@ -14,7 +14,7 @@ import {
   EditOutlined,
   EyeInvisibleOutlined,
   EyeOutlined,
-  ImportOutlined
+  ImportOutlined,
 } from "@ant-design/icons";
 import {
   Badge,
@@ -151,6 +151,7 @@ export const AdminProductDetailTablePage = () => {
         productName={productSelected.product.name}
       />
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0

@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 export const SupportPage = () => {
   return (
     <ManagementLayout>
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-white rounded-lg">
+      <div className="max-w-7xl mx-auto bg-white rounded-lg">
         <div className="text-2xl font-bold mb-8">Trung tâm hỗ trợ</div>
 
         {/* Chăm sóc khách hàng */}

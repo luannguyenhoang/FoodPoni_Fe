@@ -9,4 +9,4 @@ export const HEADER_TOKEN: string = "Authorization";
 export const server: string =
   process.env.NODE_ENV === "production"
     ? "https://curly-space-dollop-p9w4vv6547ph6pgr-8080.app.github.dev"
-    : "http://localhost:8080";
+    : "http://192.168.1.10:8080";

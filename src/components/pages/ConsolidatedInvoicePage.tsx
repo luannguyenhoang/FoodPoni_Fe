@@ -55,6 +55,7 @@ export const ConsolidatedInvoicePage = () => {
     <ManagementLayout>
       <TableToolbar />
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0 // Kiểm tra nếu sorter không phải là đối tượng rỗng
@@ -168,6 +169,7 @@ const getColumns = () => {
     {
       title: "STT",
       dataIndex: "no",
+      width: 50,
     },
     {
       title: "Mã phiếu nợ",

@@ -1,17 +1,17 @@
 import { SalesLabel } from "@/components/atoms/SalesLabel.tsx";
 import {
-    fetchPostPaidOrdersByRetailerAction,
-    updateOrderStatusAction
+  fetchPostPaidOrdersByRetailerAction,
+  updateOrderStatusAction,
 } from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
 import { currencyFormat, ORDER_STATUSES } from "@/utils/common";
 import {
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    CloseCircleOutlined,
-    FrownOutlined,
-    SendOutlined,
-    SyncOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  FrownOutlined,
+  SendOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import { Popconfirm, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import Button from "antd-button-color";
@@ -61,6 +61,7 @@ export const AdminDetailPostPaidPage = () => {
         {`#${ppid?.toUpperCase().substring(0, 7)}`}
       </h2>
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0 // Kiểm tra nếu sorter không phải là đối tượng rỗng
@@ -106,8 +107,8 @@ export const AdminDetailPostPaidPage = () => {
           no: page.number * page.size + index + 1,
           id: (
             <Tooltip title="Xem hóa đơn">
-                <span>{`#${it.id.toUpperCase().substring(0, 7)}`}</span>{" "}
-                <InvoiceModal id={it.id} />
+              <span>{`#${it.id.toUpperCase().substring(0, 7)}`}</span>{" "}
+              <InvoiceModal id={it.id} />
             </Tooltip>
           ),
           name: (

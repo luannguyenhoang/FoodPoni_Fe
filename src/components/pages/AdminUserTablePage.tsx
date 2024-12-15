@@ -31,6 +31,7 @@ export const AdminUserTablePage = () => {
   return (
     <AdminLayout>
       <Table
+        scroll={{ x: "max-content" }}
         onChange={(pagination, filters, sorter) => {
           const sort =
             sorter && Object.keys(sorter).length > 0
