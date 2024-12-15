@@ -251,17 +251,14 @@ function* handleProductDetail() {
         yield put(updateProductDetailSuccess());
         startUpdateProductDetails.payload.resetForm();
 
-        const { number, size }: ProductDetailState["page"] = yield select(
-          (state: RootState) => state.product.page
-        );
         const productId =
           startUpdateProductDetails.payload.productDetail.productId;
         yield put(
           fetchProductDetailAction({
             pathVariable: productId,
             queryParams: {
-              page: number,
-              pageSize: size,
+              page: 0,
+              pageSize: 10,
               sort: ["createdAt,desc"],
             },
           })
