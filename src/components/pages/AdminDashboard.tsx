@@ -548,7 +548,7 @@ const OrdersStatusChart = ({
 const PRODUCTS_COLUMNS = () => {
   return [
     {
-      title: "STT.",
+      title: "STT",
       dataIndex: "no",
     },
     {
@@ -566,7 +566,7 @@ const PRODUCTS_COLUMNS = () => {
 const CATEGORIES_COLUMNS = () => {
   return [
     {
-      title: "STT.",
+      title: "STT",
       dataIndex: "no",
     },
     {
@@ -585,7 +585,7 @@ const CATEGORIES_COLUMNS = () => {
 const SELLER_COLUMNS = () => {
   return [
     {
-      title: "STT.",
+      title: "STT",
       dataIndex: "no",
     },
     {
@@ -615,7 +615,7 @@ const SELLER_COLUMNS = () => {
 const ORDERS_COLUMNS = () => {
   return [
     {
-      title: "STT.",
+      title: "STT",
       dataIndex: "no",
     },
     {

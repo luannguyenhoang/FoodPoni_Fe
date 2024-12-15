@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import { RootState } from "@/redux/store.ts";
 import { useEffect } from "react";
-import { clearValidate } from "@/redux/modules/message";
+import { clearValidateSuccess } from "@/redux/modules/message";
 
 export const SignUpPage = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ export const SignUpPage = () => {
   const { validate } = useSelector((state: RootState) => state.message);
 
   useEffect(() => {
-    dispatch(clearValidate());
+    dispatch(clearValidateSuccess());
   }, [dispatch]);
 
   return (

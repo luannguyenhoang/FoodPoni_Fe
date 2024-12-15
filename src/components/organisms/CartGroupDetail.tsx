@@ -42,6 +42,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { OrderForm, OrderRequest } from "../molecules/OrderForm";
 import { CartGroupItems } from "./CartGroupItems";
+import { clearValidateSuccess } from "@/redux/modules/message";
 
 const useDispatchProp = () => {
   const dispatch = useDispatch();
@@ -101,6 +102,11 @@ const useDispatchProp = () => {
   const updateWindowSelected = (window: "HOME" | "CART_GROUP") =>
     dispatch(updateWindowSelectedSuccess({ window }));
 
+  const deleteCartGroupState = (roomId: string) =>
+    dispatch(deleteCartGroupSuccess({ roomId }));
+
+  const clearValidate = () => dispatch(clearValidateSuccess());
+
   return {
     fetchCarts,
     fetchAddresses,
@@ -112,6 +118,8 @@ const useDispatchProp = () => {
     createCartGroup,
     updateRoomTimeOutInputting,
     updateWindowSelected,
+    deleteCartGroupState,
+    clearValidate,
   };
 };
 
@@ -143,6 +151,8 @@ export function CartGroupDetail({
     createCartGroup,
     updateRoomTimeOutInputting,
     updateWindowSelected,
+    deleteCartGroupState,
+    clearValidate,
   } = useDispatchProp();
 
   useEffect(() => {
@@ -177,7 +187,6 @@ export function CartGroupDetail({
           <Button
             loading={creatingCartGroupLoading}
             type="primary"
-            size="large"
             icon={<PlusOutlined />}
           >
             Tạo đơn nhóm
@@ -186,7 +195,6 @@ export function CartGroupDetail({
       </div>
       <Tabs
         hideAdd
-        type="editable-card"
         onChange={(roomId) => updateCartGroupSelected(roomId)}
         defaultActiveKey={cartGroupSelected}
         items={cartGroupsJoined.map((it) => ({
@@ -200,7 +208,7 @@ export function CartGroupDetail({
               timeout={it.timeout}
               roomId={it.roomId}
               deleteCartGroup={() => {
-                deleteCartGroupSuccess({ roomId: it.roomId });
+                deleteCartGroupState(it.roomId);
                 notification.info({
                   message: "Thông báo!",
                   description: `Đơn nhóm ${it.roomId} của ${it.user.username} đã bị hết hạn!`,
@@ -272,6 +280,7 @@ export function CartGroupDetail({
                       calculateShippingFee={(addressId: string) =>
                         calculateShippingFee(addressId)
                       }
+                      clearValidate={clearValidate}
                       onSubmit={(values: OrderRequest) =>
                         createOrderGroup(values, it.roomId)
                       }
@@ -290,9 +299,10 @@ export function CartGroupDetail({
                       icon={<LogoutOutlined />}
                       className="mr-2"
                       type="default"
-                      size="large"
                     >
-                      Thoát đơn nhóm
+                      <span className="sr-only md:not-sr-only">
+                        Thoát đơn nhóm
+                      </span>
                     </Button>
                   </Popconfirm>
                 )}

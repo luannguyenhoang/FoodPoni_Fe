@@ -10,7 +10,7 @@ import { loginAction } from "@/redux/modules/auth.ts";
 import { UserRemember } from "@/type/types.ts";
 import { useForm } from "antd/es/form/Form";
 import { HomeOutlined } from "@ant-design/icons";
-import { clearValidate } from "@/redux/modules/message";
+import { clearValidateSuccess } from "@/redux/modules/message";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export const LoginPage = () => {
   const { isPending } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    dispatch(clearValidate());
+    dispatch(clearValidateSuccess());
     
   }, [dispatch]);
 

@@ -63,7 +63,7 @@ export function ProductCard({ product }: { product: Product }) {
                 ({product.rate.toFixed(1)}/{product.rateCount})
               </div>
               <div>
-                <div className="text-left text-[20px] nunito">
+                <div className="text-left text-lg nunito">
                   {currencyFormat(product.minPrice)}
                   {product.maxPrice === product.minPrice
                     ? ""

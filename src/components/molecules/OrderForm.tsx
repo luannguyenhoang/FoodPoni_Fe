@@ -7,6 +7,7 @@ import { ScrollPane } from "@/components/atoms/ScrollPane.tsx";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { getMessage } from "@/utils/constraint";
 
 export type OrderRequest = {
   addressId: string;
@@ -21,6 +22,7 @@ export const OrderForm = ({
   enableCartGroup,
   enableOnSubmit,
   calculateShippingFee,
+  clearValidate,
   onSubmit,
 }: {
   currentUserRole: "VIP" | "CUSTOMER" | "RETAILER";
@@ -29,6 +31,7 @@ export const OrderForm = ({
   enableCartGroup?: boolean;
   enableOnSubmit?: boolean;
   calculateShippingFee: (addressId: string) => void;
+  clearValidate: () => void;
   onSubmit: (values: OrderRequest) => void;
 }) => {
   const [form] = useForm<OrderRequest>();
@@ -38,7 +41,7 @@ export const OrderForm = ({
     form.setFields([
       {
         name: "addressId",
-        errors: [validate.addressId],
+        errors: [validate.addressId].map((e) => e && getMessage(e)),
       },
     ]);
   }, [validate, form]);
@@ -60,6 +63,7 @@ export const OrderForm = ({
             onOk={(value) => {
               form.setFieldValue("addressId", value);
               calculateShippingFee(value);
+              clearValidate();
             }}
           />
         </Form.Item>

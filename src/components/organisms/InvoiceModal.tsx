@@ -121,7 +121,7 @@ export const InvoiceContent = ({ maxHeight }: { maxHeight?: string }) => {
               km
             </p>
             <p className="text-gray-600">
-              Số diện thoại: {selectedOrder?.shippingAddress.phoneNumber}
+              Số điện thoại: {selectedOrder?.shippingAddress.phoneNumber}
             </p>
             {selectedOrder?.note && (
               <p className="text-gray-600">Ghi chú: {selectedOrder?.note}</p>

@@ -185,7 +185,7 @@ export const ProductCategoriesForm = ({
       </Form.Item>
 
       <Form.Item className="mb-0 text-end">
-        <Popconfirm title="Are you sure to save?" onConfirm={form.submit}>
+        <Popconfirm title="Bạn chắn chắn muốn lưu chứ?" onConfirm={form.submit}>
           <Button loading={isCreateLoading || isUpdateLoading} type="primary">
             Lưu
           </Button>

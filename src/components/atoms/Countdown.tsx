@@ -62,7 +62,7 @@ const formatTime = (
     remainingTime = timeLeft;
   }
 
-  const seconds = Math.floor((remainingTime / 1000) % 60) + 3;
+  const seconds = Math.floor((remainingTime / 1000) % 60);
   const minutes = Math.floor((remainingTime / 1000 / 60) % 60);
   const hours = Math.floor((remainingTime / 1000 / 3600) % 24);
 

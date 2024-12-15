@@ -19,7 +19,7 @@ export const CodeInput = () => {
           key={index}
           ref={(el) => (inputRefs.current[index] = el)}
           type="number"
-          className="h-12 w-12 rounded-lg border-2 border-orange-400 bg-gray-200 p-3 text-center text-xl font-bold text-gray-800 outline-none hover:border-orange-500 focus:border-orange-600 focus:bg-white focus:ring-2 focus:ring-orange-300"
+          className="h-10 w-10 md:h-12 md:w-12 rounded-lg border-2 border-orange-400 bg-gray-200 p-3 text-center text-xl font-bold text-gray-800 outline-none hover:border-orange-500 focus:border-orange-600 focus:bg-white focus:ring-2 focus:ring-orange-300"
           maxLength={1}
           onChange={(e) => {
             const value = e.target.value;

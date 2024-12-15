@@ -42,7 +42,6 @@ import { getAvatar } from "@/utils/common.ts";
 import { getNotificationOrderMessage } from "@/utils/constraint.ts";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client/dist/sockjs";
-import "./NotificationDropdown.scss";
 
 export default function NotificationDropdown() {
   const dispatch = useDispatch();
@@ -246,7 +245,7 @@ export default function NotificationDropdown() {
         placement="bottomLeft"
         trigger={["click"]}
         dropdownRender={() => (
-          <div className="w-screen md:w-[500px] shadow border rounded-lg bg-white">
+          <div style={{inlineSize: "fit-content"}} className="w-screen md:w-[500px] shadow border rounded-lg bg-white">
             <div className="flex items-center justify-between gap-2.5 text-sm text-gray-900 font-semibold px-5 py-2.5">
               Thông báo {isFetchLoading && <Spin />}
             </div>

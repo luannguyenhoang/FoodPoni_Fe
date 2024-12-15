@@ -41,7 +41,7 @@ export const ImageSelector = ({
         {value && (
           <Tooltip title="Click to delete thumbnail">
             <Popconfirm
-              title="Are you sure you want to delete this item?"
+              title="Bạn có muốn xóa hình ảnh nây không?"
               onConfirm={() => onOke("")}
             >
               <Button

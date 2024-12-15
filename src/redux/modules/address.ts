@@ -367,7 +367,6 @@ function* handleStartSearchAddress() {
     );
 
     try {
-      yield put(updateLoadingForSearchingAddressSuccess());
       if (searchTask) {
         yield cancel(searchTask);
         searchTask = null;
@@ -383,6 +382,7 @@ function* handleStartSearchAddress() {
 
 function* searchAddress(value: string) {
   yield delay(500);
+  yield put(updateLoadingForSearchingAddressSuccess());
   const result: Array<SearchResult> = yield call(searchAddresses, value);
   yield put(searchAddressesSuccess({ addresses: result }));
 }

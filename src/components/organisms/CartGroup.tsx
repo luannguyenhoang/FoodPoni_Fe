@@ -31,7 +31,7 @@ export function CartGroup() {
       </Button>
       <Modal
         className="relative"
-        title="Group Order"
+        title="Đơn hàng nhóm"
         open={isVisible}
         onCancel={() => dispatch(updateVisible({ isVisible: false }))}
         footer={null}

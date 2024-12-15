@@ -217,6 +217,10 @@ export const getMessage = (key: string) => {
     case "cm03":
       return "Vui lòng đăng nhập để có thể thao tác được chức năng này.";
 
+    //validate
+    case "must not be null":
+      return "Không được để trống.";
+
     default:
       return "Không xác định";
   }

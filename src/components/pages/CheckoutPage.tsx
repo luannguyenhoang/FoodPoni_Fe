@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { OrderForm, OrderRequest } from "../molecules/OrderForm";
 import { OrderSessionForm } from "../molecules/OrderSessionForm";
 import { DefaultLayout } from "../templates/DefaultLayout";
+import { clearValidateSuccess } from "@/redux/modules/message";
 
 const useDispatchProp = () => {
   const dispatch = useDispatch();
@@ -134,6 +135,7 @@ export const CheckoutPage = () => {
                     page.content.filter((it) => it.checked).length > 0
                   }
                   calculateShippingFee={calculateShippingFee}
+                  clearValidate={() => dispatch(clearValidateSuccess())}
                   onSubmit={(values: OrderRequest) =>
                     dispatch(createOrderAction({ values, navigate }))
                   }

@@ -45,7 +45,7 @@ const TableToolbar = ({
   <Flex className="mb-4" justify="space-between">
     <Col>
       {selectedRowKeys.length > 0 && (
-        <Popconfirm title="Are you sure you want to delete these items?">
+        <Popconfirm title="Bạn chắc chắn muốn xóa những mục này?">
           <Button
             className="bg-red-500 text-white"
             type="default"
