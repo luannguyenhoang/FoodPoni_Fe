@@ -5,6 +5,7 @@ import {
   DollarCircleOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
 import { Card, Divider, Tag, Typography } from "antd";
 
@@ -38,6 +39,13 @@ export function OrderInfoCard({ selectedOrder }: { selectedOrder: Order }) {
               Số điện thoại: {selectedOrder.shippingAddress.phoneNumber}
             </Text>
           </div>
+          {selectedOrder.note && (
+            <div>
+              <Text>
+                <FormOutlined /> Ghi chú: {selectedOrder.note}
+              </Text>
+            </div>
+          )}
         </div>
       </Card>
       <Card>
