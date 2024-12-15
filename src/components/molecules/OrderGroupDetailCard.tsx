@@ -61,7 +61,7 @@ export const OrderGroupDetailCard = ({
                 dataIndex: "note",
               },
             ]}
-            dataSource={page.content.map((it, index) => ({
+            dataSource={groupedItems.items.map((it, index) => ({
               ...it,
               no: index + 1,
               name: (
@@ -76,6 +76,7 @@ export const OrderGroupDetailCard = ({
                     avatar={it.productDetail.images[0]}
                   />
                   <OrderItemDetail
+                    disable={groupedItems.user.id !== currentUserId}
                     orderItem={it}
                     orderStatus={selectedOrder.status}
                   />

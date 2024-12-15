@@ -1,5 +1,6 @@
 import { ProductLoading } from "@/components/atoms/ProductLoading.tsx";
 import { fetchOrderByCustomerAction } from "@/redux/modules/order";
+import { fetchOrderItemsByOrderIdAction } from "@/redux/modules/orderItem.ts";
 import { RootState } from "@/redux/store";
 import { LeftOutlined } from "@ant-design/icons";
 import { Button, Card, Divider } from "antd";
@@ -10,13 +11,12 @@ import { OrderGroupDetailCard } from "../molecules/OrderGroupDetailCard.tsx";
 import { OrderHeader } from "../molecules/OrderHeader.tsx";
 import { OrderInfoCard } from "../molecules/OrderInfoCard.tsx";
 import { ManagementLayout } from "../templates/ManagementLayout.tsx";
-import { fetchOrderItemsByOrderIdAction } from "@/redux/modules/orderItem.ts";
 
 export const OrderGroupDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
-  const { selectedOrder, isFetchLoading: isFetchOrderLoading } = useSelector(
+  const { selectedOrder } = useSelector(
     (state: RootState) => state.order
   );
   const { page, isFetchLoading: isFetchOrderItemsLoading } = useSelector(
@@ -30,7 +30,7 @@ export const OrderGroupDetailPage = () => {
           oid: orderId,
           queryParams: {
             page: 0,
-            pageSize: 10,
+            pageSize: page.totalElements,
             sort: ["createdAt,desc"],
             orderGroup: true,
           },
@@ -38,9 +38,9 @@ export const OrderGroupDetailPage = () => {
       );
       dispatch(fetchOrderByCustomerAction({ orderId }));
     }
-  }, [orderId, dispatch]);
+  }, [orderId, dispatch,page.totalElements]);
 
-  if (!selectedOrder || isFetchOrderLoading) {
+  if (!selectedOrder ) {
     return (
       <ManagementLayout>
         <ProductLoading />

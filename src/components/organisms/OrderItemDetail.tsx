@@ -3,6 +3,7 @@ import {
   setInitialRatedItems,
   setSelectOrderItemRate,
   setShowModalAddRate,
+  updateRateForm,
 } from "@/redux/modules/rate";
 import { RootState } from "@/redux/store";
 import { OrderItem } from "@/type/types";
@@ -13,9 +14,10 @@ import RateAdd from "./RateAdd";
 type Props = {
   orderItem: OrderItem;
   orderStatus: string;
+  disable?: boolean;
 };
 
-export function OrderItemDetail({ orderItem, orderStatus }: Props) {
+export function OrderItemDetail({ orderItem, orderStatus, disable }: Props) {
   const dispatch = useDispatch();
 
   const { page } = useSelector((state: RootState) => state.cart);
@@ -46,12 +48,13 @@ export function OrderItemDetail({ orderItem, orderStatus }: Props) {
   return (
     <div className="font-sans text-[17px] text-gray-600 mt-2 gap-2">
       <div className="flex flex-wrap gap-2">
-        {orderStatus === "COMPLETED" && (
+        {orderStatus === "COMPLETED" && !disable && !isRated && (
           <div
             className="text-sm cursor-pointer hover:underline"
             onClick={() => {
               dispatch(setSelectOrderItemRate(orderItem.id));
               dispatch(setShowModalAddRate(true));
+              dispatch(updateRateForm({ orderItemId: orderItem.id }));
             }}
           >
             Đánh giá
@@ -63,7 +66,7 @@ export function OrderItemDetail({ orderItem, orderStatus }: Props) {
           </div>
         )}
 
-        {!isInCart && (
+        {!isInCart && orderStatus === "COMPLETED" && (
           <div
             className="text-sm cursor-pointer hover:underline"
             onClick={() => {
@@ -77,7 +80,7 @@ export function OrderItemDetail({ orderItem, orderStatus }: Props) {
           </div>
         )}
       </div>
-      <RateAdd />
+      <RateAdd orderItemId={orderItem.id} />
     </div>
   );
 }

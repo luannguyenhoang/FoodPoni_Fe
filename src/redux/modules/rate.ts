@@ -17,6 +17,7 @@ export type RateState = {
     rate: number;
     message: string;
     images: string[];
+    orderItemId: string;
   };
   readonly ratedOrderItems: string[];
 };
@@ -41,6 +42,7 @@ const initialState: RateState = {
     rate: 0,
     message: "",
     images: [],
+    orderItemId: "",
   },
   ratedOrderItems: [],
 };

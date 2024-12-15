@@ -8,20 +8,20 @@ import { Button, Input, Modal, Rate } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { ImagesSelector } from "../molecules/ImagesSelector";
 
-const RateAdd = () => {
+const RateAdd = ({ orderItemId }: { orderItemId: string }) => {
   const dispatch = useDispatch();
-  const { showModalAddRate, form,isLoading } = useSelector(
+  const { showModalAddRate, form, isLoading } = useSelector(
     (state: RootState) => state.rate
   );
 
   return (
     <Modal
       title="Đánh giá món ăn"
-      open={showModalAddRate}
+      open={showModalAddRate && form.orderItemId === orderItemId}
       footer={null}
       onCancel={() => {
         dispatch(setShowModalAddRate(false));
-        dispatch(updateRateForm({ rate: 0, message: "", images: [] }));
+        dispatch(updateRateForm({ rate: 0, message: "", images: [], orderItemId: "" }));
       }}
     >
       <div className="p-1">
