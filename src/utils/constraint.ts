@@ -12,6 +12,8 @@ export const getNotificationOrderMessage = (id: string, type: string) => {
       return `Đơn hàng #${id.toUpperCase().substring(0, 6)} đã hoàn tất. Hãy gửi lời đánh giá ngay nào.`;
     case "FAILED":
       return `Đơn hàng #${id.toUpperCase().substring(0, 6)} đã bị hủy do gặp sự cố không mong muốn. Rất mong quý khách thông cảm.`;
+    case "CANCELLED":
+      return `Người mua đã hủy đơn hàng #${id.toUpperCase().substring(0, 6)}.`;
     default:
       return `Không xác định được nội dung thông báo`;
   }
@@ -103,6 +105,8 @@ export const getMessage = (key: string) => {
       return "Đơn hàng không phải là đơn hàng nhóm.";
     case "oi08":
       return "Mặt hàng trong đơn hàng không thể là trống. Vui lòng kiểm tra và điều chỉnh danh sách sản phẩm.";
+    case "oi09":
+      return "Bạn chỉ có thể đánh giá sản phẩm của chính mình.";
 
     case "p01":
       return "Có vẻ như sản phẩm không tồn tại. Hãy thử lại!";
