@@ -17,9 +17,8 @@ export const OrderDetailCard = ({
   <Card size="small" loading={isFetchOrderItemsLoading}>
     <Table
       size="small"
-      virtual
       loading={isFetchOrderItemsLoading}
-      scroll={{ x: 800, y: "max-content" }}
+      scroll={{ x: "max-content" }}
       columns={[
         {
           title: "STT",
@@ -50,6 +49,7 @@ export const OrderDetailCard = ({
       ]}
       dataSource={page.content.map((it, index) => ({
         ...it,
+        key: index,
         no: index + 1,
         name: (
           <>

@@ -14,28 +14,44 @@ import {
   getRefundPageByRetailer,
   refund,
   refundConfirmationrefund,
+  searchOrdersByCustomer,
+  searchOrdersByRetailer,
+  searchOrdersGroupByCustomer,
+  searchOrdersPostPaidByCustomer,
   updateStatus,
 } from "@/utils/api/order";
 import { getOrderSession } from "@/utils/api/orderSession";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { notification } from "antd";
 import { NavigateFunction } from "react-router-dom";
-import { call, fork, put, race, take } from "redux-saga/effects";
+import {
+  call,
+  cancel,
+  delay,
+  fork,
+  put,
+  race,
+  select,
+  take,
+} from "redux-saga/effects";
 import { deleteCartGroupSuccess, updateVisible } from "./cartGroup";
 import { addMessageSuccess } from "./message";
+import { Task } from "redux-saga";
+import { RootState } from "../store";
 
 export type OrderState = {
   readonly page: Page<
     Array<
       Order & {
-        readonly isUpdateStatusLoading: boolean;
-        readonly isUpdatePaymentStatusLoading: boolean;
+        readonly isUpdateStatusLoading?: boolean;
+        readonly isUpdatePaymentStatusLoading?: boolean;
       }
     >
   >;
   readonly selectedOrder: Order | null;
   readonly isFetchLoading: boolean;
   readonly isCreateLoading: boolean;
+  readonly pageOriginal: OrderState["page"];
 };
 
 const initialState: OrderState = {
@@ -53,6 +69,17 @@ const initialState: OrderState = {
   selectedOrder: null,
   isFetchLoading: false,
   isCreateLoading: false,
+  pageOriginal: {
+    content: [],
+    totalElements: 0,
+    totalPages: 0,
+    size: 0,
+    number: 0,
+    first: true,
+    last: true,
+    numberOfElements: 0,
+    empty: true,
+  },
 };
 
 const SLICE_NAME = "order";
@@ -237,6 +264,13 @@ const orderSlice = createSlice({
         (order) => order.id !== action.payload.oid
       );
     },
+    updatePageOriginalSuccess: (
+      state,
+      action: PayloadAction<{ page: Page<Order[]> }>
+    ) => ({
+      ...state,
+      pageOriginal: action.payload.page,
+    }),
   },
 });
 
@@ -259,6 +293,7 @@ export const {
   refundFailure,
   refundConfirmationSuccess,
   cancelOrderSuccess,
+  updatePageOriginalSuccess,
 } = orderSlice.actions;
 export const updateOrderItemsAction = createAction<void>(
   `${SLICE_NAME}/updateOrderItemsRequest`
@@ -313,6 +348,16 @@ export const cancelOrderAction = createAction<{
   queryParams: QueryParams;
 }>(`${SLICE_NAME}/cancelOrderRequest`);
 
+export const searchOrdersByRetailerAction = createAction<{ keyword: string }>(
+  `${SLICE_NAME}/searchOrdersByRetailerRequest`
+);
+
+export const searchOrdersByCustomerAction = createAction<{
+  ppid?: string;
+  keyword: string;
+  type: "ORDER" | "ORDER_GROUP" | "POST_PAID";
+}>(`${SLICE_NAME}/searchOrdersByCustomerRequest`);
+
 function* handleFetchOrders() {
   while (true) {
     const {
@@ -344,18 +389,9 @@ function* handleFetchOrders() {
           getOrdersPageByCustomer,
           fetchOrdersByCustomer.payload.queryParams
         );
-        yield put(
-          fetchOrdersSuccess({
-            page: {
-              ...page,
-              content: page.content.map((order) => ({
-                ...order,
-                isUpdateStatusLoading: false,
-                isUpdatePaymentStatusLoading: false,
-              })),
-            },
-          })
-        );
+
+        yield put(fetchOrdersSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
       if (fetOrdersByRetailer) {
         yield put(updateFetchLoading());
@@ -363,18 +399,9 @@ function* handleFetchOrders() {
           getOrdersPageByRetailer,
           fetOrdersByRetailer.payload.queryParams
         );
-        yield put(
-          fetchOrdersSuccess({
-            page: {
-              ...page,
-              content: page.content.map((order) => ({
-                ...order,
-                isUpdateStatusLoading: false,
-                isUpdatePaymentStatusLoading: false,
-              })),
-            },
-          })
-        );
+
+        yield put(fetchOrdersSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
       if (fetPostPaidOrders) {
         yield put(updateFetchLoading());
@@ -383,18 +410,9 @@ function* handleFetchOrders() {
           fetPostPaidOrders.payload.ppid,
           fetPostPaidOrders.payload.queryParams
         );
-        yield put(
-          fetchOrdersSuccess({
-            page: {
-              ...page,
-              content: page.content.map((order) => ({
-                ...order,
-                isUpdateStatusLoading: false,
-                isUpdatePaymentStatusLoading: false,
-              })),
-            },
-          })
-        );
+
+        yield put(fetchOrdersSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
       if (fetRefund) {
         yield put(updateFetchLoading());
@@ -402,18 +420,9 @@ function* handleFetchOrders() {
           getRefundPageByRetailer,
           fetRefund.payload.queryParams
         );
-        yield put(
-          fetchOrdersSuccess({
-            page: {
-              ...page,
-              content: page.content.map((order) => ({
-                ...order,
-                isUpdateStatusLoading: false,
-                isUpdatePaymentStatusLoading: false,
-              })),
-            },
-          })
-        );
+
+        yield put(fetchOrdersSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
       if (fetPostPaidOrdersByRetailer) {
         yield put(updateFetchLoading());
@@ -422,18 +431,9 @@ function* handleFetchOrders() {
           fetPostPaidOrdersByRetailer.payload.ppid,
           fetPostPaidOrdersByRetailer.payload.queryParams
         );
-        yield put(
-          fetchOrdersSuccess({
-            page: {
-              ...page,
-              content: page.content.map((order) => ({
-                ...order,
-                isUpdateStatusLoading: false,
-                isUpdatePaymentStatusLoading: false,
-              })),
-            },
-          })
-        );
+
+        yield put(fetchOrdersSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
     } catch (e) {
       yield put(addMessageSuccess({ error: e }));
@@ -645,6 +645,90 @@ function* handleCancelOrder() {
   }
 }
 
+function* delaySearchOrders(
+  searchOrders: (keyword: string, ppid?: string) => Promise<Page<Order[]>>,
+  keyword: string,
+  ppid?: string
+) {
+  yield delay(300);
+  yield put(updateFetchLoading());
+  const page: OrderState["page"] = yield call(searchOrders, keyword, ppid);
+  yield put(fetchOrdersSuccess({ page }));
+}
+
+function* handleSearchOrders() {
+  let searchTask: Task | null = null;
+  while (true) {
+    const {
+      startSearchOrdersByCustomer,
+      startSearchOrdersByRetailer,
+    }: {
+      startSearchOrdersByCustomer: ReturnType<
+        typeof searchOrdersByCustomerAction
+      >;
+      startSearchOrdersByRetailer: ReturnType<
+        typeof searchOrdersByRetailerAction
+      >;
+    } = yield race({
+      startSearchOrdersByCustomer: take(searchOrdersByCustomerAction),
+      startSearchOrdersByRetailer: take(searchOrdersByRetailerAction),
+    });
+
+    try {
+      if (searchTask) {
+        yield cancel(searchTask);
+        searchTask = null;
+      }
+
+      const keyword = startSearchOrdersByCustomer
+        ? startSearchOrdersByCustomer.payload.keyword
+        : startSearchOrdersByRetailer
+          ? startSearchOrdersByRetailer.payload.keyword
+          : "";
+
+      if (!keyword) {
+        const pageOriginal: Page<Order[]> = yield select(
+          (state: RootState) => state.order.pageOriginal
+        );
+        yield put(fetchOrdersSuccess({ page: pageOriginal }));
+        continue;
+      }
+
+      if (startSearchOrdersByCustomer) {
+        const type = startSearchOrdersByCustomer.payload.type;
+        const ppid = startSearchOrdersByCustomer.payload.ppid;
+        if (type === "POST_PAID") {
+          searchTask = yield fork(
+            delaySearchOrders,
+            searchOrdersPostPaidByCustomer,
+            keyword,
+            ppid
+          );
+        } else {
+          searchTask = yield fork(
+            delaySearchOrders,
+            type === "ORDER"
+              ? searchOrdersByCustomer
+              : searchOrdersGroupByCustomer,
+            keyword
+          );
+        }
+      }
+
+      if (startSearchOrdersByRetailer) {
+        searchTask = yield fork(
+          delaySearchOrders,
+          searchOrdersByRetailer,
+          keyword
+        );
+      }
+    } catch (e) {
+      yield put(addMessageSuccess({ error: e }));
+      yield put(fetchOrdersFailure());
+    }
+  }
+}
+
 export const orderSagas = [
   fork(handleFetchOrders),
   fork(handleFetchOrder),
@@ -652,4 +736,5 @@ export const orderSagas = [
   fork(handleUpdateOrderStatus),
   fork(handleRefundOperations),
   fork(handleCancelOrder),
+  fork(handleSearchOrders),
 ];

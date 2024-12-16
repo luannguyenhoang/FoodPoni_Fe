@@ -6,7 +6,6 @@ import { getThumbnail } from "@/utils/common.ts";
 import {
   CustomerServiceOutlined,
   EnvironmentOutlined,
-  LikeOutlined,
   MoneyCollectOutlined,
   ProfileOutlined,
   UserOutlined,
@@ -72,7 +71,23 @@ export const ManagementLayout = ({ children }: { children: ReactNode }) => {
                 <Menu
                   onClick={(e) => navigate(`${e.key}`)}
                   className="w-full lg:min-w-[256px] rounded-[8px] !border-none mb-4"
-                  selectedKeys={[location.pathname]}
+                  defaultSelectedKeys={[
+                    location.pathname.includes("/thong-tin-tai-khoan")
+                      ? "/thong-tin-tai-khoan"
+                      : location.pathname.includes("/so-dia-chi")
+                        ? "/so-dia-chi"
+                        : location.pathname.includes("ho-tro-khach-hang")
+                          ? "ho-tro-khach-hang"
+                          : location.pathname.includes("/don-hang-nhom")
+                            ? "/don-hang-nhom"
+                            : location.pathname.includes("/ghi-no")
+                              ? "/ghi-no"
+                              : location.pathname.includes("/ghi-no/don-hang")
+                                ? "/ghi-no"
+                                : location.pathname.includes("/don-hang")
+                                  ? "/don-hang"
+                                  : "",
+                  ]}
                   mode="horizontal"
                   items={[
                     getItem(
@@ -104,12 +119,6 @@ export const ManagementLayout = ({ children }: { children: ReactNode }) => {
                           ),
                         ]
                       : []),
-
-                    getItem(
-                      "Món ăn yêu thích",
-                      "/san-pham-yeu-thich",
-                      <LikeOutlined />
-                    ),
                     getItem(
                       "Hỗ trợ khách hàng",
                       "/ho-tro-khach-hang",

@@ -11,6 +11,8 @@ import {
   getProductByIdOrSlug,
   getProductsPage,
   getProductsPageByCategory,
+  searchProductsByRetailer,
+  searchProductsByCustomer,
   updateProduct,
   updateProductStatus,
 } from "@/utils/api/product.ts";
@@ -20,9 +22,19 @@ import {
 } from "@/utils/api/productDetail.ts";
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { notification } from "antd";
-import { call, fork, put, race, select, take } from "redux-saga/effects";
+import {
+  call,
+  cancel,
+  delay,
+  fork,
+  put,
+  race,
+  select,
+  take,
+} from "redux-saga/effects";
 import { RootState } from "../store";
 import { addMessageSuccess } from "./message";
+import { Task } from "redux-saga";
 
 export type ProductState = {
   readonly page: Page<Product[]>;
@@ -44,6 +56,7 @@ export type ProductState = {
     readonly quantity: number;
   };
   readonly ratePercents: ProductRatePercent[];
+  readonly pageOriginal: ProductState["page"];
 };
 
 const initialState: ProductState = {
@@ -72,6 +85,17 @@ const initialState: ProductState = {
     quantity: 1,
   },
   ratePercents: [],
+  pageOriginal: {
+    content: [],
+    totalElements: 0,
+    totalPages: 0,
+    size: 0,
+    number: 0,
+    first: true,
+    last: true,
+    numberOfElements: 0,
+    empty: true,
+  },
 };
 
 const SLICE_NAME = "product";
@@ -243,6 +267,13 @@ const productSlide = createSlice({
       ...state,
       isUpdateLoading: false,
     }),
+    updatePageOriginalSuccess: (
+      state,
+      action: PayloadAction<{ page: Page<Product[]> }>
+    ) => ({
+      ...state,
+      pageOriginal: action.payload.page,
+    }),
   },
 });
 export default productSlide.reducer;
@@ -270,6 +301,7 @@ export const {
   updateLoadingForUpdatingProductStatusSuccess,
   updateProductStatusSuccess,
   updateProductStatusFailure,
+  updatePageOriginalSuccess,
 } = productSlide.actions;
 
 export const fetchProductAction = createAction<{ pathVariable: string }>(
@@ -304,6 +336,14 @@ export const updateProductStatusAction = createAction<{
   status: boolean;
 }>(`${SLICE_NAME}/updateProductStatusRequest`);
 
+export const searchProductsByRetailerAction = createAction<{ keyword: string }>(
+  `${SLICE_NAME}/searchProductsByRetailerRequest`
+);
+
+export const searchProductsByCustomerAction = createAction<{ keyword: string }>(
+  `${SLICE_NAME}/searchProductsByCustomerRequest`
+);
+
 function* handleFetchProducts() {
   while (true) {
     const {
@@ -328,6 +368,7 @@ function* handleFetchProducts() {
           fetchProducts.payload.queryParams
         );
         yield put(fetchProductsSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
 
       if (fetchProductsByProductCategory) {
@@ -337,6 +378,7 @@ function* handleFetchProducts() {
           fetchProductsByProductCategory.payload.queryParams
         );
         yield put(fetchProductsSuccess({ page }));
+        yield put(updatePageOriginalSuccess({ page }));
       }
     } catch (e) {
       yield put(addMessageSuccess({ error: e }));
@@ -484,10 +526,82 @@ function* handleUpdateProductStatus() {
   }
 }
 
+function* delaySearchProducts(keyword: string, isRetailer: boolean) {
+  yield delay(300);
+  yield put(updateLoadingForFetchingProductSuccess());
+  const pageResult: Page<Product[]> = yield call(
+    isRetailer ? searchProductsByRetailer : searchProductsByCustomer,
+    keyword
+  );
+  yield put(fetchProductsSuccess({ page: pageResult }));
+}
+
+function* handleSearchProduct() {
+  let searchTask: Task | null = null;
+  while (true) {
+    const {
+      searchProductsByRetailer,
+      searchProductsByCustomer,
+    }: {
+      searchProductsByRetailer: ReturnType<
+        typeof searchProductsByRetailerAction
+      >;
+      searchProductsByCustomer: ReturnType<
+        typeof searchProductsByCustomerAction
+      >;
+    } = yield race({
+      searchProductsByRetailer: take(searchProductsByRetailerAction),
+      searchProductsByCustomer: take(searchProductsByCustomerAction),
+    });
+
+    try {
+      if (searchTask) {
+        yield cancel(searchTask);
+        searchTask = null;
+      }
+
+      if (searchProductsByRetailer) {
+        const keyword = searchProductsByRetailer.payload.keyword;
+
+        if (keyword) {
+          searchTask = yield fork(
+            delaySearchProducts,
+            searchProductsByRetailer.payload.keyword,
+            true
+          );
+        } else {
+          console.log("12");
+          
+          const pageOriginal: Page<Product[]> = yield select(
+            (state: RootState) => state.product.pageOriginal
+          );
+          yield put(
+            fetchProductsSuccess({
+              page: pageOriginal,
+            })
+          );
+        }
+      }
+
+      if (searchProductsByCustomer) {
+        searchTask = yield fork(
+          delaySearchProducts,
+          searchProductsByCustomer.payload.keyword,
+          false
+        );
+      }
+    } catch (e) {
+      yield put(addMessageSuccess({ error: e }));
+      yield put(fetchProductsFailure());
+    }
+  }
+}
+
 export const productSagas = [
   fork(handleFetchProducts),
   fork(handleFetchProduct),
   fork(handleFetchProductRatePercent),
   fork(handleCreateProduct),
   fork(handleUpdateProductStatus),
+  fork(handleSearchProduct),
 ];

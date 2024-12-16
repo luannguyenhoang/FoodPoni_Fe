@@ -7,7 +7,7 @@ import {
   ShoppingOutlined,
   TableOutlined,
   TeamOutlined,
-  SnippetsOutlined
+  SnippetsOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import Sider, { SiderTheme } from "antd/es/layout/Sider";
@@ -32,7 +32,33 @@ export const SiderAdmin = ({ theme }: { theme: SiderTheme }) => {
       <Menu
         theme={theme}
         mode="inline"
-        defaultSelectedKeys={[location.pathname]}
+        defaultSelectedKeys={
+          location.pathname.includes("/admin/dashboard")
+            ? ["/admin/dashboard"]
+            : location.pathname.includes("/admin/file-management")
+              ? ["/admin/file-management"]
+              : location.pathname.includes("/admin/products-table")
+                ? ["/admin/products-table"]
+                : location.pathname.includes("/admin/product-details")
+                  ? ["/admin/products-table"]
+                  : location.pathname.includes(
+                        "/admin/product-categories-table"
+                      )
+                    ? ["/admin/product-categories-table"]
+                    : location.pathname.includes(
+                          "/admin/product-toppings-table"
+                        )
+                      ? ["/admin/product-toppings-table"]
+                      : location.pathname.includes("/admin/orders-table")
+                        ? ["/admin/orders-table"]
+                        : location.pathname.includes("/admin/orders-refund-table")
+                          ? ["/admin/orders-refund-table"]
+                          : location.pathname.includes("/admin/orders-postpaid-table")
+                            ? ["/admin/orders-postpaid-table"]
+                            : location.pathname.includes("/admin/users-table")
+                              ? ["/admin/users-table"]
+                              : []
+        }
         items={items}
         defaultOpenKeys={
           location.pathname.includes("/admin/product")
@@ -112,5 +138,4 @@ const items: ItemType<MenuItemType>[] = [
     icon: <TeamOutlined />,
     label: <Link to="/admin/users-table">Danh sách khách hàng</Link>,
   },
-
 ];

@@ -1,8 +1,11 @@
 import EmptyNotice from "@/components/atoms/EmptyNotice";
-import { fetchPostPaidOrdersAction } from "@/redux/modules/order";
+import {
+  fetchPostPaidOrdersAction,
+  searchOrdersByCustomerAction,
+} from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
 import { ORDER_STATUSES } from "@/utils/common";
-import { Badge, List, Segmented } from "antd";
+import { Badge, Input, List, Segmented } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -21,6 +24,8 @@ export const PostPaidDetailPage = () => {
   const { page, isFetchLoading } = useSelector(
     (state: RootState) => state.order
   );
+
+  const [keyword, setKeyword] = useState<string>("");
 
   useEffect(() => {
     if (ppid) {
@@ -48,49 +53,71 @@ export const PostPaidDetailPage = () => {
   // }
   return (
     <ManagementLayout>
-      <div className="overflow-scroll scrollbar-rounded mb-4">
-        <Segmented
-          value={status}
-          onChange={(value) => {
-            if (!isFetchLoading) {
-              setStatus(value);
-              setCurrentPage(1);
-            }
-          }}
-          disabled={isFetchLoading}
-          options={ORDER_STATUSES.map((it) => ({
-            label: (
-              <Badge
-                className="px-1"
-                count={
-                  it.key === "APPROVED" && it.key === status && !isFetchLoading
-                    ? page.totalElements
-                    : 0
-                }
-                overflowCount={999}
-              >
-                {it.label}
-              </Badge>
-            ),
-            value: it.key,
-          }))}
-        />
-      </div>
-      <Segmented
-        className="bg-primary text-white h-fit"
-        value={orderGroup}
-        onChange={(value) => {
-          if (!isFetchLoading) {
-            setOrderGroup(value);
-            setCurrentPage(1);
-          }
+      <Input
+        className="max-w-lg mb-4"
+        placeholder="Tìm kiếm..."
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          dispatch(
+            searchOrdersByCustomerAction({
+              ppid,
+              keyword: e.target.value,
+              type: "POST_PAID",
+            })
+          );
+          setKeyword(e.target.value);
         }}
-        disabled={isFetchLoading}
-        options={[
-          { label: "Đơn hàng thường", value: false },
-          { label: "Đơn hàng nhóm", value: true },
-        ]}
       />
+      {!keyword && (
+        <>
+          <div className="overflow-scroll scrollbar-rounded mb-4">
+            <Segmented
+              value={status}
+              onChange={(value) => {
+                if (!isFetchLoading) {
+                  setStatus(value);
+                  setCurrentPage(1);
+                }
+              }}
+              disabled={isFetchLoading}
+              options={ORDER_STATUSES.map((it) => ({
+                label: (
+                  <Badge
+                    className="px-1"
+                    count={
+                      it.key === "APPROVED" &&
+                      it.key === status &&
+                      !isFetchLoading
+                        ? page.totalElements
+                        : 0
+                    }
+                    overflowCount={999}
+                  >
+                    {it.label}
+                  </Badge>
+                ),
+                value: it.key,
+              }))}
+            />
+          </div>
+          <div className="mb-4">
+            <Segmented
+              className="bg-primary text-white h-fit"
+              value={orderGroup}
+              onChange={(value) => {
+                if (!isFetchLoading) {
+                  setOrderGroup(value);
+                  setCurrentPage(1);
+                }
+              }}
+              disabled={isFetchLoading}
+              options={[
+                { label: "Đơn hàng thường", value: false },
+                { label: "Đơn hàng nhóm", value: true },
+              ]}
+            />
+          </div>
+        </>
+      )}
 
       {!isFetchLoading ? (
         <List

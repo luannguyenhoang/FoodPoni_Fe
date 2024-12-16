@@ -1,5 +1,6 @@
 import {
   fetchProductsAction,
+  searchProductsByRetailerAction,
   updateProductStatusAction,
 } from "@/redux/modules/product";
 import { RootState } from "@/redux/store";
@@ -20,6 +21,7 @@ import {
   Divider,
   Dropdown,
   Flex,
+  Input,
   Popconfirm,
   Table,
   TableColumnsType,
@@ -39,12 +41,15 @@ const { useToken } = theme;
 const TableToolbar = ({
   isFetchLoading,
   selectedRowKeys,
+  searchProduct,
 }: {
   isFetchLoading: boolean;
   selectedRowKeys: Array<React.Key>;
+  searchProduct: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <Flex className="mb-4" justify="space-between">
     <Col>
+      <Input placeholder="Tìm kiếm..." onChange={searchProduct} />
       {selectedRowKeys.length > 0 && (
         <Popconfirm title="Bạn chắc chắn muốn xóa những mục này?">
           <Button
@@ -114,6 +119,9 @@ export const AdminProductTablePage = () => {
       <TableToolbar
         isFetchLoading={isFetchLoading}
         selectedRowKeys={selectedRowKeys}
+        searchProduct={(e: React.ChangeEvent<HTMLInputElement>) =>
+          dispatch(searchProductsByRetailerAction({ keyword: e.target.value }))
+        }
       />
       <Table
         scroll={{ x: "max-content" }}

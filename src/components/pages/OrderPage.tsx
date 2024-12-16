@@ -1,8 +1,11 @@
 import EmptyNotice from "@/components/atoms/EmptyNotice";
-import { fetchOrdersByCustomerAction } from "@/redux/modules/order";
+import {
+  fetchOrdersByCustomerAction,
+  searchOrdersByCustomerAction,
+} from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
 import { ORDER_STATUSES } from "@/utils/common";
-import { Badge, List, Segmented } from "antd";
+import { Badge, Input, List, Segmented } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ProductLoading } from "../atoms/ProductLoading";
@@ -17,6 +20,8 @@ export const OrderPage = () => {
   const { page, isFetchLoading } = useSelector(
     (state: RootState) => state.order
   );
+
+  const [keyword, setKeyword] = useState<string>("");
 
   useEffect(() => {
     dispatch(
@@ -42,34 +47,49 @@ export const OrderPage = () => {
 
   return (
     <ManagementLayout>
-      <div className="overflow-scroll scrollbar-rounded mb-4">
-        <Segmented
-          value={status}
-          onChange={(value) => {
-            if (!isFetchLoading) {
-              setStatus(value);
-              setCurrentPage(1);
-            }
-          }}
-          disabled={isFetchLoading}
-          options={ORDER_STATUSES.map((it) => ({
-            label: (
-              <Badge
-                className="px-1"
-                count={
-                  it.key === "PENDING" && it.key === status && !isFetchLoading
-                    ? page.totalElements
-                    : 0
-                }
-                overflowCount={999}
-              >
-                {it.label}
-              </Badge>
-            ),
-            value: it.key,
-          }))}
-        />
-      </div>
+      <Input
+        className="max-w-lg mb-4"
+        placeholder="Tìm kiếm..."
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          dispatch(
+            searchOrdersByCustomerAction({
+              keyword: e.target.value,
+              type: "ORDER",
+            })
+          );
+          setKeyword(e.target.value);
+        }}
+      />
+      {!keyword && (
+        <div className="overflow-scroll scrollbar-rounded mb-4">
+          <Segmented
+            value={status}
+            onChange={(value) => {
+              if (!isFetchLoading) {
+                setStatus(value);
+                setCurrentPage(1);
+              }
+            }}
+            disabled={isFetchLoading}
+            options={ORDER_STATUSES.map((it) => ({
+              label: (
+                <Badge
+                  className="px-1"
+                  count={
+                    it.key === "PENDING" && it.key === status && !isFetchLoading
+                      ? page.totalElements
+                      : 0
+                  }
+                  overflowCount={999}
+                >
+                  {it.label}
+                </Badge>
+              ),
+              value: it.key,
+            }))}
+          />
+        </div>
+      )}
       {!isFetchLoading ? (
         <List
           grid={{

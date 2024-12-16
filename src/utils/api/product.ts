@@ -83,12 +83,39 @@ export const deleteProduct = (pid: string): Promise<void> => {
     .then((res: AxiosResponse<void>) => res.data);
 };
 
-export const updateProductStatus = (pid: string, status: boolean): Promise<void> => {
+export const updateProductStatus = (
+  pid: string,
+  status: boolean
+): Promise<void> => {
   return apiWithToken()
-    .patch("/retailer/products/update-status", {id: pid, status},{
+    .patch(
+      "/retailer/products/update-status",
+      { id: pid, status },
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    )
+    .then((res: AxiosResponse<void>) => res.data);
+};
+
+export const searchProductsByRetailer = (
+  keyword: string
+): Promise<Page<Product[]>> => {
+  return apiWithToken()
+    .get(`/retailer/products/search?search=${keyword}`, {
       headers: {
         Authorization: "Bearer " + accessToken,
       },
     })
-    .then((res: AxiosResponse<void>) => res.data);
+    .then((res: AxiosResponse<Page<Product[]>>) => res.data);
+};
+
+export const searchProductsByCustomer = (
+  keyword: string
+): Promise<Page<Product[]>> => {
+  return api
+    .get(`/products/search?search=${keyword}`)
+    .then((res: AxiosResponse<Page<Product[]>>) => res.data);
 };

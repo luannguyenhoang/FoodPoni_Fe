@@ -1,6 +1,7 @@
 import { SalesLabel } from "@/components/atoms/SalesLabel.tsx";
 import {
   fetchOrdersByRetailerAction,
+  searchOrdersByRetailerAction,
   updateOrderStatusAction,
 } from "@/redux/modules/order";
 import { RootState } from "@/redux/store";
@@ -18,6 +19,7 @@ import {
   Badge,
   Col,
   Flex,
+  Input,
   Popconfirm,
   Table,
   TableColumnsType,
@@ -43,12 +45,15 @@ dayjs.locale("vi");
 const TableToolbar = ({
   isFetchLoading,
   selectedRowKeys,
+  searchOrder,
 }: {
   isFetchLoading: boolean;
   selectedRowKeys: Array<React.Key>;
+  searchOrder: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <Flex className="mb-4" justify="space-between">
     <Col>
+      <Input placeholder="Tìm kiếm..." onChange={searchOrder} />
       {selectedRowKeys.length > 0 && (
         <Popconfirm title="Bạn chắc chắn muốn xóa nhung mục này?">
           <Button
@@ -103,6 +108,9 @@ export const AdminOrderTablePage = () => {
       <TableToolbar
         isFetchLoading={isFetchLoading}
         selectedRowKeys={selectedRowKeys}
+        searchOrder={(e) =>
+          dispatch(searchOrdersByRetailerAction({ keyword: e.target.value }))
+        }
       />
       <Table
         scroll={{ x: "max-content" }}

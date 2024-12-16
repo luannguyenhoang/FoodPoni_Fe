@@ -236,3 +236,52 @@ export const CancelOrder = (
     )
     .then((res: AxiosResponse<void>) => res.data);
 };
+
+export const searchOrdersByRetailer = (
+  keyword: string
+): Promise<Page<Order[]>> => {
+  return apiWithToken()
+    .get(`/retailer/orders/search?search=${keyword}`, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+    .then((res: AxiosResponse<Page<Order[]>>) => res.data);
+};
+
+export const searchOrdersByCustomer = (
+  keyword: string
+): Promise<Page<Order[]>> => {
+  return apiWithToken()
+    .get(`/customer/orders/search?search=${keyword}`, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+    .then((res: AxiosResponse<Page<Order[]>>) => res.data);
+};
+
+export const searchOrdersGroupByCustomer = (
+  keyword: string
+): Promise<Page<Order[]>> => {
+  return apiWithToken()
+    .get(`/customer/orders-group/search?search=${keyword}`, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+    .then((res: AxiosResponse<Page<Order[]>>) => res.data);
+};
+
+export const searchOrdersPostPaidByCustomer = (
+  keyword: string,
+  ppid?: string
+): Promise<Page<Order[]>> => {
+  return apiWithToken()
+    .get(`/customer/post-paid-orders/${ppid}/search?search=${keyword}`, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+    .then((res: AxiosResponse<Page<Order[]>>) => res.data);
+};
