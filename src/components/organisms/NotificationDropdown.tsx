@@ -101,14 +101,16 @@ export default function NotificationDropdown() {
                       "HH:mm:ss - dd/MM/yyyy"
                     ),
                   description:
-                    notificationEvent.type === "REFUND"
-                      ? `Đơn hàng #${notificationEvent.id.toUpperCase().substring(0, 6)} đã hoàn tiền thành công`
-                      : notificationEvent.type === "ORDER"
-                        ? getNotificationOrderMessage(
-                            attributes.id,
-                            attributes.orderStatus
-                          )
-                        : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
+                    notificationEvent.type === "POSTPAID"
+                      ? `Khách hàng ${notificationEvent.fromUser.username} đã thành toán phiếu nợ`
+                      : notificationEvent.type === "REFUND"
+                        ? `Đơn hàng #${notificationEvent.id.toUpperCase().substring(0, 6)} đã hoàn tiền thành công`
+                        : notificationEvent.type === "ORDER"
+                          ? getNotificationOrderMessage(
+                              attributes.id,
+                              attributes.orderStatus
+                            )
+                          : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
                   duration: 10,
                 });
               }

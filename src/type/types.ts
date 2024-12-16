@@ -48,7 +48,7 @@ export type CurrentUser = {
   readonly role: "VIP" | "RETAILER" | "CUSTOMER";
   readonly avatar: string | null;
   readonly addressId: string;
-  readonly username: string; 
+  readonly username: string;
   readonly email: string;
 };
 
@@ -178,7 +178,7 @@ export type Notification = {
   readonly read: boolean;
   readonly status: boolean;
   readonly attributes: string;
-  readonly type: "ORDER" | "ORDER_GROUP" | "REFUND";
+  readonly type: "ORDER" | "ORDER_GROUP" | "REFUND" | "POSTPAID";
   readonly createdAt: Date;
 };
 
@@ -190,7 +190,8 @@ export type NotificationAttributes = {
     | "APPROVED"
     | "COMPLETED"
     | "DELIVERING"
-    | "REFUNDED";
+    | "REFUND"
+    | "POSTPAID";
 };
 
 export type Page<T> = {
