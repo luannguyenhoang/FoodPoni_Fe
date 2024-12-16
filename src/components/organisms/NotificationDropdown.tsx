@@ -101,12 +101,14 @@ export default function NotificationDropdown() {
                       "HH:mm:ss - dd/MM/yyyy"
                     ),
                   description:
-                    notificationEvent.type === "ORDER"
-                      ? getNotificationOrderMessage(
-                          attributes.id,
-                          attributes.orderStatus
-                        )
-                      : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
+                    notificationEvent.type === "REFUND"
+                      ? `Đơn hàng #${notificationEvent.id.toUpperCase().substring(0, 6)} đã hoàn tiền thành công`
+                      : notificationEvent.type === "ORDER"
+                        ? getNotificationOrderMessage(
+                            attributes.id,
+                            attributes.orderStatus
+                          )
+                        : `Đơn hàng nhóm của ${notificationEvent.fromUser.username} đã được tạo thành công.`,
                   duration: 10,
                 });
               }
@@ -245,7 +247,10 @@ export default function NotificationDropdown() {
         placement="bottomLeft"
         trigger={["click"]}
         dropdownRender={() => (
-          <div style={{inlineSize: "fit-content"}} className="w-screen md:w-[500px] shadow border rounded-lg bg-white">
+          <div
+            style={{ inlineSize: "fit-content" }}
+            className="w-screen md:w-[500px] shadow border rounded-lg bg-white"
+          >
             <div className="flex items-center justify-between gap-2.5 text-sm text-gray-900 font-semibold px-5 py-2.5">
               Thông báo {isFetchLoading && <Spin />}
             </div>
@@ -348,7 +353,6 @@ export default function NotificationDropdown() {
                               className="object-cover aspect-square rounded-full size-16"
                               src={getAvatar(it.fromUser)}
                             />
-
                             <div className="bg-[#17c653] rounded-full size-2 badge badge-circle color-white absolute top-14 end-0.5 ring-1 ring-white transform -translate-y-1/2" />
                           </div>
                           <div className="flex flex-col gap-3.5">

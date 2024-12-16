@@ -178,7 +178,7 @@ export type Notification = {
   readonly read: boolean;
   readonly status: boolean;
   readonly attributes: string;
-  readonly type: "ORDER" | "ORDER_GROUP";
+  readonly type: "ORDER" | "ORDER_GROUP" | "REFUND";
   readonly createdAt: Date;
 };
 
@@ -189,7 +189,8 @@ export type NotificationAttributes = {
     | "REJECTED"
     | "APPROVED"
     | "COMPLETED"
-    | "DELIVERING";
+    | "DELIVERING"
+    | "REFUNDED";
 };
 
 export type Page<T> = {
