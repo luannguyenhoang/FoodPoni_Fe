@@ -3,7 +3,6 @@ import { currencyFormat } from "@/utils/common";
 import { Card, Table } from "antd";
 import { AvatarInfo } from "../atoms/AvatarInfo";
 import { OrderSummary } from "../atoms/OrderSummaryProps";
-import { OrderItemDetail } from "../organisms/OrderItemDetail";
 
 export const OrderPostPaidDetailCard = ({
   isFetchOrderItemsLoading,
@@ -54,12 +53,28 @@ export const OrderPostPaidDetailCard = ({
               fullName={
                 it.productDetail.product.name + " - " + it.productDetail.name
               }
-              info={it.toppings.map((topping) => topping.name).join(", ")}
+              info={
+                <div>
+                  <div>{currencyFormat(it.productDetail.price)}</div>
+                  {it.type && (
+                    <div className="text-[10px]">
+                      Loại:{" "}
+                      <span className="bg-primary text-white rounded-lg mr-1 px-1">
+                        {it.type}
+                      </span>
+                    </div>
+                  )}
+                  {it.toppings.map((tp, tpIndex) => (
+                    <div
+                      key={tpIndex}
+                      className="text-[10px] inline-block bg-primary text-white rounded-lg mr-1 px-1 mb-1"
+                    >
+                      {tp.name}: {currencyFormat(tp.price)}
+                    </div>
+                  ))}
+                </div>
+              }
               avatar={it.productDetail.images[0]}
-            />
-            <OrderItemDetail
-              orderItem={it}
-              orderStatus={selectedOrder.status}
             />
           </>
         ),

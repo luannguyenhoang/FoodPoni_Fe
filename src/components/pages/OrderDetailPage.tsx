@@ -27,7 +27,7 @@ export const OrderDetailPage = () => {
       dispatch(
         fetchOrderItemsByOrderIdAction({
           oid: orderId,
-          queryParams: { page: 0, pageSize: 10, sort: ["createdAt,desc"] },
+          queryParams: { sort: ["createdAt,desc"] },
         })
       );
       dispatch(fetchOrderByCustomerAction({ orderId }));

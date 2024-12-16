@@ -28,8 +28,6 @@ export const OrderPostPaidDetailPage = () => {
         fetchOrderItemsByOrderIdAction({
           oid: orderId,
           queryParams: {
-            page: 0,
-            pageSize: 10,
             sort: ["createdAt,desc"],
             orderGroup: true,
           },

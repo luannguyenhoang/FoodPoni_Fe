@@ -16,7 +16,7 @@ export const OrderGroupDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
-  const { selectedOrder } = useSelector(
+  const { selectedOrder, isFetchLoading: isFetchOrderLoading } = useSelector(
     (state: RootState) => state.order
   );
   const { page, isFetchLoading: isFetchOrderItemsLoading } = useSelector(
@@ -29,8 +29,6 @@ export const OrderGroupDetailPage = () => {
         fetchOrderItemsByOrderIdAction({
           oid: orderId,
           queryParams: {
-            page: 0,
-            pageSize: page.totalElements,
             sort: ["createdAt,desc"],
             orderGroup: true,
           },
@@ -38,9 +36,9 @@ export const OrderGroupDetailPage = () => {
       );
       dispatch(fetchOrderByCustomerAction({ orderId }));
     }
-  }, [orderId, dispatch,page.totalElements]);
+  }, [orderId, dispatch]);
 
-  if (!selectedOrder ) {
+  if (!selectedOrder || isFetchOrderLoading) {
     return (
       <ManagementLayout>
         <ProductLoading />

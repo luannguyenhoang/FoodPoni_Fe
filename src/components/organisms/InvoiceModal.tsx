@@ -168,14 +168,27 @@ export const InvoiceContent = ({ maxHeight }: { maxHeight?: string }) => {
                     " - " +
                     it.productDetail.name
                   }
-                  info={it.toppings.map((tp, tpIndex) => (
-                    <div
-                      key={tpIndex}
-                      className="text-[10px] inline-block bg-primary text-white rounded-lg mr-1 px-1 mb-1"
-                    >
-                      {tp.name}: {currencyFormat(tp.price)}
+                  info={
+                    <div>
+                      <div>{currencyFormat(it.productDetail.price)}</div>
+                      {it.type && (
+                        <div className="text-[10px]">
+                          Loại:{" "}
+                          <span className="bg-primary text-white rounded-lg mr-1 px-1">
+                            {it.type}
+                          </span>
+                        </div>
+                      )}
+                      {it.toppings.map((tp, tpIndex) => (
+                        <div
+                          key={tpIndex}
+                          className="text-[10px] inline-block bg-primary text-white rounded-lg mr-1 px-1 mb-1"
+                        >
+                          {tp.name}: {currencyFormat(tp.price)}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  }
                   avatar={it.productDetail.images[0]}
                 />
               ),

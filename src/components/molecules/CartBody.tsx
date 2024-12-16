@@ -4,23 +4,23 @@ import {
   updateCheckedAction,
   updateNoteAction,
 } from "@/redux/modules/cart";
-import { currencyFormat, getThumbnail } from "@/utils/common";
-import { DeleteOutlined } from "@ant-design/icons";
-import { Card, Checkbox, Popconfirm, Spin } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import { useDispatch } from "react-redux";
-import { ProductLoading } from "../atoms/ProductLoading";
-import { QuantityInput } from "./QuantityInput";
 import {
   deleteCartItemAction,
   updateCartItemNoteAction,
 } from "@/redux/modules/cartGroup.ts";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
   deleteCartSessionAction,
   updateCheckedCartSessionAction,
   updateNoteCartSessionAction,
 } from "@/redux/modules/cartSession";
+import { currencyFormat, getThumbnail } from "@/utils/common";
+import { DeleteOutlined } from "@ant-design/icons";
+import { Card, Checkbox, Popconfirm, Spin } from "antd";
+import TextArea from "antd/es/input/TextArea";
+import { useDispatch } from "react-redux";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { ProductLoading } from "../atoms/ProductLoading";
+import { QuantityInput } from "./QuantityInput";
 
 export const CartBody = ({
   isFetchLoading,
@@ -34,7 +34,7 @@ export const CartBody = ({
   currentUserId?: string | null;
 }) => {
   const dispatch = useDispatch();
-  
+
   return (
     <>
       {isFetchLoading ? (
@@ -107,6 +107,9 @@ export const CartBody = ({
                       />
                       <div className="flex-1">
                         <h3 className="font-medium mb-1">{it.productName}</h3>
+                        <div className="flex-1 text-gray-400">
+                          {currencyFormat(it.productDetail.price)}
+                        </div>
                         {it.type && (
                           <div className="text-sm mb-1 text-nowrap">
                             Loại:{" "}
@@ -138,7 +141,10 @@ export const CartBody = ({
                           Đơn giá
                         </div>
                         <div className="font-bold">
-                          {currencyFormat(it.productDetail.price)}
+                          {currencyFormat(
+                            it.productDetail.price +
+                              it.toppings.reduce((sum, tp) => sum + tp.price, 0)
+                          )}
                         </div>
                       </div>
                       <div className="text-center">
