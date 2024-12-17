@@ -31,7 +31,7 @@ export const HomePage = () => {
           action={fetchProductsAction({
             queryParams: {
               page: 0,
-              pageSize: 10,
+              pageSize: 12,
               sort: ["sales,desc"],
               status: true,
             },

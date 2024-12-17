@@ -57,6 +57,7 @@ export type ProductState = {
   };
   readonly ratePercents: ProductRatePercent[];
   readonly pageOriginal: ProductState["page"];
+  readonly productKeywordSearch: string;
 };
 
 const initialState: ProductState = {
@@ -96,6 +97,7 @@ const initialState: ProductState = {
     numberOfElements: 0,
     empty: true,
   },
+  productKeywordSearch: "",
 };
 
 const SLICE_NAME = "product";
@@ -274,6 +276,13 @@ const productSlide = createSlice({
       ...state,
       pageOriginal: action.payload.page,
     }),
+    updateProductKeywordSearchSuccess: (
+      state,
+      action: PayloadAction<{ keyword: string }>
+    ) => ({
+      ...state,
+      productKeywordSearch: action.payload.keyword,
+    }),
   },
 });
 export default productSlide.reducer;
@@ -302,6 +311,7 @@ export const {
   updateProductStatusSuccess,
   updateProductStatusFailure,
   updatePageOriginalSuccess,
+  updateProductKeywordSearchSuccess,
 } = productSlide.actions;
 
 export const fetchProductAction = createAction<{ pathVariable: string }>(
@@ -571,7 +581,7 @@ function* handleSearchProduct() {
           );
         } else {
           console.log("12");
-          
+
           const pageOriginal: Page<Product[]> = yield select(
             (state: RootState) => state.product.pageOriginal
           );
@@ -584,11 +594,25 @@ function* handleSearchProduct() {
       }
 
       if (searchProductsByCustomer) {
-        searchTask = yield fork(
-          delaySearchProducts,
-          searchProductsByCustomer.payload.keyword,
-          false
-        );
+        const keyword = searchProductsByCustomer.payload.keyword;
+
+        if (keyword) {
+          searchTask = yield fork(
+            delaySearchProducts,
+            searchProductsByCustomer.payload.keyword,
+            false
+          );
+        } else {
+          const pageOriginal: Page<Product[]> = yield select(
+            (state: RootState) => state.product.pageOriginal
+          );
+          yield put(
+            fetchProductsSuccess({
+              page: pageOriginal,
+            })
+          );
+        }
+        yield put(updateProductKeywordSearchSuccess({ keyword }));
       }
     } catch (e) {
       yield put(addMessageSuccess({ error: e }));
