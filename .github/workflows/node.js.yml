@@ -42,7 +42,7 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/foodponi:${{ github.sha }} .
         docker tag ${{ secrets.DOCKER_USERNAME }}/foodponi:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/foodponi:latest
 
-    - name: Push Docker image to Docker Hub
+    - name: Push Docker image to Docker Hub 
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/foodponi:${{ github.sha }}
         docker push ${{ secrets.DOCKER_USERNAME }}/foodponi:latest
