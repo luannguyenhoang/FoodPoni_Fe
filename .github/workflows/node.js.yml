@@ -56,5 +56,4 @@ jobs:
         port: ${{ secrets.SERVER_PORT}}
         script: |
         
-          docker pull ${{ secrets.DOCKER_USERNAME }}/foodponi:latest
-          docker run -d --name foodponi -p 80:80 ${{ secrets.DOCKER_USERNAME }}/foodponi:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/foodponi:latest && docker run -d --name foodponi -p 80:80 ${{ secrets.DOCKER_USERNAME }}/foodponi:latest
